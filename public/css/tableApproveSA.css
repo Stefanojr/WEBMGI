@@ -1,0 +1,132 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.table-container {
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 100px;
+    margin-left: 90px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 20px;
+    position: fixed; /* Menjaga posisi container tetap */
+    top: 20px; /* Jarak dari atas */
+    left: 50%; /* Center secara horizontal */
+    transform: translateX(-50%); /* Center secara horizontal */
+    z-index: 10; /* Pastikan berada di atas elemen lain */
+}
+
+.table-scroll {
+    max-height: 400px; /* Atur tinggi maksimum untuk area scroll */
+    overflow-y: auto; /* Mengaktifkan scroll vertikal */
+    margin-top: 20px; /* Jarak antara judul dan tabel */
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #090a09;
+    font-size: 18px; /* Mengurangi ukuran font judul */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px; /* Mengurangi padding untuk memberi kesan lebih kecil */
+    font-size: 16px; /* Mengurangi ukuran font untuk sel */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+th {
+    background-color: #4a6b4f;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px; /* Mengurangi ukuran font header */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+th:nth-child(3), /* Kolom Unit */
+th:nth-child(4) { /* Kolom Nama Group */
+    width: 5000px; /* Atur lebar kolom sesuai kebutuhan */
+}
+
+tr {
+    transition: background-color 0.3s;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+.icon a {
+    color: #3f4640;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.icon a:hover {
+    color: #4a6b4f;
+}
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-icons i {
+    cursor: pointer;
+    color: #393e3a;
+    transition: color 0.3s;
+}
+
+.action-icons i:hover {
+    color: #393e3a;
+}
+
+.status {
+    display: flex;
+    justify-content: space-around;
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.approve {
+    background-color: green;
+}
+
+.revisi {
+    background-color: red;
+}
+
+@media (max-width: 600px) {
+    th, td {
+        padding: 10px; /* Mengurangi padding pada perangkat kecil */
+        font-size: 12px; /* Mengurangi ukuran font pada perangkat kecil */
+    }
+}

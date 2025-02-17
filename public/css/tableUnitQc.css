@@ -1,0 +1,151 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.table-container {
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 100px;
+    margin-left: -250px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 20px;
+    position: fixed; /* Menjaga posisi container tetap */
+    top: 20px; /* Jarak dari atas */
+    left: 50%; /* Center secara horizontal */
+    transform: translateX(-50%); /* Center secara horizontal */
+    z-index: 10; /* Pastikan berada di atas elemen lain */
+}
+
+.table-scroll {
+    max-height: 400px; /* Atur tinggi maksimum untuk area scroll */
+    overflow-y: auto; /* Mengaktifkan scroll vertikal */
+    margin-top: 20px; /* Jarak antara judul dan tabel */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #090a09;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    word-spacing: 3px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 30px;
+    margin-top: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px; /* Mengurangi padding untuk memberi kesan lebih kecil */
+}
+
+th {
+    background-color: #4a6b4f;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px; /* Mengurangi ukuran font header */
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+td {
+    font-size: 16px; /* Mengurangi ukuran font untuk sel */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+tr {
+    transition: background-color 0.3s;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+.icon a {
+    color: #3f4640;
+    text-decoration: none;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.icon a:hover {
+    color: #4a6b4f;
+}
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-icons i {
+    cursor: pointer;
+    color: #393e3a;
+    transition: color 0.3s;
+    font-size: 14px; /* Mengatur ukuran ikon lebih kecil */
+}
+
+.action-icons i:hover {
+    color: #4a6b4f;
+}
+/* Styling untuk tabel dan scroll */
+.table-scroll {
+    max-height: 400px; /* Batasi tinggi area tabel */
+    overflow-y: auto; /* Menambahkan scroll vertikal */
+    border: 1px solid #ddd; /* Border di sekitar tabel */
+    border-radius: 8px; /* Membuat sudut lebih halus */
+    background-color: white; /* Warna latar belakang putih */
+}
+
+/* Styling untuk tabel */
+#strukturOrganisasiTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    table-layout: fixed; /* Menghindari kolom yang terlalu lebar */
+}
+
+/* Styling untuk header tabel */
+#strukturOrganisasiTable thead {
+    background-color: #007bff;
+    color: white;
+}
+
+#strukturOrganisasiTable th {
+    padding: 12px;
+    text-align: left;
+}
+
+/* Styling untuk baris data tabel */
+#strukturOrganisasiTable tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+#strukturOrganisasiTable td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Efek hover pada baris tabel */
+#strukturOrganisasiTable tbody tr:hover {
+    background-color: #f1f1f1;
+}

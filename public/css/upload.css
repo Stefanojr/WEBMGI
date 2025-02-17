@@ -1,0 +1,23 @@
+.form-group {
+    margin-bottom: 15px; /* Spasi antar elemen form */
+}
+
+.form-group label {
+    display: block; /* Membuat label menjadi blok agar berada di atas input */
+    margin-bottom: 5px; /* Spasi antara label dan input */
+    font-weight: bold; /* Membuat label lebih menonjol */
+}
+
+.form-group input[type="file"] {
+    width: 100%; /* Mengatur lebar input agar memenuhi kontainer */
+    padding: 10px; /* Memberikan ruang di dalam input */
+    border: 1px solid #ccc; /* Garis batas input */
+    border-radius: 5px; /* Membuat sudut input menjadi melengkung */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Memberikan efek bayangan */
+    transition: border-color 0.3s; /* Transisi saat fokus */
+}
+
+.form-group input[type="file"]:focus {
+    border-color: #4a6b4f; /* Mengubah warna batas saat fokus */
+    outline: none; /* Menghilangkan outline default */
+}

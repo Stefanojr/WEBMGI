@@ -1,0 +1,203 @@
+/* Global Styles */
+body {
+
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 70px;
+}
+h1{
+    font-size: 18px;
+    color: #333;
+
+}
+/* Layout Grid */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.col-md-4 {
+    flex: 1;
+    min-width: 280px;
+    max-width: 32%;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    background-color: white;
+    margin-top: 30px;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    padding: 15px;
+    background-color: #f7f9fc;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-body h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-body p {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Text Colors */
+.text-primary {
+    color: #333;
+}
+
+.text-success {
+    color: #4a6b4f;
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+.text-center {
+    text-align: center;
+}
+/* Button Style */
+button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #333;
+
+}
+
+button:hover {
+    opacity: 0.8;
+    background-color: #333;
+}
+
+/* Graph Section */
+#proposalChart {
+    width: 100%;
+    height: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .card-body h2 {
+        font-size: 2.5rem;
+    }
+
+    h3 {
+        font-size: 2rem;
+    }
+
+    #proposalChart {
+        height: 300px;
+    }
+}
+/* Card Grafik Proposal */
+.card-grafik {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    background-color: white;
+    margin-top: 30px;
+    width: 1200px;
+}
+/* Filter Tahun */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #333;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+select:focus {
+    border-color: #ccc;
+    background-color: #e9f5ff;
+    outline: none;
+}
+
+/* Styling for the overall form */
+.form-group select {
+    margin-top: 5px;
+}
+
+/* Button for the filter */
+button {
+    padding: 10px 20px;
+    background-color: #333;
+
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+button:focus {
+    outline: none;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .form-group select {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}

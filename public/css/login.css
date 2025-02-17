@@ -1,0 +1,179 @@
+/* Background dan Tema Rumput */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #4A6246 70%, #3E5139);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+    position: relative;
+}
+
+/* Styling for the logo image */
+.logo-image {
+    display: block;
+    margin: 0 auto;
+    max-width: 400px; /* Maximum width for the logo */
+    width: 100%; /* Responsive width */
+    height: 200px; /* Keep aspect ratio */
+}
+
+/* Styling untuk login-container */
+.login-container {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 450px;
+    transition: transform 0.4s;
+}
+.login-container:hover {
+    transform: scale(1.05);
+}
+
+/* Styling untuk input dan tombol */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width:100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border 0.3s;
+    padding-left: 15px; /* Memberikan ruang untuk ikon */
+}
+
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+    border-color: #4A6246;
+    outline: none;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4A6246;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+.login-container button:hover {
+    background-color: #3B4F3A;
+}
+
+/* Slideshow container */
+.slideshow-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 200px; /* Adjust as needed */
+}
+
+/* Slide individual images */
+.mySlides {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 2s ease;
+}
+
+.mySlides img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+.text-right {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.text-right span {
+    color: #5E5E5E;
+    font-size: 14px;
+}
+
+.text-right a {
+    color: rgb(47, 47, 230);
+    font-size: 14px;
+    text-decoration: underline;
+}
+.text-right a:hover {
+    text-decoration: underline;
+}
+
+/* Full height and center content */
+.vh-100 {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container layout */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.col-md-7 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.mySlides {
+    display: none;
+}
+
+/* Styling for the error message */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c6cb;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-top: 20px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade-in effect for error message */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

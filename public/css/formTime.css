@@ -1,0 +1,113 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    height: 130vh;
+
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-top: -80px;
+    margin-left: 150px;
+    position: -webkit-sticky;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 35px;
+}
+
+h3 {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    width: 150px;
+    font-size: 14px;
+    margin-right: 20px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+input[type="date"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 40px; /* Memberikan jarak antara input tanggal dan input waktu */
+}
+
+.short-input {
+    width: 80px; /* Lebar yang lebih kecil untuk input waktu */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 200px;
+    margin-left: -40px;
+
+}
+
+input[type="text"],
+select,
+input[type="date"],
+input[type="time"] {
+    flex: 1; /* Membuat input mengisi sisa ruang */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+select:focus,
+input[type="date"]:focus,
+input[type="time"]:focus {
+    border-color: #4a6b4f; /* Warna border saat fokus */
+}
+.section-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.submit-btn {
+    padding: 10px;
+    background-color: #4a6b4f;
+    margin-left: 620px;
+    margin-top: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 100px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #3b5a3c; /* Warna latar belakang saat hover */
+}
+
+
+

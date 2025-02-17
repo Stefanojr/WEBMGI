@@ -1,0 +1,214 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif; /* Mengganti font menjadi Poppins */
+}
+
+.sidebar {
+    width: 240px;
+    height: 100vh; /* Memastikan sidebar mengambil seluruh tinggi viewport */
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed; /* Memastikan sidebar tetap di tempat */
+    top: 0; /* Menempel pada bagian atas */
+    left: 0; /* Menempel pada sisi kiri */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar .logo {
+    padding: 20px;
+    text-align: center;
+}
+
+.sidebar .logo img {
+    width: 100%; /* Mengatur lebar gambar agar sesuai dengan lebar sidebar */
+    max-width: 140px; /* Maksimal lebar gambar */
+    max-height: 170px; /* Maksimal tinggi gambar */
+    height: auto; /* Menjaga proporsi gambar */
+    object-fit: contain; /* Memastikan gambar tetap dalam proporsi */
+    margin-top: 20px;
+    margin-bottom:20px;
+}
+
+.sidebar .menu {
+    flex-grow: 1;
+}
+
+.sidebar .menu a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #333;
+    text-decoration: none;
+    font-size: 15px;
+    transition: background-color 0.3s, color 0.3s; /* Transisi halus */
+}
+
+.sidebar .menu a:hover {
+    background-color: #4a6b4f;
+    color: #ffffff;
+}
+
+.sidebar .menu a.active {
+    background-color: #4d6b4a; /* Warna latar belakang saat aktif */
+    color: #ffffff; /* Warna teks saat aktif */
+    border-radius: 3px;
+
+}
+
+.sidebar .menu a i {
+    margin-right: 10px;
+}
+
+.sidebar .logout {
+    padding: 20px;
+    text-align: center;
+}
+
+.sidebar .logout button {
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+.sidebar .logout button:hover {
+    background-color:#4a6b4f; /* Mengubah warna background saat hover */
+    color: #ffffff; /* Mengubah warna teks saat hover */
+    transform: scale(1.05); /* Efek sedikit membesar saat hover */
+}
+
+.sidebar .logout button i {
+    margin-right: 10px;
+}
+
+.main-content {
+    margin-left: 250px; /* Mengatur margin untuk konten utama */
+    padding: 20px;
+}
+
+.topbar {
+    height: 40px;
+    padding: 15px 20px;
+    background-color: #4a6b4f;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Menetapkan posisi tetap */
+    left: 240px; /* Menjaga jarak dari sidebar */
+    right: 0; /* Mengisi lebar yang tersisa */
+    top: 0; /* Menempel di bagian atas */
+}
+
+.main-content .content {
+    padding: 20px;
+}
+
+.topbar .profile-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4c7745;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0; /* Mengatur dropdown muncul di sebelah kanan */
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+/* Submenu */
+.submenu {
+    display: none; /* Tersembunyi secara default */
+    margin-left: 20px; /* Memberikan sedikit indentasi */
+    flex-direction: column;
+}
+
+.submenu a {
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #666;
+    text-decoration: none;
+}
+
+.submenu a:hover {
+    background-color: #f1f1f1;
+    color: #000;
+}
+.logout-icon {
+    width:200px; /* Lebar gambar */
+    height: 200px; /* Mempertahankan proporsi gambar */
+    margin-bottom: 20px; /* Memberikan jarak antara gambar dan tombol */
+}
+
+.logout button {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.submenu {
+    margin-left: 20px; /* Menjorok submenu */
+    display: none; /* Secara default tersembunyi */
+}
+
+.menu a.active + .submenu {
+    display: block; /* Tampilkan submenu saat menu utama aktif */
+}
+
+.submenu-item {
+    font-size: 14px;
+    color: #555;
+    text-decoration: none;
+    display: block;
+    margin: 5px 0;
+}
+
+.submenu-item:hover {
+    color: #000;
+}
+

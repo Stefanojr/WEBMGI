@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 30px;
+    font-size: 10px;
+}
+
+.table-container {
+    max-width: 800px;
+    width: 100%; /* Memastikan container menggunakan lebar penuh */
+    margin: -1600px auto; /* Jarak antara container dengan elemen di atasnya dan di bawahnya */
+    margin-right: 420px;
+    margin-top: 1645px;
+    margin-left: 250px;
+    border-radius: 10px;
+    overflow-y: auto; /* Mengaktifkan scroll vertikal */
+    max-height: 1000px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 10px; /* Mengurangi padding dari 20px menjadi 10px */
+    position: static;
+}
+.table-scroll {
+    max-height: 50px; /* Atur tinggi maksimum untuk area scroll */
+    overflow-y: auto; /* Mengaktifkan scroll vertikal */
+    margin-top: 20px; /* Jarak antara judul dan tabel */
+}
+h2 {
+    text-align: center;
+    color: black;
+    font-size: 14px;
+    margin-bottom: 30px;
+    margin-top: 25px;
+}
+h3 {
+    text-align: center;
+    color: rgb(254, 254, 254);
+    font-size: 18px;
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 15px;
+    font-size: 16px;
+}
+
+th {
+    background-color: #4a6b4f;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+tr {
+    transition: background-color 0.3s;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+.icon a {
+    color: #3f4640;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.icon a:hover {
+    color: #4a6b4f;
+}
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-icons i {
+    cursor: pointer;
+    color: #393e3a;
+    transition: color 0.3s;
+}
+
+.action-icons i:hover {
+    color: #0056b3;
+}
+
+@media (max-width: 600px) {
+    th, td {
+        padding: 10px;
+    }
+}

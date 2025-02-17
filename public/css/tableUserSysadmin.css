@@ -1,0 +1,177 @@
+    /* Umum */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #eaf7ea; /* Hijau lembut */
+        color: #2c3e50;
+        margin: 0;
+        padding: 0;
+    }
+
+    .table-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        margin-top: 90px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Tombol */
+    .input-data-btn {
+        background-color: #4d7dc4;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+    }
+
+    .input-data-btn:hover {
+        background-color: #88a5d2;
+        transform: scale(1.05);
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .edit-btn {
+        background-color: #1c5cbb;
+        color: white;
+    }
+    .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    /* Tabel */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4a6b4f;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #eafaf1;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        list-style: none;
+    }
+
+    .pagination li {
+        margin: 0 5px;
+    }
+
+    .pagination a, .pagination span {
+        color: #4a6b4f;
+        text-decoration: none;
+        padding: 8px 12px;
+        border: 1px solid #4a6b4f;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #4a6b4f;
+        color: white;
+    }
+
+    .pagination .active span {
+        background-color: #4a6b4f;
+        color: white;
+        border-color: #4a6b4f;
+    }
+
+    /* Popup */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .popup-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .popup-content h3 {
+        margin-bottom: 20px;
+        color: #27ae60;
+    }
+
+    .popup-content input, .popup-content select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .popup-content button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .popup-content .close-btn {
+        background-color: #e74c3c;
+        color: white;
+        margin-left: 10px;
+    }
+
+    .popup-content .close-btn:hover {
+        background-color: #c0392b;
+    }

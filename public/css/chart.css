@@ -1,0 +1,61 @@
+/* Styling for the chart container */
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+    width: 80%;  /* Sesuaikan ukuran */
+    max-width: 400px;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Chart title styling */
+.chart-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Tooltip styles */
+.chartjs-tooltip {
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    font-size: 14px;
+}
+
+/* Legend styling */
+.chart-container .chartjs-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.chart-container .chartjs-legend li {
+    list-style: none;
+    font-size: 14px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.chart-container .chartjs-legend li span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 2px;
+}

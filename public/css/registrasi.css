@@ -1,0 +1,148 @@
+/* Background dan Tema Rumput */
+body {
+
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #4A6246 70%, #3E5139);
+
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+    position: relative;
+}
+
+
+
+/* Styling untuk login-container */
+.login-container {
+    background-color: #FFFFFF;
+    padding: 40px; /* Perbesar padding */
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 500px; /* Perbesar lebar */
+    width: 100%;
+    transition: transform 0.4s;
+}
+.login-container:hover {
+    transform: scale(1.05);
+}
+
+/* Styling untuk input dan tombol */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 12px; /* Perbesar padding */
+    margin: 10px 0;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 16px; /* Perbesar font-size */
+    transition: border 0.3s;
+    padding-left: 15px; /* Memberikan ruang untuk ikon */
+}
+
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+    border-color: #4A6246;
+    outline: none;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 13px; /* Perbesar padding */
+    background-color: #4A6246;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px; /* Perbesar font-size */
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+.login-container button:hover {
+    background-color: #3B4F3A;
+}
+
+/* Slideshow container */
+.slideshow-container {
+    position: relative;
+    width: 80%;
+    overflow: hidden;
+    height: 230px; /* Adjust as needed */
+}
+
+/* Slide individual images */
+.mySlides {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 2s ease;
+}
+
+.mySlides img {
+    width: 100%; /* Full width for images */
+    height: 100%; /* Full height for images */
+    object-fit: cover; /* Ensure the image covers the container */
+    border-radius: 8px;
+}
+
+/* Text overlay for the slideshow */
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Styling untuk teks dan link daftar akun baru */
+.text-right {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.text-right span {
+    color: #5E5E5E;
+    font-size: 14px;
+}
+
+.text-right a {
+    color: rgb(47, 47, 230);
+    font-size: 14px;
+    text-decoration: underline;
+}
+.text-right a:hover {
+    text-decoration: underline;
+}
+
+/* Memastikan konten berada di tengah layar */
+.vh-100 {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
+
+.col-md-7 {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
+

@@ -1,0 +1,70 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 20px;
+    overflow: hidden; /* Menyembunyikan scroll bar */
+}
+
+.chart-container {
+    max-width: 400px; /* Ukuran kontainer */
+    height: 300px; /* Tinggi kontainer */
+    margin: auto;
+    margin-top: 50px;
+    background-color: #ffffff;
+    padding: 20px; /* Padding */
+    border-radius: 15px; /* Sudut yang lebih bulat */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative; /* Menetapkan posisi relatif untuk anak */
+    overflow: hidden; /* Menyembunyikan elemen yang melampaui batas */
+}
+
+.chart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    text-align: center;
+    color: #333;
+    font-size: 22px; /* Ukuran font */
+    margin-bottom: 15px; /* Margin bawah */
+}
+
+canvas {
+    border-radius: 15px; /* Sudut yang lebih bulat */
+    height: 200px; /* Tinggi canvas */
+    width: 100%; /* Lebar canvas mengikuti kontainer */
+}
+
+/* Daun jatuh */
+.leaf {
+    position: absolute;
+    width: 40px; /* Ukuran daun */
+    height: 40px; /* Ukuran daun */
+    background: url('https://img.icons8.com/ios-filled/50/000000/leaf.png') no-repeat center center;
+    background-size: contain;
+    opacity: 0.5; /* Transparansi daun */
+    animation: fall linear infinite; /* Animasi jatuh */
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-100px) rotate(0deg); /* Mulai dari atas */
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg); /* Jatuh ke bawah */
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .chart-container {
+        padding: 15px;
+    }
+
+    h3 {
+        font-size: 20px; /* Ukuran font lebih kecil untuk perangkat kecil */
+    }
+}

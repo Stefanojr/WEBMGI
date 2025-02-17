@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    max-width: 800px;
+    padding: 30px;
+    position: fixed;
+    margin-top: -300px;
+    margin-left: 250px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 60%;
+}
+
+h1 {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 60px;
+    color: black;
+    margin-top: 35px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    width: 150px;
+    font-size: 14px;
+    margin-right: 20px;
+    font-weight: normal;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="file"],
+.form-group select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 40px;
+}
+
+.submit-btn {
+    background-color: #4a5a4a;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 20px;
+    float: right; /* Mengatur tombol agar berada di kanan */
+}
+
+.submit-btn:hover {
+    background-color: #3b4a3b;
+}
