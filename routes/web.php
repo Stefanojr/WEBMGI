@@ -114,7 +114,7 @@ Route::get('/sysadmin/user', function () {
 
 
 // routes/web.php
-Route::get('/superadmin/home', 'SuperadminController@home')->name('superadmin.home');
+Route::get('/superadmin/home', [App\Http\Controllers\SuperadminController::class,'home'])->name('superadmin.home');
 // Route::get('/unit/home2', 'UnitController@home2')->name('unit.home2');
 Route::get('/viewer/home3', 'ViewerController@home3')->name('viewer.home3');
 

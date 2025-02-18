@@ -21,15 +21,15 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>ID Grup</th>
-                        <th>Nama Grup</th>
+                        <th>ID</th>
+                        <th>Grup</th>
                         <th>Unit</th>
                         <th>Perusahaan</th>
                         <th>Kriteria</th>
                         <th>Tema</th>
                         <th>Judul</th>
                         <th>Tanggal</th>
-                        <th>Tahap Proses</th>
+                        <th>Tahapan</th>
                     </tr>
                 </thead>
                 <tbody>
