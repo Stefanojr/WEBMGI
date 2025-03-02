@@ -111,8 +111,6 @@ Route::get('/sysadmin/user', function () {
     return view('sysadmin.user');
 })->name('sysadmin.user');
 
-
-
 // routes/web.php
 Route::get('/superadmin/home', [App\Http\Controllers\SuperadminController::class,'home'])->name('superadmin.home');
 // Route::get('/unit/home2', 'UnitController@home2')->name('unit.home2');
@@ -127,8 +125,8 @@ Route::get('/unit/approval2', [SubmissionController::class, 'showApproval'])->na
 
 
 Route::get('/sysadmin/perusahaan', [DataController::class, 'index']);
-// Route::get('/sysadmin/perusahaan/edit/{id}', [CompanyController::class, 'edit'])->name('edit-company');
-// Route::get('/sysadmin/perusahaan/delete/{id}', [CompanyController::class, 'destroy'])->name('delete-company');
+Route::get('/sysadmin/perusahaan/edit/{id}', [CompanyController::class, 'edit'])->name('edit-company');
+Route::get('/sysadmin/perusahaan/delete/{id}', [CompanyController::class, 'destroy'])->name('delete-company');
 Route::get('/sysadmin/user', [DataController::class, 'formUser'])->name('sysadmin.user');
 Route::post('/sysadmin/user/insert', [DataController::class, 'insertUser'])->name('users.insert');
 
@@ -205,15 +203,17 @@ Route::post('/unit/uploadDokumen/{idPendaftaran}', [PendaftaranController::class
 Route::get('/unit/daftarImprovement/status/{idPendaftaran}', [PendaftaranController::class, 'statusImprovement']);
 
 // // Route untuk menyimpan data unggahan
-// Route::post('/unit/daftarImprovement', [UploadController::class, 'store']);
+Route::post('/unit/daftarImprovement', [UploadController::class, 'store']);
+Route::post('/upload', [UploadController::class, 'store']);
 
-// // Route untuk mengambil data berdasarkan ID pendaftaran
-// Route::get('/unit/daftarImprovement/{id}', [UploadController::class, 'getData']);
 
-// // Route untuk mengunggah dokumen
-// Route::post('/unit/daftarImprovement/upload/{id}', [UploadController::class, 'uploadDokumen']);
+// Route untuk mengambil data berdasarkan ID pendaftaran
+Route::get('/unit/daftarImprovement/{id}', [UploadController::class, 'getData']);
 
-// Route::get('/unit/statusImprovement/{id_pendaftaran}', [PendaftaranController::class, 'statusImprovement']);
+// Route untuk mengunggah dokumen
+Route::post('/unit/daftarImprovement/upload/{id}', [UploadController::class, 'uploadDokumen']);
+
+Route::get('/unit/statusImprovement/{id_pendaftaran}', [PendaftaranController::class, 'statusImprovement']);
 
 Route::get('/unit/prosesStatus/{idPendaftaran}', [UploadController::class, 'getStatus']);
 Route::post('/unit/uploadDokumen/{idProses}', [UploadController::class, 'uploadDokumen']);

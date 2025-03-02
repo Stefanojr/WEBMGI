@@ -73,21 +73,23 @@
 <div class="modal" id="upload-modal" style="display: none;">
     <div class="modal-content-upload">
         <h2 style="font-size: 16px;">Upload File</h2>
-        <form id="upload-form" method="POST" action="/unit/daftarImprovement" enctype="multipart/form-data">
+        <form id="upload-form" enctype="multipart/form-data">
             @csrf
-            <!-- Hidden input untuk ID Pendaftaran -->
             <input type="hidden" id="id_pendaftaran" name="id_pendaftaran" />
-
-            <!-- Upload File (hanya .docx) -->
             <div class="form-group">
                 <input type="file" id="upload_file" name="upload_file" accept=".docx" required />
             </div>
-
             <div class="form-actions">
                 <button type="submit">Upload</button>
                 <button id="close-modal" type="button">Close</button>
             </div>
         </form>
+
+        <!-- Pesan sukses setelah upload -->
+        <div id="upload-success" style="display: none; color: green; margin-top: 10px;">
+            File sudah terkirim!
+        </div>
+
     </div>
 </div>
 
@@ -271,6 +273,54 @@ document.querySelectorAll('.popup-btn-status').forEach(button => {
             });
         });
     });
+
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat submit
+
+    let formData = new FormData(this);
+    let idPendaftaran = document.getElementById('id_pendaftaran').value;
+
+    fetch('/upload-file', {  // Pastikan route sesuai dengan backend Laravel Anda
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui tanggal berdasarkan waktu saat ini
+            let today = new Date();
+            let formattedDate = today.getDate().toString().padStart(2, '0') + '/' +
+                                (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                                today.getFullYear();
+
+            // Cari baris tabel berdasarkan ID Pendaftaran
+            let rows = document.querySelectorAll('#status-body tr');
+            rows.forEach(row => {
+                let button = row.querySelector('.upload-btn');
+                if (button && button.getAttribute('data-id') === idPendaftaran) {
+                    row.cells[0].textContent = formattedDate; // Update tanggal
+                    row.cells[2].innerHTML = `<a href="${data.file_url}" target="_blank">Download</a>`; // Update file
+                    button.disabled = true; // Disable upload button
+                }
+            });
+
+            // Tampilkan pesan sukses
+            document.getElementById('upload-success').style.display = 'block';
+
+            // Tutup modal setelah 2 detik
+            setTimeout(() => {
+                document.getElementById('upload-modal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('upload-success').style.display = 'none';
+            }, 2000);
+        }
+    })
+    .catch(error => console.error('Upload error:', error));
+});
+
 });
 
 // Tutup popup status
@@ -284,20 +334,9 @@ document.getElementById('close-modal').addEventListener('click', function () {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('upload-modal').style.display = 'none';
 });
-
-
-// Tampilkan modal upload
-// document.querySelectorAll('.popup-btn-status').forEach(button => {
-//     button.addEventListener('click', function () {
-//         document.getElementById('overlay').style.display = 'block';
-//         document.getElementById('upload-modal').style.display = 'block';
-
-//         const idPendaftaran = button.getAttribute('data-id');
-//         document.getElementById('id_pendaftaran').value = idPendaftaran;
-//     });
-// });
-
     </script>
+
+
 
 <script>
     // Fungsi untuk menutup pesan sukses

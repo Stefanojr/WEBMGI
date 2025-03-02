@@ -10,6 +10,10 @@ use App\Pendaftaran; // Pastikan model Pendaftaran diimpor
 
 class UploadController extends Controller
 {
+    public function store(Request $request)
+    {
+        // Handle file upload logic here
+    }
     public function getStatus($idPendaftaran)
     {
         // Mengambil data proses berdasarkan id_pendaftaran

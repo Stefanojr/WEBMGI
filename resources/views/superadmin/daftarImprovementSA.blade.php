@@ -99,7 +99,74 @@
      </form>
  </div>
 
+
+<!-- Popup Table Status -->
+<div class="overlay" id="overlay-tahapan"></div>
+
+<div class="popup" id="popup-tahapan">
+    <h2>Detail Status</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Tahapan</th>
+                <th>File</th>
+                <th>Approval</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tahapan-body">
+            <!-- Data akan dimasukkan melalui JavaScript -->
+        </tbody>
+    </table>
+    <button class="popup-close" id="close-tahapan">Close</button>
+</div>
+
  @push('scripts')
+
+ <script>
+    document.querySelectorAll('.popup-btn-status').forEach(button => {
+        button.addEventListener('click', function () {
+            const idPendaftaran = this.closest('tr').querySelector('.popup-btn-id').getAttribute('data-id');
+
+            // Tampilkan popup
+            document.getElementById('overlay-tahapan').style.display = 'block';
+            document.getElementById('popup-tahapan').style.display = 'block';
+
+            // Ambil data dari server
+            fetch(`/superadmin/tahapan/${idPendaftaran}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('tahapan-body');
+                tbody.innerHTML = ''; // Hapus data lama
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${item.tanggal}</td>
+                        <td>${item.tahapan}</td>
+                        <td><a href="${item.file}" target="_blank">Lihat File</a></td>
+                        <td>${item.approval}</td>
+                        <td>${item.status}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Fungsi untuk menutup popup
+    document.getElementById('close-tahapan').addEventListener('click', function () {
+        document.getElementById('overlay-tahapan').style.display = 'none';
+        document.getElementById('popup-tahapan').style.display = 'none';
+    });
+    </script>
+
+
+
  <script>
 document.querySelectorAll('.popup-btn-id').forEach(button => {
 button.addEventListener('click', function () {

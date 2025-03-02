@@ -56,10 +56,10 @@
                 <i class="fas fa-list"></i>
                 Daftar Improvement
             </a>
-            <a href="/superadmin/report">
+            {{-- <a href="/superadmin/report">
                 <i class="fas fa-chart-bar"></i>
                 Report SMIF
-            </a>
+            </a> --}}
             <a href="/superadmin/arsip">
                 <i class="fas fa-folder"></i>
                 Arsip SMIF
