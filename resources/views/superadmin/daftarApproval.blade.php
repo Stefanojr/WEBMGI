@@ -71,19 +71,23 @@
                 <th>Nama Grup</th>
                 <th>Dokumen</th> <!-- Kolom File ditambahkan -->
                 <th style="width: 30%;">Approval</th>
-                
+
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><span id="tanggal-approval">-</span></td> 
+                <td><span id="tanggal-approval">-</span></td>
                 <td><span id="nama-grup-approval">-</span></td>
-                <td><span id="file-approval">-</span></td> <!-- Menampilkan file terkait -->
+                <td>
+                    <span id="file-approval">
+                        <img src="{{ asset('storage/gambarscft.png') }}" alt="Gambar Approval" width="100">
+                    -</span>
+                </td> <!-- Menampilkan file terkait -->
                 <td>
                     <button class="btn-approve">Approve</button>
                     <button class="btn-reject">Reject</button>
                 </td>
-                
+
             </tr>
         </tbody>
     </table>

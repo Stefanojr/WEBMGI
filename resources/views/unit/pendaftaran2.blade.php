@@ -43,7 +43,7 @@
 
             <div class="form-group">
                 <label for="pabrik">Pabrik / Departemen</label>
-                <select id="pabrik" name="pabrik" required>
+                <select id="pabrik" name="id_perusahaan" required>
                     <option value="" disabled selected>Pilih Pabrik</option>
                     @foreach ($perusahaans as $perusahaan)
                         <option value="{{ $perusahaan->id_perusahaan }}"

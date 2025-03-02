@@ -145,7 +145,9 @@ Route::prefix('unit')->group(function () {
     Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
 });
 
+//Upload file
 
+Route::post('/unit/daftarImprovement/upload', [PendaftaranController::class, 'uploadFile'])->name('pendaftaran.uploadfile');
 // Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index'])->name('daftarImprovement');
 // Route::get('/unit/daftarImprovement/struktur/{id_pendaftaran}', 'DaftarImprovementController@getStrukturAnggota');
 // Route::get('/unit/daftarImprovement/{idPendaftaran}', 'PendaftaranController@getStrukturAnggota');

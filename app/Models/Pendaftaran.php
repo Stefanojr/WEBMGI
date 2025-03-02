@@ -12,7 +12,7 @@ class Pendaftaran extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'kreteria_grup', 'pabrik', 'unit', 'nama_grup', 'ketua_grup', 'nomor_tema', 'judul', 'tema'
+        'kreteria_grup', 'id_perusahaan', 'unit', 'nama_grup', 'ketua_grup', 'nomor_tema', 'judul', 'tema'
     ];
 
     public function grups()

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileModel;
+use App\Models\StepsModel;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Grup;
@@ -53,7 +55,7 @@ class PendaftaranController extends Controller
     {
         $request->validate([
             'kreteria_grup' => 'required|string|max:50',
-            'pabrik' => 'required|string|max:50',
+            'id_perusahaan' => 'required',
             'unit' => 'required|string|max:50',
             'nama_grup' => 'required|string|max:100',
             'nomor_tema' => 'required|integer',
@@ -62,6 +64,7 @@ class PendaftaranController extends Controller
             'grup_data' => 'required|json',
         ]);
 
+        // dd($request);
 
         $unit = Unit::find($request->unit);
         if (!$unit) {
@@ -71,7 +74,7 @@ class PendaftaranController extends Controller
 
         $pendaftaran = Pendaftaran::create([
             'kreteria_grup' => $request->kreteria_grup,
-            'pabrik' => $unit->perusahaan->nama_perusahaan ?? $request->pabrik,
+            'id_perusahaan' => $request->id_perusahaan,
             'unit' => $unit->nama_unit,
             'nama_grup' => $request->nama_grup,
             'nomor_tema' => $request->nomor_tema,
@@ -114,10 +117,10 @@ class PendaftaranController extends Controller
     public function getStrukturAnggota($idPendaftaran)
     {
         $grup = Grup::where('id_pendaftaran', $idPendaftaran)
-                    ->orderBy('jabatan_grup')
-                    ->get();
+            ->orderBy('jabatan_grup')
+            ->get();
 
-        $grupData = $grup->map(function($item) {
+        $grupData = $grup->map(function ($item) {
             $item->perner = $item->perner;
             return $item;
         });
@@ -177,5 +180,102 @@ class PendaftaranController extends Controller
             'statusApproval' => 'Langkah ' . ($request->tahapan + 1)
         ]);
     }
-    
+
+    // Upload file
+
+    public function uploadFile(Request $request)
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'id_pendaftaran' => 'required|integer',
+                'upload_file' => 'required|mimes:docx'
+            ]);
+
+            // Simpan file ke storage Laravel
+            if ($request->hasFile('upload_file')) {
+                $file = $request->file('upload_file');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('uploads/file', $fileName, 'public');
+
+                // Simpan ke database (FileModel)
+                $fileModel = FileModel::create([
+                    'id_pendaftaran' => $request->id_pendaftaran,
+                    'file_name' => $fileName,
+                    'file_path' => 'storage/' . $filePath,
+                    'upload_time' => now()
+                ]);
+
+                // Ambil data pendaftaran
+                $pendaftaran = $this->showUnitPendaftaran($request->id_pendaftaran);
+
+                // Ambil step terbaru
+                $latestStep = StepsModel::where('id_pendaftaran', $request->id_pendaftaran)
+                    ->orderBy('step_number', 'desc')
+                    ->first();
+
+                // Jika belum ada step, set default ke 1
+                $currentStep = $latestStep ? $latestStep->step_number : 1;
+
+                // **Cek apakah ada minimal 1 file yang sudah `approved` dalam step ini**
+                $approvedFilesCount = StepsModel::where('id_pendaftaran', $request->id_pendaftaran)
+                    ->where('step_number', $currentStep)
+                    ->where('approval_status', 'approved')
+                    ->count();
+
+                // **Tambahkan file ke step sekarang**
+                StepsModel::create([
+                    'id_pendaftaran' => $pendaftaran->id_pendaftaran,
+                    'id_file' => $fileModel->id,
+                    'step_number' => $currentStep,
+                    'status' => 'not_started',
+                    'data' => null,
+                    'approval_status' => 'waiting',
+                    'nama_group' => $pendaftaran->nama_grup,
+                    'nama_unit' => $pendaftaran->unit,
+                    'tanggal' => now()
+                ]);
+
+                // **Jika sudah ada minimal 1 file "approved", naikkan ke step berikutnya**
+                if ($approvedFilesCount >= 1) {
+                    $newStepNumber = $currentStep + 1;
+
+                    // **Cek apakah step baru sudah ada di database**
+                    $nextStepExists = StepsModel::where('id_pendaftaran', $request->id_pendaftaran)
+                        ->where('step_number', $newStepNumber)
+                        ->exists();
+
+                    if (!$nextStepExists) {
+                        StepsModel::create([
+                            'id_pendaftaran' => $pendaftaran->id_pendaftaran,
+                            'id_file' => null,
+                            'step_number' => $newStepNumber,
+                            'status' => 'not_started',
+                            'data' => null,
+                            'approval_status' => 'waiting',
+                            'nama_group' => $pendaftaran->nama_grup,
+                            'nama_unit' => $pendaftaran->unit,
+                            'tanggal' => now()
+                        ]);
+                    }
+                }
+
+                return redirect()->back()->with('success', 'File berhasil diupload!');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+
+
+
+    public function showUnitPendaftaran($id)
+    {
+        $data = Pendaftaran::findOrFail($id);
+
+        return $data;
+    }
+
+
 }
