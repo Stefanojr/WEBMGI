@@ -44,7 +44,7 @@
                         </td>
                         <td>{{ $pendaftaran->nama_grup }}</td>
                         <td>{{ $pendaftaran->unit }}</td>
-                        <td>{{ $pendaftaran->pabrik }}</td>
+                        <td>{{ $pendaftaran->perusahaan->nama_perusahaan ?? '-' }}</td>
                         <td>{{ $pendaftaran->kreteria_grup }}</td>
                         <td>{{ $pendaftaran->tema }}</td>
                         <td>{{ $pendaftaran->judul }}</td>
@@ -182,7 +182,7 @@ document.querySelectorAll('.popup-btn-id').forEach(button => {
 
                     // Label Anggota (Anggota 1, Anggota 2, dst)
                     const label = document.createElement('label');
-                    label.textContent = `Anggota ${index + 1}`; // Menambahkan label dinamis
+                    label.textContent = `Anggota ${index + 1}`;
                     divAnggota.appendChild(label);
 
                     // Input untuk nama anggota

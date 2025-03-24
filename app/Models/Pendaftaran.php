@@ -12,12 +12,17 @@ class Pendaftaran extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'kreteria_grup', 'id_perusahaan', 'unit', 'nama_grup', 'ketua_grup', 'nomor_tema', 'judul', 'tema'
+        'kreteria_grup', 'id_perusahaan', 'id_user','unit', 'nama_grup', 'ketua_grup', 'nomor_tema', 'judul', 'tema'
     ];
 
     public function grups()
     {
         return $this->hasMany(Grup::class, 'id_pendaftaran');
     }
+    public function perusahaan()
+{
+    return $this->belongsTo(Perusahaan::class, 'id_perusahaan');
+}
+
 
 }

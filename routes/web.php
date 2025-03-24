@@ -125,8 +125,8 @@ Route::get('/unit/approval2', [SubmissionController::class, 'showApproval'])->na
 
 
 Route::get('/sysadmin/perusahaan', [DataController::class, 'index']);
-Route::get('/sysadmin/perusahaan/edit/{id}', [CompanyController::class, 'edit'])->name('edit-company');
-Route::get('/sysadmin/perusahaan/delete/{id}', [CompanyController::class, 'destroy'])->name('delete-company');
+// Route::get('/sysadmin/perusahaan/edit/{id}', [CompanyController::class, 'edit'])->name('edit-company');
+// Route::get('/sysadmin/perusahaan/delete/{id}', [CompanyController::class, 'destroy'])->name('delete-company');
 Route::get('/sysadmin/user', [DataController::class, 'formUser'])->name('sysadmin.user');
 Route::post('/sysadmin/user/insert', [DataController::class, 'insertUser'])->name('users.insert');
 
@@ -144,6 +144,8 @@ Route::prefix('unit')->group(function () {
     // Rute untuk mengambil unit berdasarkan perusahaan
     Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
 });
+
+
 
 //Upload file
 

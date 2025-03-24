@@ -17,4 +17,6 @@ class Perusahaan extends Model
     {
         return $this->hasMany(Unit::class, 'id_perusahaan', 'id_perusahaan');
     }
+
+    
 }

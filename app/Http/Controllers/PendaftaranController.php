@@ -18,7 +18,21 @@ class PendaftaranController extends Controller
 
     public function index()
     {
-        $pendaftarans = Pendaftaran::all();
+        $userId = Auth::user()->id_user;
+
+        $pendaftarans = Pendaftaran::where('id_user', $userId)->get(); //autentikasi berdasarkan user_id pengguna
+
+
+        \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+
+        return view('unit.daftarImprovement', compact('pendaftarans'));
+    }
+    public function index1()
+    {
+        $userId = Auth::user()->id_user;
+
+        $pendaftarans = Pendaftaran::with('perusahaan')->get(); //menampilkan nama perusahaan berdasarkan id_perusahaan
+
 
         \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
@@ -48,7 +62,9 @@ class PendaftaranController extends Controller
         $perusahaans = Perusahaan::all();
         $units = Unit::all();
 
-        return view('unit.pendaftaran2', compact('perusahaans', 'units'));
+        $userId = Auth::user()->id_user;
+
+        return view('unit.pendaftaran2', compact('perusahaans', 'units', 'userId'));
     }
 
     public function store(Request $request)
@@ -56,6 +72,7 @@ class PendaftaranController extends Controller
         $request->validate([
             'kreteria_grup' => 'required|string|max:50',
             'id_perusahaan' => 'required',
+            'id_user' => 'required',
             'unit' => 'required|string|max:50',
             'nama_grup' => 'required|string|max:100',
             'nomor_tema' => 'required|integer',
@@ -72,15 +89,21 @@ class PendaftaranController extends Controller
             return back()->withErrors("Unit tidak ditemukan");
         }
 
+
         $pendaftaran = Pendaftaran::create([
             'kreteria_grup' => $request->kreteria_grup,
             'id_perusahaan' => $request->id_perusahaan,
+            'id_user' => $request->id_user,
             'unit' => $unit->nama_unit,
             'nama_grup' => $request->nama_grup,
             'nomor_tema' => $request->nomor_tema,
             'judul' => $request->judul,
             'tema' => $request->tema,
+
+
         ]);
+
+
 
         $grupData = json_decode($request->grup_data, true);
 
@@ -102,6 +125,7 @@ class PendaftaranController extends Controller
                 'foto' => $fotoPath,
                 'perner_input' => Auth::user()->perner,
                 'id_pendaftaran' => $pendaftaran->id,
+
             ]);
         }
 
@@ -130,13 +154,18 @@ class PendaftaranController extends Controller
 
     public function show($id_pendaftaran)
     {
+
         $pendaftaran = Pendaftaran::find($id_pendaftaran);
+
+
         if (!$pendaftaran) {
             return response()->json(['error' => 'ID Pendaftaran tidak ditemukan']);
         }
 
+
         $grupAnggota = Grup::where('id_pendaftaran', $id_pendaftaran)->get();
         return response()->json(['pendaftaran' => $pendaftaran, 'grupAnggota' => $grupAnggota]);
+
     }
 
     public function statusImprovement($idPendaftaran)

@@ -31,6 +31,10 @@
         <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <!-- Form Identitas Grup -->
+            <div class="form-group">
+
+                <input type="text" name="id_user" value="{{ $userId }}" hidden>
+            </div>
             <div class="section-title">IDENTITAS GRUP</div>
             <div class="form-group">
                 <label for="kreteria_grup">Kriteria Improvement</label>

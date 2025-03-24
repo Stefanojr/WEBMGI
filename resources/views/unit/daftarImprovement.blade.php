@@ -50,15 +50,10 @@
                                     </button>
                                 </td>
                                 <td>{{ $pendaftaran->unit }}</td>
-                                <td>{{ $pendaftaran->pabrik }}</td>
+                                <td>{{ $pendaftaran->perusahaan->nama_perusahaan ?? '-' }}</td>
                                 <td>{{ $pendaftaran->kreteria_grup }}</td>
                                 <td>{{ $pendaftaran->tema }}</td>
                                 <td>{{ $pendaftaran->judul }}</td>
-                                {{-- <td>
-                                <a href="timetable" class="popup-link">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </a>
-                            </td> --}}
                                 <td>{{ $pendaftaran->created_at ? $pendaftaran->created_at->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     <button class="popup-btn-status"
@@ -170,6 +165,7 @@
                         <th>Tahapan</th>
                         <th>Dokumen</th>
                         <th>Status</th>
+                        <th>Komentar</th>
                         <th>Upload</th>
                     </tr>
                 </thead>
@@ -200,56 +196,57 @@
 
                         const idPendaftaran = button.getAttribute('data-id');
 
-                        inputId.getAttribute('data-id')
-
-                        // Bersihkan container anggota sebelum memuat data baru
+                        // Initialize all fields to '-'
+                        document.getElementById('sponsor').value = '';
+                        document.getElementById('sponsor-perner').value = '';
+                        document.getElementById('fasilitator').value = '';
+                        document.getElementById('fasilitator-perner').value = '';
+                        document.getElementById('ketua').value = '';
+                        document.getElementById('ketua-perner').value = '';
+                        document.getElementById('sekretaris').value = '';
+                        document.getElementById('sekretaris-perner').value = '';
                         const anggotaContainer = document.getElementById('anggota-container');
-                        anggotaContainer.innerHTML = '';
+                        anggotaContainer.innerHTML = ''; // Clear previous anggota
 
-                        // Ambil data dari server berdasarkan id_pendaftaran
                         fetch(`/unit/daftarImprovement/${idPendaftaran}`)
                             .then(response => response.json())
                             .then(data => {
                                 if (data && data.length > 0) {
                                     document.getElementById('id-pendaftaran').value = data[0].id_pendaftaran;
 
-                                    data.forEach((grup, index) => {
-                                        if (grup.jabatan_grup === 'sponsor') {
-                                            document.getElementById('sponsor').value = grup.nama;
-                                            document.getElementById('sponsor-perner').value = grup
-                                                .perner;
-                                        } else if (grup.jabatan_grup === 'fasilitator') {
-                                            document.getElementById('fasilitator').value = grup.nama;
-                                            document.getElementById('fasilitator-perner').value = grup
-                                                .perner;
-                                        } else if (grup.jabatan_grup === 'ketua') {
-                                            document.getElementById('ketua').value = grup.nama;
-                                            document.getElementById('ketua-perner').value = grup.perner;
-                                        } else if (grup.jabatan_grup === 'sekretaris') {
-                                            document.getElementById('sekretaris').value = grup.nama;
-                                            document.getElementById('sekretaris-perner').value = grup
-                                                .perner;
-                                        } else if (grup.jabatan_grup === 'anggota') {
-                                            const divAnggota = document.createElement('div');
-                                            divAnggota.classList.add('input-container');
-
-                                            const label = document.createElement('label');
-                                            label.textContent = `Anggota ${index + 1}`;
-                                            divAnggota.appendChild(label);
-
-                                            const inputNama = document.createElement('input');
-                                            inputNama.type = 'text';
-                                            inputNama.value = grup.nama;
-                                            inputNama.readOnly = true;
-                                            divAnggota.appendChild(inputNama);
-
-                                            const inputPerner = document.createElement('input');
-                                            inputPerner.type = 'text';
-                                            inputPerner.value = grup.perner;
-                                            inputPerner.readOnly = true;
-                                            divAnggota.appendChild(inputPerner);
-
-                                            anggotaContainer.appendChild(divAnggota);
+                                    data.forEach((grup) => {
+                                        switch (grup.jabatan_grup) {
+                                            case 'sponsor':
+                                                document.getElementById('sponsor').value = grup.nama;
+                                                document.getElementById('sponsor-perner').value = grup
+                                                    .perner;
+                                                break;
+                                            case 'fasilitator':
+                                                document.getElementById('fasilitator').value = grup
+                                                .nama;
+                                                document.getElementById('fasilitator-perner').value =
+                                                    grup.perner;
+                                                break;
+                                            case 'ketua':
+                                                document.getElementById('ketua').value = grup.nama;
+                                                document.getElementById('ketua-perner').value = grup
+                                                    .perner;
+                                                break;
+                                            case 'sekretaris':
+                                                document.getElementById('sekretaris').value = grup.nama;
+                                                document.getElementById('sekretaris-perner').value =
+                                                    grup.perner;
+                                                break;
+                                            case 'anggota':
+                                                const divAnggota = document.createElement('div');
+                                                divAnggota.classList.add('input-container');
+                                                divAnggota.innerHTML = `
+                                    <label>Anggota</label>
+                                    <input type="text" value="${grup.nama}" readonly>
+                                    <input type="text" value="${grup.perner}" readonly>
+                                `;
+                                                anggotaContainer.appendChild(divAnggota);
+                                                break;
                                         }
                                     });
                                 } else {
@@ -259,7 +256,6 @@
                             .catch(error => console.error('Error:', error));
                     });
                 });
-
                 // Tampilkan popup status
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
                     button.addEventListener('click', function() {
@@ -277,6 +273,7 @@
                                 tanggal: '',
                                 tahapan: 'Langkah 1',
                                 dokumen: '',
+                                komentar: '',
                                 status_approval: 'Waiting'
                             }
 
@@ -289,6 +286,7 @@
                 <td>${status.tahapan}</td>
                 <td>${status.dokumen || '-'}</td>
                 <td>${status.status_approval}</td>
+                <td>${status.komentar || '-'}</td>
                 <td>
                     <button class="upload-btn" data-id="${idPendaftaran}">
                         <i class="fas fa-upload"></i>

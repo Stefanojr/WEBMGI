@@ -43,7 +43,7 @@
                         </td>
                         <td>{{ $pendaftaran->nama_grup }}</td>
                         <td>{{ $pendaftaran->unit }}</td>
-                        <td>{{ $pendaftaran->pabrik }}</td>
+                        <td>{{ $pendaftaran->perusahaan->nama_perusahaan ?? '-' }}</td>
                         <td>{{ $pendaftaran->kreteria_grup }}</td>
                         <td>{{ $pendaftaran->tema }}</td>
                         <td>{{ $pendaftaran->judul }}</td>
