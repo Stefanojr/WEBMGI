@@ -112,7 +112,7 @@ Route::get('/sysadmin/user', function () {
 })->name('sysadmin.user');
 
 // routes/web.php
-Route::get('/superadmin/home', [App\Http\Controllers\SuperadminController::class,'home'])->name('superadmin.home');
+Route::get('/superadmin/home', [App\Http\Controllers\SuperadminController::class, 'home'])->name('superadmin.home');
 // Route::get('/unit/home2', 'UnitController@home2')->name('unit.home2');
 Route::get('/viewer/home3', 'ViewerController@home3')->name('viewer.home3');
 
@@ -125,8 +125,7 @@ Route::get('/unit/approval2', [SubmissionController::class, 'showApproval'])->na
 
 
 Route::get('/sysadmin/perusahaan', [DataController::class, 'index']);
-// Route::get('/sysadmin/perusahaan/edit/{id}', [CompanyController::class, 'edit'])->name('edit-company');
-// Route::get('/sysadmin/perusahaan/delete/{id}', [CompanyController::class, 'destroy'])->name('delete-company');
+
 Route::get('/sysadmin/user', [DataController::class, 'formUser'])->name('sysadmin.user');
 Route::post('/sysadmin/user/insert', [DataController::class, 'insertUser'])->name('users.insert');
 
@@ -136,13 +135,13 @@ Route::delete('/users/{id_user}', [DataController::class, 'destroy'])->name('use
 
 Route::prefix('unit')->group(function () {
     // Menampilkan form pendaftaran
-    Route::get('/pendaftaran2', [PendaftaranController::class, 'create'])->name('pendaftaran.form');
+Route::get('/pendaftaran2', [PendaftaranController::class, 'create'])->name('pendaftaran.form');
 
     // Menyimpan data pendaftaran
-    Route::post('/pendaftaran2', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+Route::post('/pendaftaran2', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 
     // Rute untuk mengambil unit berdasarkan perusahaan
-    Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
+Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
 });
 
 
@@ -150,10 +149,7 @@ Route::prefix('unit')->group(function () {
 //Upload file
 
 Route::post('/unit/daftarImprovement/upload', [PendaftaranController::class, 'uploadFile'])->name('pendaftaran.uploadfile');
-// Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index'])->name('daftarImprovement');
-// Route::get('/unit/daftarImprovement/struktur/{id_pendaftaran}', 'DaftarImprovementController@getStrukturAnggota');
-// Route::get('/unit/daftarImprovement/{idPendaftaran}', 'PendaftaranController@getStrukturAnggota');
-// Route untuk menampilkan daftar Improvement
+
 Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index']);
 
 // Route untuk menampilkan struktur anggota berdasarkan idPendaftaran
@@ -184,7 +180,7 @@ Route::get('/form-perusahaan', 'DataController@formPerusahaan');
 Route::get('/form-unit', 'DataController@formUnit');
 Route::get('/form-user', 'DataController@formUser');
 
-Route::get('/form-user', function() {
+Route::get('/form-user', function () {
     return view('form-user');
 });
 
@@ -221,11 +217,19 @@ Route::post('/submit-reject', function (Request $request) {
 });
 
 
+//Menampilkan request approval dari db ke user unit
 Route::get('/files', [PendaftaranController::class, 'getAllFiles']);
 Route::get('/files/pendaftaran/{id_pendaftaran}', [PendaftaranController::class, 'getFilesByPendaftaran']);
 Route::get('/files/step/{id_step}', [PendaftaranController::class, 'getFilesByStep']);
 
+//Menampilkan request approval dari db ke user komite
+Route::get('/superadmin/files', [SuperadminController::class, 'getAllFiles']);
+Route::get('/superadmin/files/pendaftaran/{id_pendaftaran}', [SuperadminController::class, 'getFilesByPendaftaran']);
+Route::get('/superadmin/files/step/{id_step}', [SuperadminController::class, 'getFilesByStep']);
 
+//Routes approve & reject dari komite
+Route::post('/approve-file', [SuperadminController::class, 'approveFile'])->middleware(['auth', 'web']);
+Route::post('/reject-file', [SuperadminController::class, 'rejectFile'])->middleware(['auth', 'web']);
 
 //Tampil Unit
 Route::get('/get-units/{id}', [UnitController::class, 'getUnits']);
@@ -237,3 +241,6 @@ Auth::routes();
 Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index'])->name('daftarImprovement');
 
 Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+
+// Route for file upload in daftarImprovement
+Route::post('/upload-file', [PendaftaranController::class, 'uploadFile'])->name('upload.file');

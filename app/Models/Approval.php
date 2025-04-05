@@ -11,20 +11,19 @@ class Approval extends Model
 
     // Kolom yang dapat diisi secara massal
     protected $fillable = [
-        'id_grup',
+        'id_pendaftaran',
         'proses',
-        'perner',
         'keputusan',
-        'keterangan',
+        'approved_at',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     // (Opsional) Jika tidak menggunakan timestamp, set false
-    // public $timestamps = true; // Ubah ke false jika tabel tidak memiliki kolom `created_at` dan `updated_at`
+    public $timestamps = true;
 
     // (Opsional) Tentukan primary key jika tidak menggunakan id
-    // protected $primaryKey = 'id';
+    protected $primaryKey = 'id_approval';
 
     // (Opsional) Tentukan tipe data primary key jika bukan integer
     // protected $keyType = 'string';
@@ -35,4 +34,10 @@ class Approval extends Model
     // {
     //     return $this->belongsTo(Pendaftaran::class, 'id_grup', 'id');
     // }
+
+    protected $dates = [
+        'approved_at',
+        'created_at',
+        'updated_at'
+    ];
 }

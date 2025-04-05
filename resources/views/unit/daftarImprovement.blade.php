@@ -12,6 +12,7 @@
         <title>Daftar Pengajuan</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="../../css/tableUnitDash.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
         </style>
     </head>
@@ -68,30 +69,22 @@
             </div>
         </div>
 
-        <div class="modal" id="upload-modal"
-            style="display: none; height: 50%; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; z-index: 1000; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
-            <div class="modal-content-upload">
-                <h2 style="font-size: 16px;">Upload File</h2>
-                <form id="upload-form" action="{{ route('pendaftaran.uploadfile') }}" method="POST"
-                    enctype="multipart/form-data">
+        <div id="upload-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Upload File</h2>
+                <form id="upload-form" enctype="multipart/form-data">
                     @csrf
-                    <input type="text" id="inputId" name="id_pendaftaran" required>
-                    <input type="text" id="step_number" name="step_number" value="{{ $step->step_number }}" required>
+                    <input type="hidden" id="inputId" name="id_pendaftaran">
+                    <input type="hidden" id="step_number" name="step_number">
                     <div class="form-group">
-                        <input type="file" id="upload_file" name="upload_file" required />
+                        <label for="file">Select File:</label>
+                        <input type="file" id="file" name="file" accept=".pdf,.doc,.docx" required>
                     </div>
-                    <div class="form-actions">
-                        <button id="close-modal" type="button">Close</button>
-                        <button id="submit-modal" type="submit">Upload</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
-                <div id="upload-success" style="display: none; color: green; margin-top: 10px;">
-                    File sudah terkirim!
-                </div>
             </div>
         </div>
-
-
 
         <!-- Overlay -->
         <div class="overlay" id="overlay"></div>
@@ -140,7 +133,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Tanggal</th>
+                        <th>Tanggal Upload</th>
                         <th>Tahapan</th>
                         <th>Dokumen</th>
                         <th>Status</th>
@@ -166,193 +159,313 @@
                     document.getElementById('upload-modal').style.display = 'none';
                 }
 
-                const inputId = document.querySelectorAll('#inputId')
-                // Tampilkan popup struktur anggota
-                document.querySelectorAll('.popup-btn-id').forEach(button => {
-                    button.addEventListener('click', function() {
-                        document.getElementById('overlay').style.display = 'block';
-                        document.getElementById('popup').style.display = 'block';
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Close button for upload modal
+                    const closeBtn = document.querySelector('.close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function() {
+                            document.getElementById('upload-modal').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none';
+                        });
+                    }
 
-                        const idPendaftaran = button.getAttribute('data-id');
+                    // Close buttons for popup
+                    const popupCloseId = document.getElementById('popup-close-id');
+                    if (popupCloseId) {
+                        popupCloseId.addEventListener('click', function() {
+                            document.getElementById('overlay').style.display = 'none';
+                            document.getElementById('popup').style.display = 'none';
+                        });
+                    }
 
-                        // Initialize all fields to '-'
-                        document.getElementById('sponsor').value = '';
-                        document.getElementById('sponsor-perner').value = '';
-                        document.getElementById('fasilitator').value = '';
-                        document.getElementById('fasilitator-perner').value = '';
-                        document.getElementById('ketua').value = '';
-                        document.getElementById('ketua-perner').value = '';
-                        document.getElementById('sekretaris').value = '';
-                        document.getElementById('sekretaris-perner').value = '';
-                        const anggotaContainer = document.getElementById('anggota-container');
-                        anggotaContainer.innerHTML = ''; // Clear previous anggota
+                    // Close button for status popup
+                    const popupCloseStatus = document.getElementById('popup-close-status');
+                    if (popupCloseStatus) {
+                        popupCloseStatus.addEventListener('click', function() {
+                            document.getElementById('overlay').style.display = 'none';
+                            document.getElementById('popup-status').style.display = 'none';
+                        });
+                    }
 
-                        fetch(`/unit/daftarImprovement/${idPendaftaran}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data && data.length > 0) {
-                                    document.getElementById('id-pendaftaran').value = data[0].id_pendaftaran;
+                    // Setup popup triggers
+                    document.querySelectorAll('.popup-btn-id').forEach(button => {
+                        button.addEventListener('click', function() {
+                            document.getElementById('overlay').style.display = 'block';
+                            document.getElementById('popup').style.display = 'block';
 
-                                    data.forEach((grup) => {
-                                        switch (grup.jabatan_grup) {
-                                            case 'sponsor':
-                                                document.getElementById('sponsor').value = grup.nama;
-                                                document.getElementById('sponsor-perner').value = grup
-                                                    .perner;
-                                                break;
-                                            case 'fasilitator':
-                                                document.getElementById('fasilitator').value = grup
-                                                    .nama;
-                                                document.getElementById('fasilitator-perner').value =
-                                                    grup.perner;
-                                                break;
-                                            case 'ketua':
-                                                document.getElementById('ketua').value = grup.nama;
-                                                document.getElementById('ketua-perner').value = grup
-                                                    .perner;
-                                                break;
-                                            case 'sekretaris':
-                                                document.getElementById('sekretaris').value = grup.nama;
-                                                document.getElementById('sekretaris-perner').value =
-                                                    grup.perner;
-                                                break;
-                                            case 'anggota':
-                                                const divAnggota = document.createElement('div');
-                                                divAnggota.classList.add('input-container');
-                                                divAnggota.innerHTML = `
+                            const idPendaftaran = button.getAttribute('data-id');
+
+                            // Initialize all fields to '-'
+                            document.getElementById('sponsor').value = '';
+                            document.getElementById('sponsor-perner').value = '';
+                            document.getElementById('fasilitator').value = '';
+                            document.getElementById('fasilitator-perner').value = '';
+                            document.getElementById('ketua').value = '';
+                            document.getElementById('ketua-perner').value = '';
+                            document.getElementById('sekretaris').value = '';
+                            document.getElementById('sekretaris-perner').value = '';
+                            const anggotaContainer = document.getElementById('anggota-container');
+                            anggotaContainer.innerHTML = ''; // Clear previous anggota
+
+                            fetch(`/unit/daftarImprovement/${idPendaftaran}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data && data.length > 0) {
+                                        document.getElementById('id-pendaftaran').value = data[0].id_pendaftaran;
+
+                                        data.forEach((grup) => {
+                                            switch (grup.jabatan_grup) {
+                                                case 'sponsor':
+                                                    document.getElementById('sponsor').value = grup.nama;
+                                                    document.getElementById('sponsor-perner').value = grup
+                                                        .perner;
+                                                    break;
+                                                case 'fasilitator':
+                                                    document.getElementById('fasilitator').value = grup
+                                                        .nama;
+                                                    document.getElementById('fasilitator-perner').value =
+                                                        grup.perner;
+                                                    break;
+                                                case 'ketua':
+                                                    document.getElementById('ketua').value = grup.nama;
+                                                    document.getElementById('ketua-perner').value = grup
+                                                        .perner;
+                                                    break;
+                                                case 'sekretaris':
+                                                    document.getElementById('sekretaris').value = grup.nama;
+                                                    document.getElementById('sekretaris-perner').value =
+                                                        grup.perner;
+                                                    break;
+                                                case 'anggota':
+                                                    const divAnggota = document.createElement('div');
+                                                    divAnggota.classList.add('input-container');
+                                                    divAnggota.innerHTML = `
                                     <label>Anggota</label>
                                     <input type="text" value="${grup.nama}" readonly>
                                     <input type="text" value="${grup.perner}" readonly>
                                 `;
-                                                anggotaContainer.appendChild(divAnggota);
-                                                break;
+                                                    anggotaContainer.appendChild(divAnggota);
+                                                    break;
+                                            }
+                                        });
+                                    } else {
+                                        console.error('Data tidak ditemukan.');
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                        });
+                    });
+
+                    document.querySelectorAll('.popup-btn-status').forEach(button => {
+                        button.addEventListener('click', function() {
+                            document.getElementById('overlay').style.display = 'block';
+                            document.getElementById('popup-status').style.display = 'block';
+
+                            const idPendaftaran = button.getAttribute('data-id');
+                            const statusBody = document.getElementById('status-body');
+                            statusBody.innerHTML = '';
+
+                            fetch(`/files/pendaftaran/${idPendaftaran}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Received data:', data);
+                                    if (data.length > 0) {
+                                        // Sort data by step number
+                                        data.sort((a, b) => parseInt(a.tahapan) - parseInt(b.tahapan));
+
+                                        // Find the highest step number
+                                        let highestStep = 0;
+                                        let latestApprovedStep = 0;
+
+                                        // Process existing data
+                                        data.forEach(item => {
+                                            const stepNumber = parseInt(item.tahapan) || 0;
+                                            if (stepNumber > highestStep) {
+                                                highestStep = stepNumber;
+                                            }
+
+                                            // Track the latest approved step
+                                            if (item.status === 'approved' && stepNumber > latestApprovedStep) {
+                                                latestApprovedStep = stepNumber;
+                                            }
+                                        });
+
+                                        // Next step is the latest approved step + 1 (but not higher than 8)
+                                        const nextStep = Math.min(latestApprovedStep + 1, 8);
+
+                                        // Display all existing steps
+                                        data.forEach(item => {
+                                            addStepRow(item, statusBody);
+                                        });
+
+                                        // Add rows for missing steps up to the next available step
+                                        if (latestApprovedStep > 0 && nextStep <= 8 && !data.some(item => parseInt(item.tahapan) === nextStep)) {
+                                            // Add next step row for upload
+                                            addEmptyStepRow(nextStep, idPendaftaran, statusBody);
                                         }
-                                    });
-                                } else {
-                                    console.error('Data tidak ditemukan.');
-                                }
-                            })
-                            .catch(error => console.error('Error:', error));
+
+                                        // If it's the first upload and no data exists
+                                        if (data.length === 0) {
+                                            // Add first step row
+                                            addEmptyStepRow(1, idPendaftaran, statusBody);
+                                        }
+                                    } else {
+                                        // No data yet, show first step for upload
+                                        addEmptyStepRow(1, idPendaftaran, statusBody);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    statusBody.innerHTML = '<tr><td colspan="6">Error loading data</td></tr>';
+                                });
+                        });
                     });
                 });
-                document.querySelectorAll('.popup-btn-status').forEach(button => {
-    button.addEventListener('click', function() {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('popup-status').style.display = 'block';
 
-        const idPendaftaran = button.getAttribute('data-id');
-        const statusBody = document.getElementById('status-body');
-        statusBody.innerHTML = '';
+                // Helper function to add a step row
+                function addStepRow(item, container) {
+                    const row = document.createElement('tr');
+                    const stepNumber = parseInt(item.tahapan) || 0;
+                    const isWaiting = item.status?.toLowerCase() === 'waiting';
+                    const isApproved = item.status?.toLowerCase() === 'approved';
+                    const isRejected = item.status?.toLowerCase() === 'rejected';
 
-        fetch(`/files/pendaftaran/${idPendaftaran}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    let maxStep = 0;
-                    let hasWaiting = false;
-                    let latestStatus = '';
+                    // Determine if this step's upload button should be disabled
+                    const isDisabled = isWaiting || isApproved;
 
-                    // Process existing data
-                    data.forEach((status) => {
-                        const currentStep = parseInt(status.id_step);
-                        if (currentStep > maxStep) {
-                            maxStep = currentStep;
-                            latestStatus = status.status.toLowerCase();
-                        }
-
-                        const row = document.createElement('tr');
-                        // Di bagian pembuatan tombol upload
-                        row.innerHTML = `
-                            <td>${status.latest_upload_time || '-'}</td>
-                            <td>${status.id_step || '-'}</td>
-                            <td>${status.file_name || '-'}</td>
-                            <td>${status.status || '-'}</td>
-                            <td>${status.komentar || '-'}</td>
-                            <td>
-                                <button class="upload-btn
-                                    ${['approved', 'waiting'].includes(status.status?.toLowerCase()) ? 'disabled-btn' : ''}"
-                                    data-id="${idPendaftaran}"
-                                    ${['approved', 'waiting'].includes(status.status?.toLowerCase()) ? 'disabled' : ''}>
-                                    <i class="fas fa-upload"></i>
-                                </button>
-                            </td>
-                        `;
-                                                statusBody.appendChild(row);
-                    });
-
-                    // Cek status terakhir untuk menentukan tombol baru
-                    const shouldAddNewStep =
-                        latestStatus === 'approved' &&
-                        data.length <= 9 &&
-                        !hasWaiting;
-
-                    if (shouldAddNewStep) {
-                        const nextRow = document.createElement('tr');
-                        nextRow.innerHTML = `
-                            <td>-</td>
-                            <td>${maxStep + 1}</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>
-                                <button class="upload-btn" data-id="${idPendaftaran}">
-                                    <i class="fas fa-upload"></i>
-                                </button>
-                            </td>
-                        `;
-                        statusBody.appendChild(nextRow);
+                    // Determine the tooltip message
+                    let tooltipMessage = '';
+                    if (isWaiting) {
+                        tooltipMessage = 'File is waiting for approval';
+                    } else if (isApproved) {
+                        tooltipMessage = 'File has been approved';
                     }
-                } else {
-                    // Tombol upload pertama
-                    const nextRow = document.createElement('tr');
-                    nextRow.innerHTML = `
-                        <td colspan="6" style="text-align: center;">
-                            <button class="upload-btn" data-id="${idPendaftaran}">
-                                Upload Tahapan 1
+
+                    row.innerHTML = `
+                        <td>${item.tanggal_upload || '-'}</td>
+                        <td>${item.tahapan || '-'}</td>
+                        <td><a href="${item.file}" target="_blank">Download</a></td>
+                        <td><span class="status-badge ${item.status}">${item.status}</span></td>
+                        <td>${item.komentar || '-'}</td>
+                        <td>
+                            <button class="upload-btn ${isDisabled ? 'disabled-btn' : ''}"
+                                onclick="openUploadModal('${item.id_pendaftaran}', ${item.tahapan})"
+                                ${isDisabled ? 'disabled' : ''}
+                                title="${tooltipMessage}">
                                 <i class="fas fa-upload"></i>
                             </button>
                         </td>
                     `;
-                    statusBody.appendChild(nextRow);
+                    container.appendChild(row);
                 }
 
-                // Event listener untuk tombol upload
-                document.querySelectorAll('.upload-btn').forEach(uploadButton => {
-                    uploadButton.addEventListener('click', function() {
-                        document.getElementById('overlay').style.display = 'block';
-                        document.getElementById('upload-modal').style.display = 'block';
-                        document.getElementById('inputId').value = this.dataset.id;
-                        document.getElementById('step_number').value =
-                            this.closest('tr').querySelector('td:nth-child(2)').textContent;
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                statusBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="color: red; text-align: center;">
-                            Gagal memuat data
+                // Helper function to add an empty step row
+                function addEmptyStepRow(stepNumber, idPendaftaran, container) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>-</td>
+                        <td>${stepNumber}</td>
+                        <td>-</td>
+                        <td><span class="status-badge">-</span></td>
+                        <td>-</td>
+                        <td>
+                            <button class="upload-btn"
+                                onclick="openUploadModal('${idPendaftaran}', ${stepNumber})"
+                                title="Upload file for step ${stepNumber}">
+                                <i class="fas fa-upload"></i>
+                            </button>
                         </td>
-                    </tr>`;
-            });
-    });
-});
+                    `;
+                    container.appendChild(row);
+                }
 
+                // Function to open the upload modal
+                function openUploadModal(idPendaftaran, stepNumber) {
+                    // Set the values in the upload form
+                    document.getElementById('inputId').value = idPendaftaran;
+                    document.getElementById('step_number').value = stepNumber;
 
-// Tutup popup status
-                document.getElementById('popup-close-status').addEventListener('click', function() {
-                    document.getElementById('overlay').style.display = 'none';
-                    document.getElementById('popup-status').style.display = 'none';
+                    // Show the upload modal and overlay
+                    const modal = document.getElementById('upload-modal');
+                    const overlay = document.getElementById('overlay');
+                    modal.style.display = 'block';
+                    overlay.style.display = 'block';
+                }
 
-                });
+                // Handle form submission
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Make sure form exists before attaching event listener
+                    const uploadForm = document.getElementById('upload-form');
+                    if (uploadForm) {
+                        uploadForm.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            console.log('Form submit event triggered');
 
-                document.getElementById('submit-modal').addEventListener('click', function() {
-                    console.log("Upload button clicked");
-                });
+                            const formData = new FormData(this);
 
-                document.getElementById('close-modal').addEventListener('click', function() {
-                    document.getElementById('upload-modal').style.display = 'none';
+                            // Add CSRF token to formData instead of headers
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                            formData.append('_token', csrfToken);
+
+                            // Debug FormData contents
+                            console.log('FormData contents:');
+                            for (let pair of formData.entries()) {
+                                console.log(pair[0] + ': ' + (pair[0] === 'file' ? pair[1].name : pair[1]));
+                            }
+
+                            console.log('Sending fetch request to /upload-file');
+                            fetch('/upload-file', {
+                                method: 'POST',
+                                body: formData
+                                // Removing headers when using FormData with files
+                            })
+                            .then(response => {
+                                console.log('Received response with status:', response.status);
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Response data:', data);
+                                if (data.success) {
+                                    // Show success message
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: data.message,
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Close the modal and overlay
+                                        document.getElementById('upload-modal').style.display = 'none';
+                                        document.getElementById('overlay').style.display = 'none';
+                                        // Refresh the page to show the updated data
+                                        window.location.href = window.location.pathname; // Refresh without query params
+                                    });
+                                } else {
+                                    // Show error message
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: data.message
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'An error occurred while uploading the file.'
+                                });
+                            });
+                        });
+                    } else {
+                        console.error('Upload form element not found');
+                    }
                 });
             </script>
 
@@ -360,10 +473,12 @@
                 // Fungsi untuk menutup pesan sukses
                 function closeMessage() {
                     let messageBox = document.getElementById('successMessage');
-                    messageBox.style.animation = 'fadeOut 0.4s ease-in-out';
-                    setTimeout(() => {
-                        messageBox.style.display = 'none';
-                    }, 500);
+                    if (messageBox) {
+                        messageBox.style.animation = 'fadeOut 0.4s ease-in-out';
+                        setTimeout(() => {
+                            messageBox.style.display = 'none';
+                        }, 500);
+                    }
                 }
 
                 // Auto-close setelah 5 detik

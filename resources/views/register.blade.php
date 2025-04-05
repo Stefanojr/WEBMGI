@@ -15,7 +15,24 @@
                     <div class="login-container">
                         <h2 class="mb-4">Registrasi Akun</h2>
 
-                        <form id="register-form" action="{{ route('register.store') }}" method="POST">
+                        @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                            <script>
+                                setTimeout(function() {
+                                    window.location.href = '/';
+                                }, 2000);
+                            </script>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        <form action="{{ route('register.store') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="nama_user" class="form-label">Nama Lengkap</label>
@@ -51,13 +68,9 @@
                             <button type="submit" class="btn btn-primary w-100">Daftar</button>
                         </form>
 
-                        <div id="success-message" class="alert alert-success mt-3" style="display: none;">
-                            Pendaftaran berhasil!
-                        </div>
-
-                        <div class="text-right">
+                        <div class="text-right mt-3">
                             <span>Sudah punya akun?</span>
-                            <a href="javascript:void(0);" onclick="window.location.href='/';">Login</a>
+                            <a href="/">Login</a>
                         </div>
                     </div>
                 </div>
@@ -81,16 +94,6 @@
                     });
                 })
                 .catch(error => console.error(error));
-        });
-
-        document.getElementById('register-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah submit form langsung
-            let successMessage = document.getElementById('success-message');
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-                event.target.submit(); // Kirim form setelah menampilkan pesan
-            }, 2000);
         });
     </script>
 </body>
