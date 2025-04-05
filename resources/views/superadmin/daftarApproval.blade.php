@@ -15,6 +15,7 @@
 
         <link rel="stylesheet" href="../../css/tableSADash.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     </head>
 
     <body>
@@ -53,7 +54,7 @@
                                 <td>{{ $pendaftaran->judul }}</td>
                                 <td>{{ $pendaftaran->updated_at ? $pendaftaran->updated_at->format('d/m/Y') : '-' }}</td>
                                 <td>
-                                    <button class="popup-btn-status">Langkah 1</button>
+                                    <button class="popup-btn-status">Detail..</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -152,17 +153,19 @@
                                     const actionButtons = document.createElement('div');
                                     actionButtons.className = 'action-buttons';
 
+                                    // Create approve button
                                     const approveBtn = document.createElement('button');
                                     approveBtn.className = 'btn-approve';
-                                    approveBtn.textContent = 'Approve';
+                                    approveBtn.innerHTML = '<i class="fas fa-check-circle"></i> Approve';
                                     approveBtn.addEventListener('click', function(e) {
                                         e.preventDefault();
                                         handleApproval(item.id, idPendaftaran);
                                     });
 
+                                    // Create reject button
                                     const rejectBtn = document.createElement('button');
                                     rejectBtn.className = 'btn-reject';
-                                    rejectBtn.textContent = 'Reject';
+                                    rejectBtn.innerHTML = '<i class="fas fa-times-circle"></i> Reject';
                                     rejectBtn.addEventListener('click', function(e) {
                                         e.preventDefault();
                                         showRejectCommentPopup(item.id, idPendaftaran);
@@ -269,22 +272,38 @@
                 // Fungsi untuk menampilkan popup komentar reject
                 function showRejectCommentPopup(id_file, id_pendaftaran) {
                     Swal.fire({
-                        title: 'Masukkan alasan penolakan',
-                        input: 'text',
+                        title: 'Alasan Penolakan',
+                        input: 'textarea',
+                        inputPlaceholder: 'Tulis alasan penolakan...',
                         inputAttributes: {
-                            autocapitalize: 'off'
+                            'aria-label': 'Tulis alasan penolakan'
                         },
                         showCancelButton: true,
                         confirmButtonText: 'Tolak',
                         cancelButtonText: 'Batal',
-                        showLoaderOnConfirm: true,
-                        preConfirm: (comment) => {
-                            if (!comment) {
-                                Swal.showValidationMessage('Harap masukkan alasan penolakan');
-                            }
-                            return comment;
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        width: '450px',
+                        padding: '20px',
+                        backdrop: `rgba(0,0,0,0.4)`,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
                         },
-                        allowOutsideClick: () => !Swal.isLoading()
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        },
+                        customClass: {
+                            confirmButton: 'btn-confirm',
+                            cancelButton: 'btn-cancel',
+                            input: 'custom-textarea',
+                            popup: 'custom-popup',
+                            title: 'custom-title'
+                        },
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'Harap masukkan alasan penolakan'
+                            }
+                        }
                     }).then((result) => {
                         if (result.isConfirmed) {
                             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -312,27 +331,32 @@
                             })
                             .then(data => {
                                 if (data.success) {
+                                    // Remove the row from the popup table
+                                    const fileRow = document.querySelector(`tr[data-file-id="${id_file}"]`);
+                                    if (fileRow) {
+                                        fileRow.remove();
+                                    }
+
+                                    // Check if there are any remaining rows in the table
+                                    const tbody = document.getElementById('tahapan-body');
+                                    if (tbody.children.length === 0) {
+                                        // If no rows left, close the popup
+                                        document.getElementById('overlay-tahapan').style.display = 'none';
+                                        document.getElementById('popup-tahapan').style.display = 'none';
+
+                                        // Remove the main row from the table
+                                        const mainTableRow = document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr');
+                                        if (mainTableRow) {
+                                            mainTableRow.remove();
+                                        }
+                                    }
+
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'Berhasil!',
                                         text: data.message,
                                         showConfirmButton: false,
                                         timer: 1500
-                                    }).then(() => {
-                                        // Remove the row from the table
-                                        const row = document.querySelector(`tr[data-file-id="${id_file}"]`);
-                                        if (row) {
-                                            row.remove();
-                                        }
-
-                                        // Check if there are any remaining rows
-                                        const tbody = document.getElementById('tahapan-body');
-                                        if (tbody.children.length === 0) {
-                                            // If no rows left, close the popup and refresh the main page
-                                            document.getElementById('overlay-tahapan').style.display = 'none';
-                                            document.getElementById('popup-tahapan').style.display = 'none';
-                                            location.reload();
-                                        }
                                     });
                                 } else {
                                     Swal.fire({
@@ -547,6 +571,84 @@
                 });
             </script>
         @endpush
+
+        <style>
+            /* SweetAlert2 Custom Styling */
+            .custom-popup {
+                border-radius: 15px !important;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+                padding: 1.5rem !important;
+            }
+
+            .custom-title {
+                font-size: 22px !important;
+                font-weight: 600 !important;
+                color: #333 !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 1rem !important;
+                position: relative !important;
+            }
+
+            .custom-title:after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 50px;
+                height: 3px;
+                background-color: #6c757d;
+                border-radius: 2px;
+            }
+
+            .custom-textarea {
+                border: 1px solid #d9d9d9 !important;
+                border-radius: 8px !important;
+                padding: 12px !important;
+                margin-top: 15px !important;
+                font-size: 14px !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+                transition: all 0.3s ease !important;
+                min-height: 120px !important;
+            }
+
+            .custom-textarea:focus {
+                border-color: #80bdff !important;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+                outline: none !important;
+            }
+
+            .swal2-actions {
+                margin-top: 20px !important;
+                gap: 12px !important;
+            }
+
+            .btn-confirm {
+                font-weight: 500 !important;
+                padding: 10px 20px !important;
+                border-radius: 8px !important;
+                box-shadow: 0 3px 5px rgba(220,53,69,0.2) !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .btn-confirm:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 5px 8px rgba(220,53,69,0.3) !important;
+            }
+
+            .btn-cancel {
+                font-weight: 500 !important;
+                padding: 10px 20px !important;
+                border-radius: 8px !important;
+                box-shadow: 0 3px 5px rgba(108,117,125,0.2) !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .btn-cancel:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 5px 8px rgba(108,117,125,0.3) !important;
+            }
+        </style>
     </body>
 
     </html>

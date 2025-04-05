@@ -78,17 +78,13 @@ class SuperadminController extends Controller
                 return [
                     'id' => $file->id,
                     'tanggal' => $file->upload_time ? $file->upload_time->format('d-m-Y H:i') : '-',
-                    'tahapan' => $file->step->id_step ?? 'N/A',
+                    'tahapan' => $file->step->id_step ?? $file->id_step ?? 'N/A',
                     'file' => asset($file->file_path),
+                    'file_name' => $file->file_name ?? 'File',
                     'komentar' => $file->proses ? $file->proses->komentar : '-',
                     'status' => $file->proses ? $file->proses->status : $file->status
                 ];
-            })
-            ->filter(function($file) {
-                // Only return files with "waiting" status
-                return $file['status'] === 'waiting';
-            })
-            ->values(); // Reset array keys
+            });
 
         return response()->json($files);
     }

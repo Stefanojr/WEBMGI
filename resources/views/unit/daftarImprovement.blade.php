@@ -274,54 +274,54 @@
                                 })
                                 .then(data => {
                                     console.log('Received data:', data);
-                                    if (data.length > 0) {
-                                        // Sort data by step number
-                                        data.sort((a, b) => parseInt(a.tahapan) - parseInt(b.tahapan));
 
-                                        // Find the highest step number
-                                        let highestStep = 0;
-                                        let latestApprovedStep = 0;
-
-                                        // Process existing data
-                                        data.forEach(item => {
-                                            const stepNumber = parseInt(item.tahapan) || 0;
-                                            if (stepNumber > highestStep) {
-                                                highestStep = stepNumber;
-                                            }
-
-                                            // Track the latest approved step
-                                            if (item.status === 'approved' && stepNumber > latestApprovedStep) {
-                                                latestApprovedStep = stepNumber;
-                                            }
-                                        });
-
-                                        // Next step is the latest approved step + 1 (but not higher than 8)
-                                        const nextStep = Math.min(latestApprovedStep + 1, 8);
-
-                                        // Display all existing steps
-                                        data.forEach(item => {
-                                            addStepRow(item, statusBody);
-                                        });
-
-                                        // Add rows for missing steps up to the next available step
-                                        if (latestApprovedStep > 0 && nextStep <= 8 && !data.some(item => parseInt(item.tahapan) === nextStep)) {
-                                            // Add next step row for upload
-                                            addEmptyStepRow(nextStep, idPendaftaran, statusBody);
-                                        }
-
-                                        // If it's the first upload and no data exists
-                                        if (data.length === 0) {
-                                            // Add first step row
-                                            addEmptyStepRow(1, idPendaftaran, statusBody);
-                                        }
-                                    } else {
-                                        // No data yet, show first step for upload
+                                    // Check if we received an empty array or a 404 message wrapped in JSON
+                                    if (!data.length || (data.message && data.message.includes('No files found'))) {
+                                        console.log('No files found, showing default Step 1');
+                                        // If no files yet, show the first step for upload
                                         addEmptyStepRow(1, idPendaftaran, statusBody);
+                                        return;
+                                    }
+
+                                    // Sort data by step number
+                                    data.sort((a, b) => parseInt(a.tahapan) - parseInt(b.tahapan));
+
+                                    // Find the highest step number
+                                    let highestStep = 0;
+                                    let latestApprovedStep = 0;
+
+                                    // Process existing data
+                                    data.forEach(item => {
+                                        const stepNumber = parseInt(item.tahapan) || 0;
+                                        if (stepNumber > highestStep) {
+                                            highestStep = stepNumber;
+                                        }
+
+                                        // Track the latest approved step
+                                        if (item.status === 'approved' && stepNumber > latestApprovedStep) {
+                                            latestApprovedStep = stepNumber;
+                                        }
+                                    });
+
+                                    // Next step is the latest approved step + 1 (but not higher than 8)
+                                    const nextStep = Math.min(latestApprovedStep + 1, 8);
+
+                                    // Display all existing steps
+                                    data.forEach(item => {
+                                        addStepRow(item, statusBody);
+                                    });
+
+                                    // Add rows for missing steps up to the next available step
+                                    if (latestApprovedStep > 0 && nextStep <= 8 && !data.some(item => parseInt(item.tahapan) === nextStep)) {
+                                        // Add next step row for upload
+                                        addEmptyStepRow(nextStep, idPendaftaran, statusBody);
                                     }
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
-                                    statusBody.innerHTML = '<tr><td colspan="6">Error loading data</td></tr>';
+                                    // If there's an error (e.g., no files found), show the first step
+                                    statusBody.innerHTML = '';
+                                    addEmptyStepRow(1, idPendaftaran, statusBody);
                                 });
                         });
                     });
