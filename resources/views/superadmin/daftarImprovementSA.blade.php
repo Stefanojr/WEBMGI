@@ -111,7 +111,7 @@
                 <th>Tanggal</th>
                 <th>Tahapan</th>
                 <th>File</th>
-                <th>Approval</th>
+                <th>Komentar</th>
                 <th>Status</th>
             </tr>
         </thead>

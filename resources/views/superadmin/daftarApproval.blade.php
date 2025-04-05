@@ -69,6 +69,7 @@
             <tr>
                 <th>Tanggal</th>
                 <th>Nama Grup</th>
+                <th>Tahapan</th>
                 <th>Dokumen</th> <!-- Kolom File ditambahkan -->
                 <th style="width: 30%;">Approval</th>
 
@@ -78,10 +79,11 @@
             <tr>
                 <td><span id="tanggal-approval">-</span></td>
                 <td><span id="nama-grup-approval">-</span></td>
+                <td><span id="langkah-approval">-</span></td>
                 <td>
                     <span id="file-approval">
-                        <img src="{{ asset('storage/gambarscft.png') }}" alt="Gambar Approval" width="100">
-                    -</span>
+
+                    </span>
                 </td> <!-- Menampilkan file terkait -->
                 <td>
                     <button class="btn-approve">Approve</button>
@@ -134,6 +136,17 @@
          </div>
      </form>
  </div>
+
+
+<!-- Popup Komentar Reject -->
+<div id="popup-reject" class="popup">
+    <h2 style="text-align: center;">Komentar Penolakan</h2>
+    <textarea id="reject-comment" placeholder="Berikan alasan penolakan..." rows="4" style="width: 90%;"></textarea>
+    <button id="submit-reject" class="btn">submit</button>
+    <button class="popup-close" id="popup-close-reject">close</button>
+</div>
+
+
 
  @push('scripts')
  <script>
@@ -221,7 +234,51 @@ document.querySelectorAll('.popup-btn-id').forEach(button => {
  </script>
 
 <script>
-  document.querySelectorAll('.popup-btn-status').forEach(button => {
+    document.querySelectorAll('.btn-reject').forEach(button => {
+        button.addEventListener('click', function () {
+            document.getElementById('popup-reject').style.display = 'block';
+        });
+    });
+
+    document.getElementById('popup-close-reject').addEventListener('click', function () {
+        document.getElementById('popup-reject').style.display = 'none';
+    });
+
+    document.getElementById('submit-reject').addEventListener('click', function () {
+        const comment = document.getElementById('reject-comment').value.trim();
+
+        if (comment === "") {
+            alert("Harap berikan alasan penolakan.");
+            return;
+        }
+
+        // Kirim komentar ke backend
+        fetch('/submit-reject', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                comment: comment
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("Penolakan telah dikirim.");
+            document.getElementById('popup-reject').style.display = 'none';
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Gagal mengirim penolakan.");
+        });
+    });
+</script>
+
+
+
+<script>
+ document.querySelectorAll('.popup-btn-status').forEach(button => {
     button.addEventListener('click', function () {
         // Tampilkan popup approval
         document.getElementById('popup-approval').style.display = 'block';
@@ -233,12 +290,27 @@ document.querySelectorAll('.popup-btn-id').forEach(button => {
             month: '2-digit',
             year: 'numeric'
         });
-        document.getElementById('tanggal-approval').textContent = formattedDate; // Set teks, bukan value
+        document.getElementById('tanggal-approval').textContent = formattedDate;
 
-        // Ambil nama grup dari baris yang diklik
+        // Ambil data dari baris yang diklik
         let row = button.closest('tr');
-        let namaGrup = row.querySelector('td:nth-child(3)').textContent; // Kolom ke-3 adalah nama grup
-        document.getElementById('nama-grup-approval').textContent = namaGrup; // Set teks, bukan value
+        let namaGrup = row.querySelector('td:nth-child(3)').textContent;
+        let dokumen = row.querySelector('td:nth-child(4)').textContent; // Ganti angka 4 dengan index kolom dokumen
+
+        // Tampilkan nama grup
+        document.getElementById('nama-grup-approval').textContent = namaGrup;
+
+        // Tampilkan daftar dokumen
+        let dokumenContainer = document.getElementById('daftar-dokumen-approval');
+        dokumenContainer.innerHTML = ''; // Bersihkan konten sebelumnya
+
+        // Split dokumen (asumsi dipisahkan koma)
+        dokumen.split(',').forEach(item => {
+            let div = document.createElement('div');
+            div.className = 'dokumen-item';
+            div.textContent = item.trim();
+            dokumenContainer.appendChild(div);
+        });
     });
 });
     // Tutup popup ketika tombol close ditekan

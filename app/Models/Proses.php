@@ -10,10 +10,14 @@ class Proses extends Model
     protected $table = 'proses'; // Nama tabel
     protected $primaryKey = 'id_proses';
     protected $fillable = [
+        'id_user',
         'id_pendaftaran',
+        'id_file',
         'tanggal_upload',
-        'tahapan',
-        'dokument',
+        'komentar',
         'status',
     ];
+
+    public $timestamps = false;
+
 }

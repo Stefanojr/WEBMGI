@@ -85,7 +85,7 @@ Route::get('/unit/arsipfoto2', function () {
     return view('unit.arsipfoto2');
 })->name('unit.arsipfoto2');
 
-
+Route::get('/unit/terimastatus/{id}', [PendaftaranController::class, 'terimastatus'])->name('unit.terimastatus');
 // routes viewer page (pendaftaran, proposal and penilaian)
 Route::get('/viewer/pendaftaran3', function () {
     return view('viewer.pendaftaran3');
@@ -159,13 +159,6 @@ Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index']);
 // Route untuk menampilkan struktur anggota berdasarkan idPendaftaran
 Route::get('/unit/daftarImprovement/{idPendaftaran}', [PendaftaranController::class, 'getStrukturAnggota']);
 
-// // Route untuk menampilkan daftar approval
-// Route::get('/superadmin/daftar-approval', [SuperadminController::class, 'showApprovalList'])->name('superadmin.daftarApproval');
-
-// // Route untuk mengambil detail pendaftaran berdasarkan ID
-// Route::get('/superadmin/pendaftaran/{idPendaftaran}', [SuperadminController::class, 'getPendaftaranDetails']);
-
-
 
 
 // Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'getAllStrukturAnggota']);
@@ -221,6 +214,18 @@ Route::get('/unit/statusImprovement/{id_pendaftaran}', [PendaftaranController::c
 
 Route::get('/unit/prosesStatus/{idPendaftaran}', [UploadController::class, 'getStatus']);
 Route::post('/unit/uploadDokumen/{idProses}', [UploadController::class, 'uploadDokumen']);
+
+Route::post('/submit-reject', function (Request $request) {
+    // Simpan komentar ke database atau lakukan tindakan yang diperlukan
+    return response()->json(['message' => 'Penolakan berhasil disimpan']);
+});
+
+
+Route::get('/files', [PendaftaranController::class, 'getAllFiles']);
+Route::get('/files/pendaftaran/{id_pendaftaran}', [PendaftaranController::class, 'getFilesByPendaftaran']);
+Route::get('/files/step/{id_step}', [PendaftaranController::class, 'getFilesByStep']);
+
+
 
 //Tampil Unit
 Route::get('/get-units/{id}', [UnitController::class, 'getUnits']);

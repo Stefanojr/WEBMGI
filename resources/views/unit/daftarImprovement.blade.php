@@ -76,6 +76,7 @@
                     enctype="multipart/form-data">
                     @csrf
                     <input type="text" id="inputId" name="id_pendaftaran" required>
+                    <input type="text" id="step_number" name="step_number" value="{{ $step->step_number }}" required>
                     <div class="form-group">
                         <input type="file" id="upload_file" name="upload_file" required />
                     </div>
@@ -90,29 +91,6 @@
             </div>
         </div>
 
-        <!-- Modal untuk Upload -->
-        {{-- <div class="modal" id="upload-modal" style="display: none;">
-    <div class="modal-content-upload">
-        <h2 style="font-size: 16px;">Upload File</h2>
-        <form id="upload-form" action="{{ route('pendaftaran.uploadfile') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <input data-id="{{ $pendaftaran->id_pendaftaran }}" type="text" id="id_pendaftaran" name="id_pendaftaran" value="{{ $pendaftaran->id_pendaftaran }}" />
-            <div class="form-group">
-                <input type="file" id="upload_file" name="upload_file" accept=".docx" required />
-            </div>
-            <div class="form-actions">
-                <button type="submit">Upload</button>
-                <button id="close-modal" type="button">Close</button>
-            </div>
-        </form>
-
-        <!-- Pesan sukses setelah upload -->
-        <div id="upload-success" style="display: none; color: green; margin-top: 10px;">
-            File sudah terkirim!
-        </div>
-
-    </div>
-</div> --}}
 
 
         <!-- Overlay -->
@@ -156,6 +134,7 @@
         </div>
 
 
+        <!-- Popup Status -->
         <div class="popup" id="popup-status">
             <h3>Status</h3>
             <table>
@@ -223,7 +202,7 @@
                                                 break;
                                             case 'fasilitator':
                                                 document.getElementById('fasilitator').value = grup
-                                                .nama;
+                                                    .nama;
                                                 document.getElementById('fasilitator-perner').value =
                                                     grup.perner;
                                                 break;
@@ -256,112 +235,112 @@
                             .catch(error => console.error('Error:', error));
                     });
                 });
-                // Tampilkan popup status
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
-                    button.addEventListener('click', function() {
-                        document.getElementById('overlay').style.display = 'block';
-                        document.getElementById('popup-status').style.display = 'block';
+    button.addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('popup-status').style.display = 'block';
 
-                        const idPendaftaran = button.getAttribute('data-id');
+        const idPendaftaran = button.getAttribute('data-id');
+        const statusBody = document.getElementById('status-body');
+        statusBody.innerHTML = '';
 
-                        // Bersihkan tabel status sebelum memuat data baru
-                        const statusBody = document.getElementById('status-body');
-                        statusBody.innerHTML = '';
+        fetch(`/files/pendaftaran/${idPendaftaran}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    let maxStep = 0;
+                    let hasWaiting = false;
+                    let latestStatus = '';
 
-                        // Data dummy untuk testing
-                        const dummyData = [{
-                                tanggal: '',
-                                tahapan: 'Langkah 1',
-                                dokumen: '',
-                                komentar: '',
-                                status_approval: 'Waiting'
-                            }
+                    // Process existing data
+                    data.forEach((status) => {
+                        const currentStep = parseInt(status.id_step);
+                        if (currentStep > maxStep) {
+                            maxStep = currentStep;
+                            latestStatus = status.status.toLowerCase();
+                        }
 
-                        ];
-
-                        dummyData.forEach(status => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                <td>${status.tanggal}</td>
-                <td>${status.tahapan}</td>
-                <td>${status.dokumen || '-'}</td>
-                <td>${status.status_approval}</td>
-                <td>${status.komentar || '-'}</td>
-                <td>
-                    <button class="upload-btn" data-id="${idPendaftaran}">
-                        <i class="fas fa-upload"></i>
-                    </button>
-                </td>
-            `;
-                            statusBody.appendChild(row);
-                        });
-
-                        // Tambahkan event listener pada ikon upload
-                        document.querySelectorAll('.upload-btn').forEach(uploadButton => {
-                            uploadButton.addEventListener('click', function() {
-                                document.getElementById('overlay').style.display = 'block';
-                                document.getElementById('upload-modal').style.display = 'block';
-
-                                const selectedIdPendaftaran = uploadButton.getAttribute('data-id');
-                                document.getElementById('inputId').value =
-                                    selectedIdPendaftaran;
-                            });
-                        });
+                        const row = document.createElement('tr');
+                        // Di bagian pembuatan tombol upload
+                        row.innerHTML = `
+                            <td>${status.latest_upload_time || '-'}</td>
+                            <td>${status.id_step || '-'}</td>
+                            <td>${status.file_name || '-'}</td>
+                            <td>${status.status || '-'}</td>
+                            <td>${status.komentar || '-'}</td>
+                            <td>
+                                <button class="upload-btn
+                                    ${['approved', 'waiting'].includes(status.status?.toLowerCase()) ? 'disabled-btn' : ''}"
+                                    data-id="${idPendaftaran}"
+                                    ${['approved', 'waiting'].includes(status.status?.toLowerCase()) ? 'disabled' : ''}>
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                            </td>
+                        `;
+                                                statusBody.appendChild(row);
                     });
 
-                    // document.getElementById('upload-form').addEventListener('submit', function(event) {
-                    //     event.preventDefault(); // Mencegah reload halaman saat submit
+                    // Cek status terakhir untuk menentukan tombol baru
+                    const shouldAddNewStep =
+                        latestStatus === 'approved' &&
+                        data.length <= 9 &&
+                        !hasWaiting;
 
-                    //     let formData = new FormData(this);
-                    //     let idPendaftaran = document.getElementById('id_pendaftaran').value;
+                    if (shouldAddNewStep) {
+                        const nextRow = document.createElement('tr');
+                        nextRow.innerHTML = `
+                            <td>-</td>
+                            <td>${maxStep + 1}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>
+                                <button class="upload-btn" data-id="${idPendaftaran}">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                            </td>
+                        `;
+                        statusBody.appendChild(nextRow);
+                    }
+                } else {
+                    // Tombol upload pertama
+                    const nextRow = document.createElement('tr');
+                    nextRow.innerHTML = `
+                        <td colspan="6" style="text-align: center;">
+                            <button class="upload-btn" data-id="${idPendaftaran}">
+                                Upload Tahapan 1
+                                <i class="fas fa-upload"></i>
+                            </button>
+                        </td>
+                    `;
+                    statusBody.appendChild(nextRow);
+                }
 
-                    //     fetch('/upload-file', { // Pastikan route sesuai dengan backend Laravel Anda
-                    //             method: 'POST',
-                    //             body: formData,
-                    //             headers: {
-                    //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    //             }
-                    //         })
-                    //         .then(response => response.json())
-                    //         .then(data => {
-                    //             if (data.success) {
-                    //                 // Perbarui tanggal berdasarkan waktu saat ini
-                    //                 let today = new Date();
-                    //                 let formattedDate = today.getDate().toString().padStart(2, '0') + '/' +
-                    //                     (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
-                    //                     today.getFullYear();
-
-                    //                 // Cari baris tabel berdasarkan ID Pendaftaran
-                    //                 let rows = document.querySelectorAll('#status-body tr');
-                    //                 rows.forEach(row => {
-                    //                     let button = row.querySelector('.upload-btn');
-                    //                     if (button && button.getAttribute('data-id') ===
-                    //                         idPendaftaran) {
-                    //                         row.cells[0].textContent = formattedDate; // Update tanggal
-                    //                         row.cells[2].innerHTML =
-                    //                             `<a href="${data.file_url}" target="_blank">Download</a>`; // Update file
-                    //                         button.disabled = true; // Disable upload button
-                    //                     }
-                    //                 });
-
-                    //                 // Tampilkan pesan sukses
-                    //                 document.getElementById('upload-success').style.display = 'block';
-
-                    //                 // Tutup modal setelah 2 detik
-                    //                 setTimeout(() => {
-                    //                     document.getElementById('upload-modal').style.display = 'none';
-                    //                     document.getElementById('overlay').style.display = 'none';
-                    //                     document.getElementById('upload-success').style.display =
-                    //                         'none';
-                    //                 }, 2000);
-                    //             }
-                    //         })
-                    //         .catch(error => console.error('Upload error:', error));
-                    // });
-
+                // Event listener untuk tombol upload
+                document.querySelectorAll('.upload-btn').forEach(uploadButton => {
+                    uploadButton.addEventListener('click', function() {
+                        document.getElementById('overlay').style.display = 'block';
+                        document.getElementById('upload-modal').style.display = 'block';
+                        document.getElementById('inputId').value = this.dataset.id;
+                        document.getElementById('step_number').value =
+                            this.closest('tr').querySelector('td:nth-child(2)').textContent;
+                    });
                 });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="color: red; text-align: center;">
+                            Gagal memuat data
+                        </td>
+                    </tr>`;
+            });
+    });
+});
 
-                // Tutup popup status
+
+// Tutup popup status
                 document.getElementById('popup-close-status').addEventListener('click', function() {
                     document.getElementById('overlay').style.display = 'none';
                     document.getElementById('popup-status').style.display = 'none';
@@ -376,8 +355,6 @@
                     document.getElementById('upload-modal').style.display = 'none';
                 });
             </script>
-
-
 
             <script>
                 // Fungsi untuk menutup pesan sukses

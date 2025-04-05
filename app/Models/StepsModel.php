@@ -8,22 +8,17 @@ class StepsModel extends Model
 {
     protected $table = 'steps';
 
+    protected $primaryKey = 'id_step';
+
     protected $fillable = [
-        'id_pendaftaran',
-        'id_file',
+        'id_step',
         'step_number',
-        'status',
-        'data',
-        'approval_status',
-        'nama_group',
-        'nama_unit',
-        'tanggal'
     ];
 
+    public function file()
+    {
+        return $this->belongsTo(FileModel::class, 'id_file', 'id');
+    }
 
-    protected $attributes = [
-        'status' => 'not_started'
-    ];
-
-
+    public $timestamps = false;
 }
