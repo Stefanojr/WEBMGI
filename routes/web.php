@@ -243,4 +243,4 @@ Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index'])->
 Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 
 // Route for file upload in daftarImprovement
-Route::post('/upload-file', [PendaftaranController::class, 'uploadFile'])->name('upload.file');
+// Route::post('/upload-file', [PendaftaranController::class, 'uploadFile'])->name('upload.file');

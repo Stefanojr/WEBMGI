@@ -270,7 +270,7 @@
                             document.getElementById('popup').style.display = 'block';
 
                             const idPendaftaran = button.getAttribute('data-id');
-
+                            console.log("idPendaftaran", idPendaftaran);
                             // Initialize all fields to '-'
                             document.getElementById('sponsor').value = '';
                             document.getElementById('sponsor-perner').value = '';
@@ -282,6 +282,8 @@
                             document.getElementById('sekretaris-perner').value = '';
                             const anggotaContainer = document.getElementById('anggota-container');
                             anggotaContainer.innerHTML = ''; // Clear previous anggota
+
+
 
                             fetch(`/unit/daftarImprovement/${idPendaftaran}`)
                                 .then(response => response.json())
@@ -380,7 +382,7 @@
 
                                     // Display all existing steps
                                     data.forEach(item => {
-                                        addStepRow(item, statusBody);
+                                        addStepRow(item, statusBody, idPendaftaran);
                                     });
 
                                     // Add rows for missing steps up to the next available step
@@ -400,7 +402,7 @@
                 });
 
                 // Helper function to add a step row
-                function addStepRow(item, container) {
+                function addStepRow(item, container, idPendaftaran) {
                     const row = document.createElement('tr');
                     const stepNumber = parseInt(item.tahapan) || 0;
                     const isWaiting = item.status?.toLowerCase() === 'waiting';
@@ -442,7 +444,7 @@
                         <td>${item.komentar || '-'}</td>
                         <td>
                             <button class="upload-btn ${isDisabled ? 'disabled-btn' : ''}"
-                                onclick="openUploadModal('${item.id_pendaftaran}', ${item.tahapan})"
+                                onclick="openUploadModal('${idPendaftaran}', ${item.tahapan})"
                                 ${isDisabled ? 'disabled' : ''}
                                 title="${tooltipMessage}">
                                 <i class="fas fa-upload"></i>
@@ -597,7 +599,7 @@
                             }
 
                             console.log('Sending fetch request to /upload-file');
-                            fetch('/upload-file', {
+                            fetch('/unit/daftarImprovement/upload', {
                                 method: 'POST',
                                 body: formData
                                 // Removing headers when using FormData with files

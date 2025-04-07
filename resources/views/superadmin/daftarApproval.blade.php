@@ -77,7 +77,7 @@
                             <input type="text" id="id-pendaftaran" name="id-pendaftaran" readonly>
                         </div>
                     </div>
-                    
+
                     <div class="leadership-grid">
                         <div class="member-card sponsor-card">
                             <div class="member-role">
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card fasilitator-card">
                             <div class="member-role">
                                 <i class="fas fa-user-tie"></i>
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card ketua-card">
                             <div class="member-role">
                                 <i class="fas fa-chess-king"></i>
@@ -123,7 +123,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card sekretaris-card">
                             <div class="member-role">
                                 <i class="fas fa-pen-fancy"></i>
@@ -149,7 +149,7 @@
                         <div id="anggota-container" class="anggota-container"></div>
                     </div>
                 </div>
-                
+
                 <div class="form-actions">
                     <button class="popup-close" id="popup-close-id">
                         <i class="fas fa-times"></i> Tutup
@@ -202,7 +202,20 @@
                                 const tbody = document.getElementById('tahapan-body');
                                 tbody.innerHTML = '';
 
-                                data.forEach(item => {
+                                // Filter data to only include rows with "waiting" status
+                                const waitingData = data.filter(item => item.status?.toLowerCase() === 'waiting');
+
+                                if (waitingData.length === 0) {
+                                    // If no waiting items, show a message
+                                    tbody.innerHTML = `
+                                        <tr>
+                                            <td colspan="5" class="text-center">No pending approval requests</td>
+                                        </tr>
+                                    `;
+                                    return;
+                                }
+
+                                waitingData.forEach(item => {
                                     const row = document.createElement('tr');
                                     // Add data-file-id attribute to the row
                                     row.setAttribute('data-file-id', item.id);
@@ -325,6 +338,13 @@
                             })
                             .then(data => {
                                 if (data.success) {
+                                    // Update the row's status attribute and appearance
+                                    const row = document.querySelector(`tr[data-file-id="${id_file}"]`);
+                                    if (row) {
+                                        // Remove the row from the table
+                                        row.remove();
+                                    }
+
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'Berhasil!',
@@ -332,19 +352,36 @@
                                         showConfirmButton: false,
                                         timer: 1500
                                     }).then(() => {
-                                        // Remove the row from the table
-                                        const row = document.querySelector(`tr[data-file-id="${id_file}"]`);
-                                        if (row) {
-                                            row.remove();
-                                        }
-
                                         // Check if there are any remaining rows
                                         const tbody = document.getElementById('tahapan-body');
-                                        if (tbody.children.length === 0) {
-                                            // If no rows left, close the popup and refresh the main page
+                                        if (tbody.children.length === 0 ||
+                                            (tbody.children.length === 1 && tbody.children[0].querySelector('td[colspan="5"]'))) {
+                                            // If no rows left or only the "No pending approval requests" message, close the popup and refresh the main page
                                             document.getElementById('overlay-tahapan').style.display = 'none';
                                             document.getElementById('popup-tahapan').style.display = 'none';
-                                            location.reload();
+
+                                            // Update the notification badge for this row
+                                            const mainTableRow = document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr');
+                                            if (mainTableRow) {
+                                                const statusButton = mainTableRow.querySelector('.popup-btn-status');
+                                                if (statusButton) {
+                                                    const badge = statusButton.querySelector('.notification-badge');
+                                                    if (badge) {
+                                                        const count = parseInt(badge.textContent) - 1;
+                                                        if (count > 0) {
+                                                            badge.textContent = count;
+                                                        } else {
+                                                            badge.remove();
+                                                            statusButton.classList.remove('has-notification');
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // If no more pending approvals for this row, refresh the page
+                                            if (!document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr').querySelector('.notification-badge')) {
+                                                location.reload();
+                                            }
                                         }
                                     });
                                 } else {
@@ -439,23 +476,41 @@
                             })
                             .then(data => {
                                 if (data.success) {
-                                    // Remove the row from the popup table
-                                    const fileRow = document.querySelector(`tr[data-file-id="${id_file}"]`);
-                                    if (fileRow) {
-                                        fileRow.remove();
+                                    // Remove the row from the table
+                                    const row = document.querySelector(`tr[data-file-id="${id_file}"]`);
+                                    if (row) {
+                                        row.remove();
                                     }
 
-                                    // Check if there are any remaining rows in the table
+                                    // Check if there are any remaining rows
                                     const tbody = document.getElementById('tahapan-body');
-                                    if (tbody.children.length === 0) {
-                                        // If no rows left, close the popup
+                                    if (tbody.children.length === 0 ||
+                                        (tbody.children.length === 1 && tbody.children[0].querySelector('td[colspan="5"]'))) {
+                                        // If no rows left or only the "No pending approval requests" message, close the popup
                                         document.getElementById('overlay-tahapan').style.display = 'none';
                                         document.getElementById('popup-tahapan').style.display = 'none';
 
-                                        // Remove the main row from the table
+                                        // Update the notification badge for this row
                                         const mainTableRow = document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr');
                                         if (mainTableRow) {
-                                            mainTableRow.remove();
+                                            const statusButton = mainTableRow.querySelector('.popup-btn-status');
+                                            if (statusButton) {
+                                                const badge = statusButton.querySelector('.notification-badge');
+                                                if (badge) {
+                                                    const count = parseInt(badge.textContent) - 1;
+                                                    if (count > 0) {
+                                                        badge.textContent = count;
+                                                    } else {
+                                                        badge.remove();
+                                                        statusButton.classList.remove('has-notification');
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // If no more pending approvals for this row, refresh the page
+                                        if (!document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr').querySelector('.notification-badge')) {
+                                            location.reload();
                                         }
                                     }
 
@@ -499,6 +554,85 @@
                 document.getElementById('close-tahapan').addEventListener('click', function() {
                     document.getElementById('overlay-tahapan').style.display = 'none';
                     document.getElementById('popup-tahapan').style.display = 'none';
+                });
+
+                // Add this new function to check for pending approvals and update the UI
+                function checkPendingApprovals() {
+                    // Get all rows in the main table
+                    const mainTableRows = document.querySelectorAll('table tbody tr');
+                    const tbody = document.querySelector('table tbody');
+                    const rowsWithNotifications = [];
+                    const rowsWithoutNotifications = [];
+
+                    // For each row, check if there are pending approvals
+                    mainTableRows.forEach(row => {
+                        const idButton = row.querySelector('.popup-btn-id');
+                        if (!idButton) return;
+
+                        const idPendaftaran = idButton.getAttribute('data-id');
+                        const statusButton = row.querySelector('.popup-btn-status');
+
+                        // Fetch data for this row
+                        fetch(`/files/pendaftaran/${idPendaftaran}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Check if there are any waiting items
+                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'waiting');
+
+                                if (waitingItems.length > 0) {
+                                    // Add notification badge to the status button
+                                    if (statusButton) {
+                                        // Remove any existing notification
+                                        const existingBadge = statusButton.querySelector('.notification-badge');
+                                        if (existingBadge) {
+                                            existingBadge.remove();
+                                        }
+
+                                        // Create new notification badge
+                                        const badge = document.createElement('span');
+                                        badge.className = 'notification-badge';
+                                        badge.textContent = waitingItems.length;
+                                        statusButton.appendChild(badge);
+
+                                        // Add pulse animation class
+                                        statusButton.classList.add('has-notification');
+                                    }
+                                    rowsWithNotifications.push(row);
+                                } else {
+                                    // Remove notification if no waiting items
+                                    if (statusButton) {
+                                        const badge = statusButton.querySelector('.notification-badge');
+                                        if (badge) {
+                                            badge.remove();
+                                        }
+                                        statusButton.classList.remove('has-notification');
+                                    }
+                                    rowsWithoutNotifications.push(row);
+                                }
+
+                                // After processing all rows, reorder the table
+                                if (rowsWithNotifications.length + rowsWithoutNotifications.length === mainTableRows.length) {
+                                    // Clear the table body
+                                    tbody.innerHTML = '';
+
+                                    // Add rows with notifications first
+                                    rowsWithNotifications.forEach(row => {
+                                        tbody.appendChild(row);
+                                    });
+
+                                    // Add rows without notifications
+                                    rowsWithoutNotifications.forEach(row => {
+                                        tbody.appendChild(row);
+                                    });
+                                }
+                            })
+                            .catch(error => console.error('Error checking pending approvals:', error));
+                    });
+                }
+
+                // Call the function when the page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    checkPendingApprovals();
                 });
             </script>
 
@@ -551,8 +685,8 @@
                             // Create anggota card with improved styling
                             const divAnggota = document.createElement('div');
                             divAnggota.classList.add('input-container');
-                            
-                            // Label Anggota 
+
+                            // Label Anggota
                             const label = document.createElement('label');
                             label.textContent = `Anggota ${index + 1}`;
                             divAnggota.appendChild(label);
@@ -637,8 +771,8 @@
                                         // Create anggota card with improved styling
                                         const divAnggota = document.createElement('div');
                                         divAnggota.classList.add('input-container');
-                                        
-                                        // Label Anggota 
+
+                                        // Label Anggota
                                         const label = document.createElement('label');
                                         label.textContent = `Anggota ${index + 1}`;
                                         divAnggota.appendChild(label);
@@ -676,372 +810,7 @@
             </script>
         @endpush
 
-        <style>
-            /* SweetAlert2 Custom Styling */
-            .custom-popup {
-                border-radius: 15px !important;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
-                padding: 1.5rem !important;
-            }
-
-            .custom-title {
-                font-size: 22px !important;
-                font-weight: 600 !important;
-                color: #333 !important;
-                padding-top: 0.5rem !important;
-                padding-bottom: 1rem !important;
-                position: relative !important;
-            }
-
-            .custom-title:after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 50px;
-                height: 3px;
-                background-color: #6c757d;
-                border-radius: 2px;
-            }
-
-            .custom-textarea {
-                border: 1px solid #d9d9d9 !important;
-                border-radius: 8px !important;
-                padding: 12px !important;
-                margin-top: 15px !important;
-                font-size: 14px !important;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
-                transition: all 0.3s ease !important;
-                min-height: 120px !important;
-            }
-
-            .custom-textarea:focus {
-                border-color: #80bdff !important;
-                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
-                outline: none !important;
-            }
-
-            .swal2-actions {
-                margin-top: 20px !important;
-                gap: 12px !important;
-            }
-
-            .btn-confirm {
-                font-weight: 500 !important;
-                padding: 10px 20px !important;
-                border-radius: 8px !important;
-                box-shadow: 0 3px 5px rgba(220,53,69,0.2) !important;
-                transition: all 0.2s ease !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px !important;
-            }
-
-            .btn-confirm:hover {
-                transform: translateY(-2px) !important;
-                box-shadow: 0 5px 8px rgba(220,53,69,0.3) !important;
-            }
-
-            .btn-confirm-green {
-                font-weight: 500 !important;
-                padding: 10px 20px !important;
-                border-radius: 8px !important;
-                box-shadow: 0 3px 5px rgba(39,174,96,0.2) !important;
-                transition: all 0.2s ease !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px !important;
-            }
-
-            .btn-confirm-green:hover {
-                transform: translateY(-2px) !important;
-                box-shadow: 0 5px 8px rgba(39,174,96,0.3) !important;
-            }
-
-            .btn-cancel {
-                font-weight: 500 !important;
-                padding: 10px 20px !important;
-                border-radius: 8px !important;
-                box-shadow: 0 3px 5px rgba(108,117,125,0.2) !important;
-                transition: all 0.2s ease !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px !important;
-            }
-
-            .btn-cancel:hover {
-                transform: translateY(-2px) !important;
-                box-shadow: 0 5px 8px rgba(108,117,125,0.3) !important;
-            }
-            
-            /* Modern popup styling */
-            .popup {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                max-width: 800px;
-                width: 90%;
-                background-color: #fff;
-                border-radius: 16px;
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1);
-                padding: 30px;
-                z-index: 1000;
-                max-height: 85vh;
-                overflow-y: auto;
-                animation: fadeIn 0.3s ease-out;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translate(-50%, -45%); }
-                to { opacity: 1; transform: translate(-50%, -50%); }
-            }
-
-            .popup h3 {
-                text-align: center;
-                margin-bottom: 25px;
-                color: #2c3e50;
-                font-size: 20px;
-                font-weight: 600;
-                position: relative;
-                padding-bottom: 15px;
-            }
-
-            .popup h3::after {
-                content: '';
-                position: absolute;
-                left: 50%;
-                bottom: 0;
-                transform: translateX(-50%);
-                width: 60px;
-                height: 3px;
-                background: linear-gradient(to right, #4a6b4f, #6ca175);
-                border-radius: 3px;
-            }
-
-            .team-info {
-                display: flex;
-                flex-direction: column;
-                gap: 25px;
-            }
-
-            .team-id {
-                background-color: #f8f9fa;
-                border-radius: 10px;
-                padding: 15px;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-            .team-id .input-container {
-                display: flex;
-                align-items: center;
-            }
-
-            .team-id .input-container label {
-                font-weight: 600;
-                color: #2c3e50;
-                width: 150px;
-            }
-
-            .team-id .input-container input {
-                flex-grow: 1;
-                padding: 10px 12px;
-                background-color: white;
-                border: 1px solid #e1e5e9;
-                border-radius: 8px;
-                color: #4a6b4f;
-                font-weight: 600;
-            }
-
-            .leadership-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 15px;
-            }
-
-            .member-card {
-                background-color: #f8f9fa;
-                border-radius: 12px;
-                padding: 15px;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-                transition: all 0.2s ease;
-            }
-
-            .member-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            }
-
-            .sponsor-card { border-left: 4px solid #4a6b4f; }
-            .fasilitator-card { border-left: 4px solid #4d7dc4; }
-            .ketua-card { border-left: 4px solid #d35400; }
-            .sekretaris-card { border-left: 4px solid #8e44ad; }
-
-            .member-role {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-bottom: 10px;
-                color: #2c3e50;
-                font-weight: 600;
-            }
-
-            .member-role i {
-                background-color: rgba(74, 107, 79, 0.1);
-                color: #4a6b4f;
-                width: 28px;
-                height: 28px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 50%;
-            }
-
-            .sponsor-card .member-role i { color: #4a6b4f; background-color: rgba(74, 107, 79, 0.1); }
-            .fasilitator-card .member-role i { color: #4d7dc4; background-color: rgba(77, 125, 196, 0.1); }
-            .ketua-card .member-role i { color: #d35400; background-color: rgba(211, 84, 0, 0.1); }
-            .sekretaris-card .member-role i { color: #8e44ad; background-color: rgba(142, 68, 173, 0.1); }
-
-            .member-data {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .member-name input, .member-perner input {
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #e1e5e9;
-                border-radius: 6px;
-                background-color: white;
-                color: #495057;
-            }
-
-            .member-name input::placeholder, .member-perner input::placeholder {
-                color: #adb5bd;
-            }
-
-            .team-members {
-                background-color: #f8f9fa;
-                border-radius: 12px;
-                padding: 20px;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-                margin-top: 10px;
-            }
-
-            .team-members-header {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 15px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-            .team-members-header i {
-                color: #4a6b4f;
-                font-size: 18px;
-            }
-
-            .team-members-header h4 {
-                color: #2c3e50;
-                font-size: 16px;
-                font-weight: 600;
-                margin: 0;
-            }
-
-            .anggota-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 15px;
-            }
-
-            .anggota-container .input-container {
-                background-color: white;
-                border-radius: 8px;
-                padding: 12px;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .anggota-container .input-container label {
-                color: #4a6b4f;
-                font-weight: 600;
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            
-            .anggota-container .input-container label::before {
-                content: "\f007";
-                font-family: "Font Awesome 5 Free";
-                font-weight: 900;
-            }
-
-            .anggota-container .input-container input {
-                padding: 8px 12px;
-                border: 1px solid #e1e5e9;
-                border-radius: 6px;
-                background-color: #f8f9fa;
-            }
-
-            .form-actions {
-                display: flex;
-                justify-content: center;
-                margin-top: 30px;
-            }
-
-            .popup-close {
-                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
-            }
-
-            .popup-close:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
-            }
-
-            .popup-close:active {
-                transform: translateY(0);
-            }
-
-            @media (max-width: 768px) {
-                .popup {
-                    width: 95%;
-                    padding: 20px;
-                }
-                
-                .leadership-grid {
-                    grid-template-columns: 1fr;
-                }
-                
-                .anggota-container {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
+       
     </body>
 
     </html>

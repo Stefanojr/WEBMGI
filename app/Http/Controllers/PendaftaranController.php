@@ -329,6 +329,13 @@ class PendaftaranController extends Controller
                     $existingFile->status = 'waiting';
                     $existingFile->save();
 
+                    // Update the corresponding Proses record to match the FileModel status
+                    $existingProses = Proses::where('id_file', $existingFile->id)->first();
+                    if ($existingProses) {
+                        $existingProses->status = 'waiting';
+                        $existingProses->save();
+                    }
+
                     return response()->json([
                         'success' => true,
                         'message' => 'File has been re-uploaded successfully.'
@@ -366,13 +373,13 @@ class PendaftaranController extends Controller
             $fileModel->id_user = auth()->id();
             $fileModel->save();
 
-            // Create a new proses record
+            // Create a new proses record with the same status as the FileModel
             $proses = new Proses();
             $proses->id_pendaftaran = $idPendaftaran;
             $proses->id_file = $fileModel->id;
             $proses->id_user = auth()->id();
             $proses->tanggal_upload = now();
-            $proses->status = 'waiting';
+            $proses->status = $fileModel->status; // Ensure status matches FileModel
             $proses->save();
 
             return response()->json([
