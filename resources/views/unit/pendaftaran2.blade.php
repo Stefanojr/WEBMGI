@@ -75,18 +75,6 @@
                 <input type="text" id="nama_grup" name="nama_grup" value="{{ old('nama_grup') }}" required placeholder="Masukkan Nama Grup">
             </div>
 
-            
-
-            <!-- Dynamic Unit Section -->
-            <div id="dynamic-unit-section" style="display: none;">
-                <button type="button" id="add-unit-btn" class="insert-btn">
-                    <i class="fas fa-plus-circle"></i> Tambah Unit
-                </button>
-                <div id="dynamic-unit-container">
-                    <!-- Unit tambahan akan ditambahkan di sini -->
-                </div>
-            </div>
-
             <!-- Tema -->
             <div class="section-title">KETERANGAN TEMA</div>
             <div class="form-group">
@@ -125,21 +113,21 @@
                         <option value="anggota">Anggota</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label>
                         <i class="fas fa-id-card"></i> Perner
                     </label>
                     <input type="text" name="grup_temp[perner]" placeholder="Masukkan Nomor Perner">
                 </div>
-                
+
                 <div class="form-group">
                     <label>
                         <i class="fas fa-user"></i> Nama
                     </label>
                     <input type="text" name="grup_temp[nama]" placeholder="Masukkan Nama Anggota">
                 </div>
-                
+
                 <div class="form-group">
                     <label>
                         <i class="fas fa-camera"></i> Foto
@@ -230,10 +218,9 @@
                         }
                     });
                 });
-                
+
                 var grupData = [];
                 var grupIndex = 0;
-                var unitIndex = 0;
 
                 function addGrup() {
                     var jabatan = document.querySelector('[name="grup_temp[jabatan_grup]"]').value;
@@ -287,10 +274,10 @@
 
                 function removeGrup(index) {
                     var row = document.getElementById(`grup-row-${index}`);
-                    
+
                     // Add fade-out animation
                     row.classList.add('fade-out');
-                    
+
                     // After animation completes, remove the row
                     setTimeout(function() {
                         grupData.splice(index, 1);
@@ -332,67 +319,9 @@
                             });
                     }
                 });
-
-                document.getElementById('kreteria_grup').addEventListener('change', function() {
-                    var selectedKriteria = this.value;
-                    const dynamicUnitSection = document.getElementById('dynamic-unit-section');
-                    const dynamicUnitContainer = document.getElementById('dynamic-unit-container');
-
-                    if (selectedKriteria === 'scft') {
-                        dynamicUnitSection.style.display = 'block';
-                    } else {
-                        dynamicUnitSection.style.display = 'none';
-                        dynamicUnitContainer.innerHTML = ''; // Clear any added units
-                        unitIndex = 0; // Reset unit count
-                    }
-                });
             </script>
-            
-            <style>
-                .form-row {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 20px;
-                    margin-bottom: 20px;
-                }
-                
-                @media (max-width: 768px) {
-                    .form-row {
-                        grid-template-columns: 1fr;
-                    }
-                }
-                
-                .fade-in {
-                    animation: fadeIn 0.5s forwards;
-                }
-                
-                .fade-out {
-                    animation: fadeOut 0.3s forwards;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                
-                @keyframes fadeOut {
-                    from { opacity: 1; transform: translateY(0); }
-                    to { opacity: 0; transform: translateY(10px); }
-                }
-                
-                .file-input {
-                    border: 1px dashed #e1e5e9;
-                    padding: 12px !important;
-                    background-color: #f9fafb;
-                    transition: all 0.3s;
-                    cursor: pointer;
-                }
-                
-                .file-input:hover {
-                    border-color: #4a6b4f;
-                    background-color: rgba(74, 107, 79, 0.05);
-                }
-            </style>
+
+
         @endpush
     </div>
 

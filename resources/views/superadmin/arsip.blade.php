@@ -30,7 +30,6 @@
             <option value="">Semua Kategori</option>
             <option value="sga">SGA</option>
             <option value="scft">SCFT</option>
-            <option value="ss">SS</option>
         </select>
     </section>
 
@@ -69,7 +68,7 @@
 
         <!-- Add more years as needed -->
     </section>
-    
+
     <!-- Empty state message (initially hidden) -->
     <div class="empty-state" id="empty-state">
         <i class="fas fa-search"></i>
@@ -90,7 +89,7 @@
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
             const selectedCategory = categoryFilter.value;
-            
+
             let hasVisibleSection = false;
 
             archiveSections.forEach(section => {
@@ -124,7 +123,7 @@
                     section.style.display = 'none';
                 }
             });
-            
+
             // Show empty state if no results found
             if (!hasVisibleSection) {
                 emptyState.style.display = 'block';
@@ -142,7 +141,7 @@
         searchInput.addEventListener('input', filterAndSearchArchives);
         yearFilter.addEventListener('change', filterAndSearchArchives);
         categoryFilter.addEventListener('change', filterAndSearchArchives);
-        
+
         // Initialize search on page load
         filterAndSearchArchives();
     });

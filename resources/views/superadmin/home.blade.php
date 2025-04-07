@@ -89,50 +89,113 @@
     var proposalChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['SGA', 'SCFT'], // Mengganti kategori menjadi SGA, SCFT, SS
+            labels: ['SGA', 'SCFT'],
             datasets: [{
                 label: 'Jumlah Proposal',
-                data: [50, 40], // Data default, akan diubah saat memilih tahun
-                backgroundColor: '#4a6b4f',
-                borderColor: '#007bff',
-                borderWidth: 1
+                data: [50, 40],
+                backgroundColor: [
+                    'rgba(30, 72, 48, 0.8)',  // SGA - new dark green color
+                    'rgba(30, 72, 48, 0.8)'   // SCFT - new dark green color
+                ],
+                borderColor: [
+                    'rgba(30, 72, 48, 1)',    // SGA - new dark green color
+                    'rgba(30, 72, 48, 1)'     // SCFT - new dark green color
+                ],
+                borderWidth: 2,
+                borderRadius: 12,
+                barThickness: 50,
+                hoverBackgroundColor: [
+                    'rgba(30, 72, 48, 1)',    // SGA - new dark green color
+                    'rgba(30, 72, 48, 1)'     // SCFT - new dark green color
+                ]
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(30, 72, 48, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: 'rgba(30, 72, 48, 1)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `Jumlah: ${context.raw}`;
+                        }
+                    }
+                }
+            },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(30, 72, 48, 0.1)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#1e4830',
+                        font: {
+                            size: 12,
+                            family: "'Poppins', sans-serif",
+                            weight: '500'
+                        },
+                        padding: 10
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#1e4830',
+                        font: {
+                            size: 12,
+                            family: "'Poppins', sans-serif",
+                            weight: '500'
+                        },
+                        padding: 10
+                    }
                 }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeInOutQuart'
             }
         }
     });
 
     function updateLaporan() {
-        // Ambil nilai tahun yang dipilih
         var tahun = document.getElementById('tahun').value;
+        var newData = [];
 
-        // Simulasi pembaruan data berdasarkan tahun yang dipilih
         if (tahun === "2021") {
             document.getElementById('jumlah-proposal').innerText = "120";
             document.getElementById('tingkat-partisipasi').innerText = "60%";
-            proposalChart.data.datasets[0].data = [40, 30, 50];
+            newData = [40, 30];
         } else if (tahun === "2022") {
             document.getElementById('jumlah-proposal').innerText = "150";
             document.getElementById('tingkat-partisipasi').innerText = "75%";
-            proposalChart.data.datasets[0].data = [50, 40, 60];
+            newData = [50, 40];
         } else if (tahun === "2023") {
             document.getElementById('jumlah-proposal').innerText = "200";
             document.getElementById('tingkat-partisipasi').innerText = "85%";
-            proposalChart.data.datasets[0].data = [70, 60, 70];
+            newData = [70, 60];
         } else if (tahun === "2024") {
             document.getElementById('jumlah-proposal').innerText = "180";
             document.getElementById('tingkat-partisipasi').innerText = "80%";
-            proposalChart.data.datasets[0].data = [60, 50, 70];
+            newData = [60, 50];
         }
 
-        // Update grafik dengan data baru
-        proposalChart.update();
+        // Animate the chart update
+        proposalChart.data.datasets[0].data = newData;
+        proposalChart.update('none');
     }
 </script>
 

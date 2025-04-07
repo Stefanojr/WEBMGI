@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="../../css/tableUnitDash.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
+
     </head>
 
     <body>
@@ -109,7 +109,7 @@
                             <input type="text" id="id-pendaftaran" name="id-pendaftaran" readonly required>
                         </div>
                     </div>
-                    
+
                     <div class="leadership-grid">
                         <div class="member-card sponsor-card">
                             <div class="member-role">
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card fasilitator-card">
                             <div class="member-role">
                                 <i class="fas fa-user-tie"></i>
@@ -140,7 +140,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card ketua-card">
                             <div class="member-role">
                                 <i class="fas fa-chess-king"></i>
@@ -155,7 +155,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="member-card sekretaris-card">
                             <div class="member-role">
                                 <i class="fas fa-pen-fancy"></i>
@@ -181,7 +181,7 @@
                         <div id="anggota-container" class="anggota-container"></div>
                     </div>
                 </div>
-                
+
                 <div class="form-actions">
                     <button class="popup-close" id="popup-close-id">
                         <i class="fas fa-times"></i> Tutup
@@ -229,14 +229,14 @@
                     // Close button for upload modal
                     const closeBtn = document.querySelector('.close');
                     const modalCloseBtn = document.querySelector('.modal-close');
-                    
+
                     if (closeBtn) {
                         closeBtn.addEventListener('click', function() {
                             document.getElementById('upload-modal').style.display = 'none';
                             document.getElementById('overlay').style.display = 'none';
                         });
                     }
-                    
+
                     if (modalCloseBtn) {
                         modalCloseBtn.addEventListener('click', function(e) {
                             e.preventDefault();
@@ -420,10 +420,10 @@
                     } else if (isRejected) {
                         tooltipMessage = 'Upload a new file after rejection';
                     }
-                    
+
                     // Define status badge styles
                     let badgeStyle, badgeClass;
-                    
+
                     if (isWaiting) {
                         badgeClass = 'status-badge waiting';
                     } else if (isApproved) {

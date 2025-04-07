@@ -305,18 +305,35 @@ class PendaftaranController extends Controller
             // Check if there's a file in waiting or approved status for this step
             $existingFile = FileModel::where('id_pendaftaran', $idPendaftaran)
                 ->where('id_step', $stepNumber)
-                ->whereIn('status', ['waiting', 'approved'])
+                ->whereIn('status', ['waiting', 'approved', 'rejected'])
                 ->first();
 
             if ($existingFile) {
-                $message = $existingFile->status === 'waiting'
-                    ? 'There is already a file in waiting status for this step. Please wait for approval before uploading a new file.'
-                    : 'This step already has an approved file. You cannot upload another file for this step.';
+                if ($existingFile->status === 'waiting') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'There is already a file in waiting status for this step. Please wait for approval before uploading a new file.'
+                    ], 400);
+                } else if ($existingFile->status === 'approved') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'This step already has an approved file. You cannot upload another file for this step.'
+                    ], 400);
+                } else if ($existingFile->status === 'rejected') {
+                    // If the file was rejected, we'll update the existing record
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads'), $fileName);
 
-                return response()->json([
-                    'success' => false,
-                    'message' => $message
-                ], 400);
+                    $existingFile->file_path = 'uploads/' . $fileName;
+                    $existingFile->file_name = $file->getClientOriginalName();
+                    $existingFile->status = 'waiting';
+                    $existingFile->save();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'File has been re-uploaded successfully.'
+                    ]);
+                }
             }
 
             // Check if the previous step has an approved file (except for step 1)

@@ -99,35 +99,35 @@ h5 {
 
 /* Modern Color Scheme */
 .bg-primary {
-    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    background: linear-gradient(135deg, #1e4830 50%, #1c7741 100%);
     color: white !important;
 }
 
 .bg-success {
-    background: linear-gradient(135deg, #3d8b40 0%, #2e7d32 100%);
+    background: linear-gradient(135deg, #1e4830 50%, #1c7741 100%);
     color: white !important;
 }
 
 .bg-warning {
-    background: linear-gradient(135deg, #844e0d 0%, #f57c00 100%);
+    background: linear-gradient(135deg, #1e4830 50%, #1c7741 100%);
     color: white !important;
 }
 
 .bg-dark {
-    background: linear-gradient(135deg, #37474f 0%, #263238 100%);
+    background: linear-gradient(135deg, #1e4830 50%, #1c7741 100%);
     color: white !important;
 }
 
 .text-primary {
-    color: #2c3e50 !important;
+    color: #2a824d !important;
 }
 
 .text-success {
-    color: #2e7d32 !important;
+    color: #2a824d !important;
 }
 
 .text-warning {
-    color: #f57c00 !important;
+    color: #2a824d !important;
 }
 
 .text-white {
@@ -270,7 +270,7 @@ button:active {
     .col-md-4 {
         max-width: calc(50% - 13px);
     }
-    
+
     .container-fluid {
         padding: 20px;
     }
@@ -280,7 +280,7 @@ button:active {
     .row {
         gap: 20px;
     }
-    
+
     .col-md-4 {
         max-width: 100%;
     }
@@ -296,13 +296,54 @@ button:active {
     #proposalChart {
         height: 300px;
     }
-    
+
     .container-fluid {
         margin-top: 70px;
         padding: 15px;
     }
-    
+
     select {
         max-width: 100%;
     }
+}
+
+
+.card-grafik {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card-grafik:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.card-grafik .card-header {
+    background: linear-gradient(135deg, #1e4830 30%, #1c7741 100%);
+    color: white;
+    padding: 20px;
+    border-bottom: none;
+}
+
+.card-grafik .card-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.card-grafik .card-header i {
+    margin-right: 10px;
+}
+
+.card-grafik .card-body {
+    padding: 25px;
+    height: 400px;
+}
+
+#proposalChart {
+    width: 100% !important;
+    height: 100% !important;
 }

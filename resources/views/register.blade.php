@@ -32,14 +32,14 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Right Column - Register Form -->
                     <div class="col-lg-7">
                         <div class="register-form-container">
                             <div class="logo-wrapper">
                                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjRZ2eBIK7J28Q2tzynxNN46eOCuHedxyjmm8MleF0TMQT_7cftWzZVdMEbRRnLFfC4BPtCCJIC3YHMQ2riJ-dYuHSpPFLadgOLqoe082QjKRNAsNKDi6BNt9GNncXb-VQhjszu061LFv6D6mFg6h9bhLlgzyK7I338dD5a9C0tTpYvqodxfSxR0oyYTeBF/w1200-h630-p-k-no-nu/Sidomuncul%20Logo.png" alt="Logo Perusahaan" class="logo-image">
                             </div>
-                            
+
                             @if(session('success'))
                                 <div class="alert alert-success">
                                     <i class="fas fa-check-circle"></i> {{ session('success') }}
@@ -56,7 +56,7 @@
                                     <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
                                 </div>
                             @endif
-                            
+
                             <form action="{{ route('register.store') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
@@ -65,21 +65,21 @@
                                         <input type="text" class="form-control" id="nama_user" name="nama_user" placeholder="Nama Lengkap" required>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-icon"><i class="fas fa-id-card"></i></span>
                                         <input type="text" class="form-control" id="perner" name="perner" placeholder="Perner / NIK" required>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-icon"><i class="fas fa-envelope"></i></span>
                                         <input type="email" class="form-control" id="email_user" name="email_user" placeholder="Email" required>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-icon"><i class="fas fa-lock"></i></span>
@@ -89,7 +89,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-icon"><i class="fas fa-building"></i></span>
@@ -101,7 +101,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-icon"><i class="fas fa-sitemap"></i></span>
@@ -110,14 +110,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-register">
                                         <span>Daftar</span>
                                         <i class="fas fa-user-plus"></i>
                                     </button>
                                 </div>
-                                
+
                                 <div class="login-link">
                                     <span>Sudah punya akun?</span>
                                     <a href="/">Login</a>
@@ -137,23 +137,23 @@
 
         function showSlides() {
             let slides = document.getElementsByClassName("mySlides");
-            
+
             for (let i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
-            
+
             slideIndex++;
             if (slideIndex > slides.length) { slideIndex = 1 }
-            
+
             slides[slideIndex - 1].style.display = "block";
             setTimeout(showSlides, 4000); // Change slide every 4 seconds
         }
-        
+
         // Toggle password visibility
         function togglePassword() {
             const passwordInput = document.getElementById("password");
             const eyeIcon = document.getElementById("eye-icon");
-            
+
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
                 eyeIcon.classList.remove("fa-eye");
@@ -164,13 +164,13 @@
                 eyeIcon.classList.add("fa-eye");
             }
         }
-        
+
         // Handle unit selection based on company choice
         document.getElementById('id_perusahaan').addEventListener('change', function() {
             let perusahaanId = this.value;
             let unitDropdown = document.getElementById('id_unit');
             unitDropdown.innerHTML = '<option value="">Pilih Unit</option>';
-            
+
             if (perusahaanId) {
                 fetch(`/api/units/${perusahaanId}`)
                     .then(response => response.json())

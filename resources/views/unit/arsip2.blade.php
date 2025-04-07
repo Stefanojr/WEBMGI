@@ -29,7 +29,6 @@
             <option value="">Semua Kategori</option>
             <option value="sga">SGA</option>
             <option value="scft">SCFT</option>
-            <option value="ss">SS</option>
         </select>
     </section>
 
@@ -37,7 +36,7 @@
     <section class="archive-year-section" id="archive-section">
         <!-- Year sections will be populated by JavaScript -->
     </section>
-    
+
     <!-- Empty state message (initially hidden) -->
     <div class="empty-state" id="empty-state">
         <i class="fas fa-search"></i>
@@ -69,7 +68,7 @@
             const yearSection = document.createElement('div');
             yearSection.classList.add('year-archive');
             yearSection.setAttribute('data-year', year);
-            
+
             // Add staggered animation delay
             yearSection.style.animationDelay = `${index * 0.1}s`;
 
@@ -80,25 +79,25 @@
             const archiveList = document.createElement('ul');
             archiveList.classList.add('archive-list');
             yearSection.appendChild(archiveList);
-            
+
             // Sample items - in real app these would come from database
             const categoryTypes = ['SGA', 'SCFT', 'SS'];
             const departments = ['IT', 'HR', 'Finance', 'Marketing'];
-            
+
             // Create 3-5 list items per year with different categories
             const itemCount = Math.floor(Math.random() * 3) + 3; // 3-5 items
-            
+
             for (let i = 0; i < itemCount; i++) {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = '#';
-                
+
                 const dept = departments[Math.floor(Math.random() * departments.length)];
                 const category = categoryTypes[Math.floor(Math.random() * categoryTypes.length)];
-                
+
                 link.textContent = `Risalah ${dept} ${category}`;
                 link.setAttribute('data-category', category.toLowerCase());
-                
+
                 listItem.appendChild(link);
                 archiveList.appendChild(listItem);
             }
@@ -111,7 +110,7 @@
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
             const selectedCategory = categoryFilter.value;
-            
+
             let hasVisibleSection = false;
             const archiveSections = document.querySelectorAll('.year-archive');
 
@@ -147,7 +146,7 @@
                     section.style.display = 'none';
                 }
             });
-            
+
             // Show empty state if no results found
             if (!hasVisibleSection) {
                 emptyState.style.display = 'block';
@@ -160,7 +159,7 @@
         searchInput.addEventListener('input', filterAndSearchArchives);
         yearFilter.addEventListener('change', filterAndSearchArchives);
         categoryFilter.addEventListener('change', filterAndSearchArchives);
-        
+
         // Run initial filter
         filterAndSearchArchives();
     });
