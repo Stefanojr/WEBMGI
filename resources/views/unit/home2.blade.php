@@ -108,27 +108,27 @@
 
     <!-- Progress Tracker Section -->
     <section class="progress-tracker">
-        <h2>Progress Langkah</h2>
+        <h2>Progress Tahapan</h2>
         <div class="progress-indicator-wrapper">
             <div class="progress-indicator">
-                <div class="step step-1 active" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-2" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-3" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-4" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-5" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-6" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-7" data-id="ID001" data-group="Group A" data-year="2024"></div>
-                <div class="step step-8" data-id="ID001" data-group="Group A" data-year="2024"></div>
+                <div class="step step-1 active" data-id="ID001" data-group="Group A" data-year="2024" data-step="1"></div>
+                <div class="step step-2" data-id="ID001" data-group="Group A" data-year="2024" data-step="2"></div>
+                <div class="step step-3" data-id="ID001" data-group="Group A" data-year="2024" data-step="3"></div>
+                <div class="step step-4" data-id="ID001" data-group="Group A" data-year="2024" data-step="4"></div>
+                <div class="step step-5" data-id="ID001" data-group="Group A" data-year="2024" data-step="5"></div>
+                <div class="step step-6" data-id="ID001" data-group="Group A" data-year="2024" data-step="6"></div>
+                <div class="step step-7" data-id="ID001" data-group="Group A" data-year="2024" data-step="7"></div>
+                <div class="step step-8" data-id="ID001" data-group="Group A" data-year="2024" data-step="8"></div>
             </div>
             <div class="step-numbers">
-                <span>Langkah 1</span>
-                <span>Langkah 2</span>
-                <span>Langkah 3</span>
-                <span>Langkah 4</span>
-                <span>Langkah 5</span>
-                <span>Langkah 6</span>
-                <span>Langkah 7</span>
-                <span>Langkah 8</span>
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+                <span>6</span>
+                <span>7</span>
+                <span>8</span>
             </div>
         </div>
     </section>

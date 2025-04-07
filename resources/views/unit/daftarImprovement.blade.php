@@ -13,8 +13,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="../../css/tableUnitDash.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style>
-        </style>
+        
     </head>
 
     <body>
@@ -58,7 +57,7 @@
                                 <td>{{ $pendaftaran->created_at ? $pendaftaran->created_at->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     <button class="popup-btn-status"
-                                        data-id="{{ $pendaftaran->id_pendaftaran }}">Pendaftaran</button>
+                                        data-id="{{ $pendaftaran->id_pendaftaran }}">Detail</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -78,10 +77,20 @@
                     <input type="hidden" id="inputId" name="id_pendaftaran">
                     <input type="hidden" id="step_number" name="step_number">
                     <div class="form-group">
-                        <label for="file">Select File:</label>
-                        <input type="file" id="file" name="file" accept=".pdf,.doc,.docx" required>
+                        <label for="file">Select File (DOC, DOCX)</label>
+                        <div class="custom-file-upload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Drop your file here or click to browse</span>
+                            <span class="file-selected" id="file-name"></span>
+                            <input type="file" id="file" name="file" accept=".doc,.docx" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Submit</button>
+                        <button type="button" class="popup-close modal-close">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -93,35 +102,90 @@
         <div class="popup" id="popup">
             <h3>Struktur Anggota</h3>
             <form id="struktur-form">
-                <div class="input-container">
-                    <label for="id-pendaftaran">ID Pendaftaran</label>
-                    <input type="text" id="id-pendaftaran" name="id-pendaftaran" readonly required>
-                </div>
-                <div class="input-container">
-                    <label for="sponsor">Nama Sponsor</label>
-                    <input type="text" id="sponsor" name="sponsor" readonly>
-                    <input type="text" id="sponsor-perner" name="sponsor-perner" readonly>
-                </div>
-                <div class="input-container">
-                    <label for="fasilitator">Nama Fasilitator</label>
-                    <input type="text" id="fasilitator" name="fasilitator" readonly>
-                    <input type="text" id="fasilitator-perner" name="fasilitator-perner" readonly>
-                </div>
-                <div class="input-container">
-                    <label for="ketua">Ketua Kelompok</label>
-                    <input type="text" id="ketua" name="ketua" readonly>
-                    <input type="text" id="ketua-perner" name="ketua-perner" readonly>
-                </div>
-                <div class="input-container">
-                    <label for="sekretaris">Sekretaris</label>
-                    <input type="text" id="sekretaris" name="sekretaris" readonly>
-                    <input type="text" id="sekretaris-perner" name="sekretaris-perner" readonly>
-                </div>
+                <div class="team-info">
+                    <div class="team-id">
+                        <div class="input-container">
+                            <label for="id-pendaftaran">ID Pendaftaran</label>
+                            <input type="text" id="id-pendaftaran" name="id-pendaftaran" readonly required>
+                        </div>
+                    </div>
+                    
+                    <div class="leadership-grid">
+                        <div class="member-card sponsor-card">
+                            <div class="member-role">
+                                <i class="fas fa-star"></i>
+                                <span>Sponsor</span>
+                            </div>
+                            <div class="member-data">
+                                <div class="member-name">
+                                    <input type="text" id="sponsor" name="sponsor" readonly placeholder="Nama Sponsor">
+                                </div>
+                                <div class="member-perner">
+                                    <input type="text" id="sponsor-perner" name="sponsor-perner" readonly placeholder="Perner">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card fasilitator-card">
+                            <div class="member-role">
+                                <i class="fas fa-user-tie"></i>
+                                <span>Fasilitator</span>
+                            </div>
+                            <div class="member-data">
+                                <div class="member-name">
+                                    <input type="text" id="fasilitator" name="fasilitator" readonly placeholder="Nama Fasilitator">
+                                </div>
+                                <div class="member-perner">
+                                    <input type="text" id="fasilitator-perner" name="fasilitator-perner" readonly placeholder="Perner">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card ketua-card">
+                            <div class="member-role">
+                                <i class="fas fa-chess-king"></i>
+                                <span>Ketua</span>
+                            </div>
+                            <div class="member-data">
+                                <div class="member-name">
+                                    <input type="text" id="ketua" name="ketua" readonly placeholder="Nama Ketua">
+                                </div>
+                                <div class="member-perner">
+                                    <input type="text" id="ketua-perner" name="ketua-perner" readonly placeholder="Perner">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card sekretaris-card">
+                            <div class="member-role">
+                                <i class="fas fa-pen-fancy"></i>
+                                <span>Sekretaris</span>
+                            </div>
+                            <div class="member-data">
+                                <div class="member-name">
+                                    <input type="text" id="sekretaris" name="sekretaris" readonly placeholder="Nama Sekretaris">
+                                </div>
+                                <div class="member-perner">
+                                    <input type="text" id="sekretaris-perner" name="sekretaris-perner" readonly placeholder="Perner">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Anggota Grup -->
-                <div id="anggota-container" class="anggota-container"></div>
+                    <!-- Anggota Grup -->
+                    <div class="team-members">
+                        <div class="team-members-header">
+                            <i class="fas fa-users"></i>
+                            <h4>Anggota Tim</h4>
+                        </div>
+                        <div id="anggota-container" class="anggota-container"></div>
+                    </div>
+                </div>
+                
                 <div class="form-actions">
-                    <button class="popup-close" id="popup-close-id">Close</button>
+                    <button class="popup-close" id="popup-close-id">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
                 </div>
             </form>
         </div>
@@ -146,7 +210,9 @@
                 </tbody>
             </table>
             <div class="form-actions">
-                <button class="popup-close" id="popup-close-status">Close</button>
+                <button class="popup-close" id="popup-close-status">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
             </div>
         </div>
 
@@ -162,8 +228,18 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     // Close button for upload modal
                     const closeBtn = document.querySelector('.close');
+                    const modalCloseBtn = document.querySelector('.modal-close');
+                    
                     if (closeBtn) {
                         closeBtn.addEventListener('click', function() {
+                            document.getElementById('upload-modal').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none';
+                        });
+                    }
+                    
+                    if (modalCloseBtn) {
+                        modalCloseBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
                             document.getElementById('upload-modal').style.display = 'none';
                             document.getElementById('overlay').style.display = 'none';
                         });
@@ -216,34 +292,30 @@
                                         data.forEach((grup) => {
                                             switch (grup.jabatan_grup) {
                                                 case 'sponsor':
-                                                    document.getElementById('sponsor').value = grup.nama;
-                                                    document.getElementById('sponsor-perner').value = grup
-                                                        .perner;
+                                                    document.getElementById('sponsor').value = grup.nama || '-';
+                                                    document.getElementById('sponsor-perner').value = grup.perner || '-';
                                                     break;
                                                 case 'fasilitator':
-                                                    document.getElementById('fasilitator').value = grup
-                                                        .nama;
-                                                    document.getElementById('fasilitator-perner').value =
-                                                        grup.perner;
+                                                    document.getElementById('fasilitator').value = grup.nama || '-';
+                                                    document.getElementById('fasilitator-perner').value = grup.perner || '-';
                                                     break;
                                                 case 'ketua':
-                                                    document.getElementById('ketua').value = grup.nama;
-                                                    document.getElementById('ketua-perner').value = grup
-                                                        .perner;
+                                                    document.getElementById('ketua').value = grup.nama || '-';
+                                                    document.getElementById('ketua-perner').value = grup.perner || '-';
                                                     break;
                                                 case 'sekretaris':
-                                                    document.getElementById('sekretaris').value = grup.nama;
-                                                    document.getElementById('sekretaris-perner').value =
-                                                        grup.perner;
+                                                    document.getElementById('sekretaris').value = grup.nama || '-';
+                                                    document.getElementById('sekretaris-perner').value = grup.perner || '-';
                                                     break;
                                                 case 'anggota':
+                                                    // Create anggota card with improved styling
                                                     const divAnggota = document.createElement('div');
                                                     divAnggota.classList.add('input-container');
                                                     divAnggota.innerHTML = `
-                                    <label>Anggota</label>
-                                    <input type="text" value="${grup.nama}" readonly>
-                                    <input type="text" value="${grup.perner}" readonly>
-                                `;
+                                        <label>Anggota</label>
+                                        <input type="text" value="${grup.nama || '-'}" readonly placeholder="Nama">
+                                        <input type="text" value="${grup.perner || '-'}" readonly placeholder="Perner">
+                                    `;
                                                     anggotaContainer.appendChild(divAnggota);
                                                     break;
                                             }
@@ -336,6 +408,7 @@
                     const isRejected = item.status?.toLowerCase() === 'rejected';
 
                     // Determine if this step's upload button should be disabled
+                    // Only disable if waiting or approved, enable if rejected
                     const isDisabled = isWaiting || isApproved;
 
                     // Determine the tooltip message
@@ -344,13 +417,28 @@
                         tooltipMessage = 'File is waiting for approval';
                     } else if (isApproved) {
                         tooltipMessage = 'File has been approved';
+                    } else if (isRejected) {
+                        tooltipMessage = 'Upload a new file after rejection';
+                    }
+                    
+                    // Define status badge styles
+                    let badgeStyle, badgeClass;
+                    
+                    if (isWaiting) {
+                        badgeClass = 'status-badge waiting';
+                    } else if (isApproved) {
+                        badgeClass = 'status-badge approved';
+                    } else if (isRejected) {
+                        badgeClass = 'status-badge rejected';
+                    } else {
+                        badgeClass = 'status-badge';
                     }
 
                     row.innerHTML = `
                         <td>${item.tanggal_upload || '-'}</td>
                         <td>${item.tahapan || '-'}</td>
-                        <td><a href="${item.file}" target="_blank">Download</a></td>
-                        <td><span class="status-badge ${item.status}">${item.status}</span></td>
+                        <td><a href="${item.file}" target="_blank" class="download-link"><i class="fas fa-download"></i> Download</a></td>
+                        <td><span class="${badgeClass}">${item.status}</span></td>
                         <td>${item.komentar || '-'}</td>
                         <td>
                             <button class="upload-btn ${isDisabled ? 'disabled-btn' : ''}"
@@ -371,7 +459,7 @@
                         <td>-</td>
                         <td>${stepNumber}</td>
                         <td>-</td>
-                        <td><span class="status-badge">-</span></td>
+                        <td><span class="status-badge pending">Not uploaded</span></td>
                         <td>-</td>
                         <td>
                             <button class="upload-btn"
@@ -390,12 +478,102 @@
                     document.getElementById('inputId').value = idPendaftaran;
                     document.getElementById('step_number').value = stepNumber;
 
-                    // Show the upload modal and overlay
+                    // Reset the file input and file name display
+                    document.getElementById('file').value = '';
+                    document.getElementById('file-name').textContent = '';
+                    document.getElementById('file-name').style.display = 'none';
+
+                    // Show the upload modal and overlay with animation
                     const modal = document.getElementById('upload-modal');
                     const overlay = document.getElementById('overlay');
-                    modal.style.display = 'block';
                     overlay.style.display = 'block';
+
+                    // Trigger reflow for animation
+                    void modal.offsetWidth;
+
+                    // Show modal with animation
+                    modal.style.display = 'block';
+                    setTimeout(() => {
+                        modal.classList.add('show');
+                    }, 10);
                 }
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    // File input change listener to show selected filename
+                    const fileInput = document.getElementById('file');
+                    const fileNameDisplay = document.getElementById('file-name');
+                    const dropArea = document.querySelector('.custom-file-upload');
+
+                    if (fileInput && dropArea) {
+                        // File input change handler
+                        fileInput.addEventListener('change', function() {
+                            if (this.files && this.files[0]) {
+                                fileNameDisplay.textContent = 'Selected: ' + this.files[0].name;
+                                fileNameDisplay.style.display = 'block';
+                                dropArea.classList.add('has-file');
+                            } else {
+                                fileNameDisplay.textContent = '';
+                                fileNameDisplay.style.display = 'none';
+                                dropArea.classList.remove('has-file');
+                            }
+                        });
+
+                        // Drag and drop handlers
+                        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                            dropArea.addEventListener(eventName, preventDefaults, false);
+                        });
+
+                        function preventDefaults(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+
+                        ['dragenter', 'dragover'].forEach(eventName => {
+                            dropArea.addEventListener(eventName, highlight, false);
+                        });
+
+                        ['dragleave', 'drop'].forEach(eventName => {
+                            dropArea.addEventListener(eventName, unhighlight, false);
+                        });
+
+                        function highlight() {
+                            dropArea.classList.add('highlight');
+                        }
+
+                        function unhighlight() {
+                            dropArea.classList.remove('highlight');
+                        }
+
+                        dropArea.addEventListener('drop', handleDrop, false);
+
+                        function handleDrop(e) {
+                            const dt = e.dataTransfer;
+                            const files = dt.files;
+
+                            if (files.length) {
+                                fileInput.files = files;
+                                fileNameDisplay.textContent = 'Selected: ' + files[0].name;
+                                fileNameDisplay.style.display = 'block';
+                                dropArea.classList.add('has-file');
+                            }
+                        }
+                    }
+
+                    // Close button for upload modal
+                    const closeBtn = document.querySelector('.close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function() {
+                            const modal = document.getElementById('upload-modal');
+                            modal.classList.remove('show');
+
+                            // Wait for animation to complete before hiding
+                            setTimeout(() => {
+                                modal.style.display = 'none';
+                                document.getElementById('overlay').style.display = 'none';
+                            }, 300);
+                        });
+                    }
+                });
 
                 // Handle form submission
                 document.addEventListener("DOMContentLoaded", function() {
@@ -439,11 +617,17 @@
                                         timer: 3000,
                                         showConfirmButton: false
                                     }).then(() => {
-                                        // Close the modal and overlay
-                                        document.getElementById('upload-modal').style.display = 'none';
-                                        document.getElementById('overlay').style.display = 'none';
-                                        // Refresh the page to show the updated data
-                                        window.location.href = window.location.pathname; // Refresh without query params
+                                        // Close the modal with animation
+                                        const modal = document.getElementById('upload-modal');
+                                        modal.classList.remove('show');
+
+                                        // Wait for animation to complete before hiding
+                                        setTimeout(() => {
+                                            modal.style.display = 'none';
+                                            document.getElementById('overlay').style.display = 'none';
+                                            // Refresh the page to show the updated data
+                                            window.location.href = window.location.pathname; // Refresh without query params
+                                        }, 300);
                                     });
                                 } else {
                                     // Show error message
@@ -485,6 +669,59 @@
                 setTimeout(closeMessage, 5000);
             </script>
         @endpush
+
+        <style>
+            .popup-close {
+                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+            }
+
+            .popup-close:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+            }
+
+            .popup-close:active {
+                transform: translateY(0);
+            }
+
+            .modal-close {
+                background: linear-gradient(135deg, #7f8c8d 0%, #576574 100%);
+                box-shadow: 0 4px 10px rgba(87, 101, 116, 0.2);
+            }
+
+            .modal-close:hover {
+                box-shadow: 0 6px 15px rgba(87, 101, 116, 0.3);
+            }
+
+            /* Update close button for modals */
+            .close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 28px;
+                font-weight: bold;
+                color: #aaa;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: none;
+            }
+
+            .close:hover {
+                color: #e74c3c;
+            }
+        </style>
     </body>
 
     </html>

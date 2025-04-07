@@ -37,6 +37,12 @@
     <section class="archive-year-section" id="archive-section">
         <!-- Year sections will be populated by JavaScript -->
     </section>
+    
+    <!-- Empty state message (initially hidden) -->
+    <div class="empty-state" id="empty-state">
+        <i class="fas fa-search"></i>
+        <p>Tidak ada arsip yang sesuai dengan kriteria pencarian</p>
+    </div>
 
 </div>
 
@@ -46,12 +52,13 @@
         const yearFilter = document.getElementById('year-filter');
         const categoryFilter = document.getElementById('category-filter');
         const archiveSection = document.getElementById('archive-section');
+        const emptyState = document.getElementById('empty-state');
 
         const currentYear = new Date().getFullYear();
         const yearsToDisplay = [currentYear, currentYear - 1, currentYear - 2]; // Display current year and two previous years
 
         // Populate year filter dropdown and archive sections dynamically
-        yearsToDisplay.forEach(year => {
+        yearsToDisplay.forEach((year, index) => {
             // Add year to filter
             const yearOption = document.createElement('option');
             yearOption.value = year;
@@ -62,6 +69,9 @@
             const yearSection = document.createElement('div');
             yearSection.classList.add('year-archive');
             yearSection.setAttribute('data-year', year);
+            
+            // Add staggered animation delay
+            yearSection.style.animationDelay = `${index * 0.1}s`;
 
             const yearHeader = document.createElement('h2');
             yearHeader.textContent = year;
@@ -70,12 +80,25 @@
             const archiveList = document.createElement('ul');
             archiveList.classList.add('archive-list');
             yearSection.appendChild(archiveList);
-
-            for (let i = 0; i < 2; i++) {
+            
+            // Sample items - in real app these would come from database
+            const categoryTypes = ['SGA', 'SCFT', 'SS'];
+            const departments = ['IT', 'HR', 'Finance', 'Marketing'];
+            
+            // Create 3-5 list items per year with different categories
+            const itemCount = Math.floor(Math.random() * 3) + 3; // 3-5 items
+            
+            for (let i = 0; i < itemCount; i++) {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = '#';
-                link.textContent = `Risalah IT ${year} SGA`;
+                
+                const dept = departments[Math.floor(Math.random() * departments.length)];
+                const category = categoryTypes[Math.floor(Math.random() * categoryTypes.length)];
+                
+                link.textContent = `Risalah ${dept} ${category}`;
+                link.setAttribute('data-category', category.toLowerCase());
+                
                 listItem.appendChild(link);
                 archiveList.appendChild(listItem);
             }
@@ -88,7 +111,8 @@
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
             const selectedCategory = categoryFilter.value;
-
+            
+            let hasVisibleSection = false;
             const archiveSections = document.querySelectorAll('.year-archive');
 
             archiveSections.forEach(section => {
@@ -98,7 +122,8 @@
 
                 archiveItems.forEach(item => {
                     const itemText = item.textContent.toLowerCase();
-                    const itemCategory = item.textContent.toLowerCase();
+                    const link = item.querySelector('a');
+                    const itemCategory = link.getAttribute('data-category') || '';
 
                     // Logic for matching search, year, and category
                     const matchesSearch = searchTerm === '' || itemText.includes(searchTerm);
@@ -115,14 +140,29 @@
                 });
 
                 // Show/hide section based on visibility of items
-                section.style.display = hasVisibleItem ? 'block' : 'none';
+                if (hasVisibleItem) {
+                    section.style.display = 'block';
+                    hasVisibleSection = true;
+                } else {
+                    section.style.display = 'none';
+                }
             });
+            
+            // Show empty state if no results found
+            if (!hasVisibleSection) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
         }
 
         // Event listeners for search and filter
         searchInput.addEventListener('input', filterAndSearchArchives);
         yearFilter.addEventListener('change', filterAndSearchArchives);
         categoryFilter.addEventListener('change', filterAndSearchArchives);
+        
+        // Run initial filter
+        filterAndSearchArchives();
     });
 </script>
 

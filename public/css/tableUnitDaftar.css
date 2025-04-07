@@ -1,9 +1,8 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Poppins', 'Arial', sans-serif;
+    background-color: #f9fafb;
     margin: 0;
     padding: 20px;
-
 }
 
 .table-container {
@@ -11,100 +10,148 @@ body {
     margin: auto;
     margin-top: 170px;
     margin-left: 125px;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     background-color: #ffffff;
-    padding: 20px;
+    padding: 25px;
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
     width: 1000px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
-
 
 h2 {
     text-align: center;
     margin-bottom: 30px;
-    color: #090a09;
-    font-family: Arial, Helvetica, sans-serif;
+    color: #2c3e50;
+    font-family: 'Poppins', Arial, sans-serif;
     font-size: 16px;
+    font-weight: 600;
     word-spacing: 3px;
 }
+
 h3 {
     text-align: center;
-
+    color: #2c3e50;
+    font-weight: 600;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
-    border-spacing: 30px;
-    margin-top: 30px;
-    margin-bottom: 40px;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
+
 .table-scroll {
-    max-height: 110px; /* Adjust the height of the scrollable area */
+    max-height: 300px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    scrollbar-width: thin;
+    scrollbar-color: #4a6b4f #f1f3f5;
+}
+
+.table-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+    background: #f1f3f5;
+    border-radius: 10px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+    background-color: #4a6b4f;
+    border-radius: 10px;
+    border: 2px solid #f1f3f5;
 }
 
 #strukturOrganisasiTable {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 #strukturOrganisasiTable th, #strukturOrganisasiTable td {
-    padding: 10px;
+    padding: 12px 15px;
     text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #e9ecef;
 }
 
+#strukturOrganisasiTable tr:last-child td {
+    border-bottom: none;
+}
 
 th, td {
     text-align: left;
-    padding: 10px; /* Mengurangi padding untuk memberi kesan lebih kecil */
+    padding: 12px 15px;
 }
 
 th {
-    background-color: #4a6b4f;
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
     color: white;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 14px; /* Mengurangi ukuran font header */
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #4a6b4f;
+}
+
+th:first-child {
+    border-top-left-radius: 8px;
+}
+
+th:last-child {
+    border-top-right-radius: 8px;
 }
 
 td {
-    font-size: 16px; /* Mengurangi ukuran font untuk sel */
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #495057;
     width: max-content;
+    transition: all 0.2s ease;
 }
 
 tr {
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8f9fa;
 }
 
 tr:hover {
-    background-color: #e9ecef;
+    background-color: #f1f5f9;
 }
 
 td {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e9ecef;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 .icon a {
-    color: #3f4640;
+    color: #495057;
     text-decoration: none;
-    margin-right: 10px;
+    margin-right: 12px;
     font-size: 14px;
+    transition: all 0.2s ease;
 }
 
 .icon a:hover {
@@ -113,67 +160,118 @@ td {
 
 .action-icons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    justify-content: center;
 }
 
 .action-icons i {
     cursor: pointer;
-    color: #393e3a;
-    transition: color 0.3s;
-    font-size: 14px; /* Mengatur ukuran ikon lebih kecil */
+    color: #495057;
+    transition: all 0.2s ease;
+    font-size: 15px;
 }
 
 .action-icons i:hover {
     color: #4a6b4f;
+    transform: scale(1.2);
 }
+
 .submit-btn {
-    background-color: #4a6b4f;
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
     color: #fff;
-    padding: 10px 20px;
+    padding: 12px 30px;
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 40px;
-    margin-left: 900px;
+    margin-left: auto;
+    margin-right: 0;
     margin-bottom: 10px;
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 107, 79, 0.2);
 }
 
 .insert-btn {
-    background-color: #4d7dc4;
+    background: linear-gradient(135deg, #4d7dc4 0%, #3b6ab3 100%);
     color: #fff;
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     margin-top: 10px;
-    margin-left: 880px;
-    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: 0;
+    margin-bottom: 20px;
+    display: block;
     width: 120px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(77, 125, 196, 0.2);
 }
+
 .insert-btn:hover {
-    background-color: #4d7dc4;
+    background: linear-gradient(135deg, #3b6ab3 0%, #2d5397 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(77, 125, 196, 0.3);
 }
+
 .submit-btn:hover {
-    background-color: #4a6b4f;
+    background: linear-gradient(135deg, #3d5a41 0%, #2d4331 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 79, 0.3);
 }
+
 .delete-btn {
-    background-color: #ff4d4f; /* Warna merah */
-    color: white; /* Warna teks */
-    border: none; /* Hilangkan border */
-    border-radius: 5px; /* Membuat sudut tombol melengkung */
-    padding: 5px 10px; /* Padding tombol */
-    font-size: 14px; /* Ukuran teks */
-    cursor: pointer; /* Pointer mouse berubah saat diarahkan ke tombol */
-    transition: background-color 0.3s ease; /* Animasi saat hover */
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(255, 77, 79, 0.2);
 }
 
 .delete-btn:hover {
-    background-color: #e60000; /* Warna lebih gelap saat hover */
+    background-color: #d63031;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 77, 79, 0.3);
 }
 
 .delete-btn:active {
-    background-color: #cc0000; /* Warna lebih gelap saat tombol ditekan */
-    transform: scale(0.98); /* Efek kecil saat tombol ditekan */
+    background-color: #b02a2b;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .table-container {
+        margin-left: 0;
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .table-scroll {
+        max-height: 250px;
+    }
+    
+    th, td {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    
+    .action-icons {
+        gap: 8px;
+    }
+    
+    .submit-btn,
+    .insert-btn {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

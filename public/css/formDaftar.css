@@ -1,123 +1,233 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Poppins', 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f9f9f9;
+    background-color: #f9fafb;
     scroll-behavior: auto;
     height: auto;
-
 }
 
 .container {
     background-color: #fff;
     max-width: 1000px;
-    padding: 30px;
+    padding: 40px;
     margin: 20px auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    width: 90%; /* Membuat lebar fleksibel */
-    margin-top: 70px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 90%;
+    margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 h1 {
     text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 60px;
-    color: black;
-    margin-top: 35px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #2c3e50;
+    margin-top: 15px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #4a6b4f, #6ca175);
+    border-radius: 3px;
 }
 
 .section-title {
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 35px;
-    margin-bottom: 35px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    position: relative;
+    padding-left: 12px;
+    display: inline-block;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(to bottom, #4a6b4f, #3d5a41);
+    border-radius: 2px;
 }
 
 .form-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    gap: 15px;
+    margin-bottom: 22px;
+    gap: 20px;
 }
 
 .form-group label {
-    width: 150px;
+    width: 180px;
     font-size: 14px;
-    margin-right: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    color: #495057;
+    font-weight: 500;
 }
 
-.form-group input
-{
+.form-group input {
     flex: 1;
-    padding: 10px;
+    padding: 12px 15px;
     font-size: 14px;
     margin-right: 80px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 40px;
-
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    height: 45px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #495057;
 }
-.form-group select {
-    flex: 1; /* Membuat input dan select mengisi sisa ruang */
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 40px;
-    margin-right: 80px;
 
+.form-group select {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    height: 45px;
+    margin-right: 80px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #495057;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 15px;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #4a6b4f;
+    box-shadow: 0 0 0 3px rgba(74, 107, 79, 0.1);
+    background-color: #fff;
+}
+
+.form-group input[type="file"] {
+    padding: 10px;
+    height: auto;
+    background-color: #f9fafb;
+    width: 20px;
 }
 
 .form-group input.short {
-    width: 80px; /* Lebar input pendek */
+    width: 70px;
     margin: auto;
 }
 
-.submit-btn {
-    background-color: #4a6b4f;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
     font-size: 14px;
+}
+
+.alert-danger {
+    background-color: #ffe5e5;
+    color: #d63031;
+    border-left: 4px solid #d63031;
+}
+
+.alert ul {
+    margin: 5px 0 0 20px;
+    padding: 0;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 40px;
-    margin-left: 905px;
+    margin-left: auto;
     margin-bottom: 10px;
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 107, 79, 0.2);
 }
 
 .insert-btn {
-    background-color: #4d7dc4;
+    background: linear-gradient(135deg, #4d7dc4 0%, #3b6ab3 100%);
     color: #fff;
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     margin-top: 10px;
-    margin-left: 880px;
-    margin-bottom: 30px;
-    width: 120px;
+    margin-left: auto;
+    margin-bottom: 20px;
+    display: block;
+    width: 80px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(77, 125, 196, 0.2);
 }
+
 .submit-btn:hover {
-    background-color: #3b4a3b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 79, 0.3);
 }
-.insert-btn {
-    background-color: #4d7dc4;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 10px;
-    margin-left: 880px;
-    margin-bottom: 30px;
-    width: 120px;
+
+.insert-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(77, 125, 196, 0.3);
+}
+
+.submit-btn:active,
+.insert-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 25px;
+    }
+    
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .form-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .submit-btn,
+    .insert-btn {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 

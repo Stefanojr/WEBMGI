@@ -1,130 +1,317 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif; /* Mengganti font menjadi Poppins */
+    background-color: #f9fafb;
+    overflow-x: hidden;
 }
 
+/* Modern Sidebar */
 .sidebar {
-    width: 240px;
+    width: 260px;
     height: 100vh; /* Memastikan sidebar mengambil seluruh tinggi viewport */
-    background-color: #ffffff;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
     position: fixed; /* Memastikan sidebar tetap di tempat */
     top: 0; /* Menempel pada bagian atas */
     left: 0; /* Menempel pada sisi kiri */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.1) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 10px;
 }
 
 .sidebar .logo {
-    padding: 20px;
+    padding: 25px 20px;
     text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 10px;
 }
 
 .sidebar .logo img {
     width: 100%; /* Mengatur lebar gambar agar sesuai dengan lebar sidebar */
-    max-width: 140px; /* Maksimal lebar gambar */
-    max-height: 170px; /* Maksimal tinggi gambar */
+    max-width: 150px; /* Maksimal lebar gambar */
     height: auto; /* Menjaga proporsi gambar */
     object-fit: contain; /* Memastikan gambar tetap dalam proporsi */
-    margin-top: 20px;
-    margin-bottom:20px;
+    transition: transform 0.3s ease;
 }
 
+.sidebar .logo img:hover {
+    transform: scale(1.05);
+}
+
+/* Enhanced Menu */
 .sidebar .menu {
     flex-grow: 1;
+    padding: 10px 12px;
 }
 
 .sidebar .menu a {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    color: #333;
+    padding: 12px 16px;
+    color: #495057;
     text-decoration: none;
-    font-size: 15px;
-    transition: background-color 0.3s, color 0.3s; /* Transisi halus */
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease-in-out;
+    position: relative;
 }
 
 .sidebar .menu a:hover {
-    background-color: #4a6b4f;
-    color: #ffffff;
+    background-color: rgba(74, 107, 79, 0.08);
+    color: #4a6b4f;
+    transform: translateX(3px);
 }
 
 .sidebar .menu a.active {
-    background-color: #4d6b4a; /* Warna latar belakang saat aktif */
-    color: #ffffff; /* Warna teks saat aktif */
-    border-radius: 3px;
+    background-color: #4a6b4f;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(74, 107, 79, 0.2);
+}
 
+.sidebar .menu a.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 3px;
+    background-color: #4a6b4f;
+    border-radius: 0 3px 3px 0;
 }
 
 .sidebar .menu a i {
-    margin-right: 10px;
+    margin-right: 12px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    transition: transform 0.2s ease;
 }
 
+.sidebar .menu a:hover i {
+    transform: translateY(-1px);
+}
+
+/* Submenu Styling */
+.submenu {
+    margin-left: 20px;
+    padding-left: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    border-left: 1px dashed rgba(74, 107, 79, 0.2);
+    margin-bottom: 5px;
+}
+
+.submenu.active {
+    max-height: 200px;
+    transition: max-height 0.5s ease-in;
+}
+
+.submenu a {
+    padding: 10px 15px !important;
+    font-size: 13px !important;
+    color: #6c757d !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+.submenu a:hover {
+    background-color: rgba(74, 107, 79, 0.05) !important;
+}
+
+.submenu a i {
+    font-size: 14px !important;
+}
+
+/* Logout Section */
 .sidebar .logout {
     padding: 20px;
-    text-align: center;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.logout-icon {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+    margin-bottom: 15px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.logout-icon:hover {
+    opacity: 1;
 }
 
 .sidebar .logout button {
     background-color: #ffffff;
-    border: 2px solid #ccc;
-    padding: 10px 20px;
-    font-size: 16px;
+    border: 1px solid rgba(0,0,0,0.08);
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
+
 .sidebar .logout button:hover {
-    background-color:#4a6b4f; /* Mengubah warna background saat hover */
-    color: #ffffff; /* Mengubah warna teks saat hover */
-    transform: scale(1.05); /* Efek sedikit membesar saat hover */
+    background-color: #f1f5f2;
+    color: #4a6b4f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+}
+
+.sidebar .logout button:active {
+    transform: translateY(0);
 }
 
 .sidebar .logout button i {
     margin-right: 10px;
+    font-size: 16px;
+    transition: transform 0.2s;
 }
 
-.main-content {
-    margin-left: 250px; /* Mengatur margin untuk konten utama */
-    padding: 20px;
+.sidebar .logout button:hover i {
+    transform: rotate(90deg);
 }
 
+/* Modern Topbar */
 .topbar {
-    height: 40px;
-    padding: 15px 20px;
-    background-color: #4a6b4f;
+    height: 70px;
+    padding: 0 30px;
+    background: linear-gradient(90deg, #4a6b4f 0%, #3d5a41 100%);
     color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Menetapkan posisi tetap */
-    left: 240px; /* Menjaga jarak dari sidebar */
-    right: 0; /* Mengisi lebar yang tersisa */
-    top: 0; /* Menempel di bagian atas */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 260px;
+    right: 0;
+    top: 0;
+    z-index: 900;
+    transition: all 0.3s ease;
 }
 
-.main-content .content {
-    padding: 20px;
+.topbar h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    
+}
+
+.topbar h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
 }
 
 .topbar .profile-icon {
     width: 40px;
     height: 40px;
-    background-color: #fff;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #4c7745;
-    font-weight: bold;
+    color: #4a6b4f;
+    font-weight: 600;
+    font-size: 16px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.topbar .profile-icon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content {
+    position: absolute;
+    right: 10px;
+    top: 55px;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content a {
+    color: #495057;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-content a i {
+    margin-right: 10px;
+    font-size: 16px;
+    color: #4a6b4f;
+}
+
+.dropdown-content a:hover {
+    background-color: #f8f9fa;
+    color: #4a6b4f;
+}
+
+/* Main Content Adjustment */
+.main-content {
+    margin-left: 260px;
+    padding: 80px 30px 30px;
+    min-height: calc(100vh - 80px);
+    transition: all 0.3s ease;
+}
+
+.main-content .content {
+    padding: 20px;
 }
 
 .dropdown {
@@ -132,52 +319,8 @@ body {
     display: inline-block;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 1;
-    right: 0; /* Mengatur dropdown muncul di sebelah kanan */
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-
 .show {
     display: block;
-}
-/* Submenu */
-.submenu {
-    display: none; /* Tersembunyi secara default */
-    margin-left: 20px; /* Memberikan sedikit indentasi */
-    flex-direction: column;
-}
-
-.submenu a {
-    font-size: 14px;
-    padding: 10px 20px;
-    color: #666;
-    text-decoration: none;
-}
-
-.submenu a:hover {
-    background-color: #f1f1f1;
-    color: #000;
-}
-.logout-icon {
-    width:200px; /* Lebar gambar */
-    height: 200px; /* Mempertahankan proporsi gambar */
-    margin-bottom: 20px; /* Memberikan jarak antara gambar dan tombol */
 }
 
 .logout button {
@@ -190,10 +333,6 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-}
-.submenu {
-    margin-left: 20px; /* Menjorok submenu */
-    display: none; /* Secara default tersembunyi */
 }
 
 .menu a.active + .submenu {

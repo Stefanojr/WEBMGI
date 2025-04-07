@@ -31,13 +31,14 @@
         <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <!-- Form Identitas Grup -->
-            <div class="form-group">
-
+            <div class="form-group" style="display: none;">
                 <input type="text" name="id_user" value="{{ $userId }}" hidden>
             </div>
             <div class="section-title">IDENTITAS GRUP</div>
             <div class="form-group">
-                <label for="kreteria_grup">Kriteria Improvement</label>
+                <label for="kreteria_grup">
+                    <i class="fas fa-layer-group"></i> Kriteria Improvement
+                </label>
                 <select class="pilih" id="kreteria_grup" name="kreteria_grup" required>
                     <option value="" disabled selected>Pilih Kriteria</option>
                     <option value="scft">SIDO CROSS FUNCTIONAL TEAM (SCFT)</option>
@@ -46,7 +47,9 @@
             </div>
 
             <div class="form-group">
-                <label for="pabrik">Pabrik / Departemen</label>
+                <label for="pabrik">
+                    <i class="fas fa-industry"></i> Pabrik / Departemen
+                </label>
                 <select id="pabrik" name="id_perusahaan" required>
                     <option value="" disabled selected>Pilih Pabrik</option>
                     @foreach ($perusahaans as $perusahaan)
@@ -57,22 +60,28 @@
                     @endforeach
                 </select>
             </div>
-
             <div class="form-group">
-                <label for="nama_grup">Nama Grup</label>
-                <input type="text" id="nama_grup" name="nama_grup" value="{{ old('nama_grup') }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="unit">Unit</label>
+                <label for="unit">
+                    <i class="fas fa-building"></i> Unit
+                </label>
                 <select id="unit" name="unit" required>
-
+                    <option value="" disabled selected>Pilih Unit</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="nama_grup">
+                    <i class="fas fa-users"></i> Nama Grup
+                </label>
+                <input type="text" id="nama_grup" name="nama_grup" value="{{ old('nama_grup') }}" required placeholder="Masukkan Nama Grup">
+            </div>
+
+            
 
             <!-- Dynamic Unit Section -->
             <div id="dynamic-unit-section" style="display: none;">
-                <button type="button" id="add-unit-btn" class="insert-btn">+ Unit</button>
+                <button type="button" id="add-unit-btn" class="insert-btn">
+                    <i class="fas fa-plus-circle"></i> Tambah Unit
+                </button>
                 <div id="dynamic-unit-container">
                     <!-- Unit tambahan akan ditambahkan di sini -->
                 </div>
@@ -81,46 +90,67 @@
             <!-- Tema -->
             <div class="section-title">KETERANGAN TEMA</div>
             <div class="form-group">
-                <label for="nomor-tema">Nomor Tema</label>
-                <input type="text" id="nomor_tema" name="nomor_tema" value="{{ old('nomor_tema') }}" required>
+                <label for="nomor-tema">
+                    <i class="fas fa-hashtag"></i> Nomor Tema
+                </label>
+                <input type="text" id="nomor_tema" name="nomor_tema" value="{{ old('nomor_tema') }}" required placeholder="Contoh: 01">
             </div>
 
             <div class="form-group">
-                <label for="judul">Judul</label>
-                <input type="text" id="judul" name="judul" value="{{ old('judul') }}" required>
+                <label for="judul">
+                    <i class="fas fa-heading"></i> Judul
+                </label>
+                <input type="text" id="judul" name="judul" value="{{ old('judul') }}" required placeholder="Masukkan Judul ">
             </div>
             <div class="form-group">
-                <label for="tema">Tema</label>
-                <input type="text" id="tema" name="tema" value="{{ old('tema') }}" required>
+                <label for="tema">
+                    <i class="fas fa-lightbulb"></i> Tema
+                </label>
+                <input type="text" id="tema" name="tema" value="{{ old('tema') }}" required placeholder="Masukkan Tema ">
             </div>
 
             <!-- Struktur Organisasi Grup -->
             <div class="section-title">STRUKTUR ORGANISASI</div>
-            <div class="form-group">
-                <label for="jabatan_grup">Jabatan</label>
-                <select name="grup_temp[jabatan_grup]" id="jabatan_grup">
-                    <option value="" disabled selected>Pilih Jabatan</option>
-                    <option value="sponsor">Sponsor</option>
-                    <option value="fasilitator">Fasilitator</option>
-                    <option value="ketua">Ketua</option>
-                    <option value="sekretaris">Sekretaris</option>
-                    <option value="anggota">Anggota</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Perner</label>
-                <input type="text" name="grup_temp[perner]">
-            </div>
-            <div class="form-group">
-                <label>Nama</label>
-                <input type="text" name="grup_temp[nama]">
-            </div>
-            <div class="form-group">
-                <label>Foto</label>
-                <input type="file" name="grup_temp[foto]" accept=".jpg, .jpeg, .png">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="jabatan_grup">
+                        <i class="fas fa-id-badge"></i> Jabatan
+                    </label>
+                    <select name="grup_temp[jabatan_grup]" id="jabatan_grup">
+                        <option value="" disabled selected>Pilih Jabatan</option>
+                        <option value="sponsor">Sponsor</option>
+                        <option value="fasilitator">Fasilitator</option>
+                        <option value="ketua">Ketua</option>
+                        <option value="sekretaris">Sekretaris</option>
+                        <option value="anggota">Anggota</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-id-card"></i> Perner
+                    </label>
+                    <input type="text" name="grup_temp[perner]" placeholder="Masukkan Nomor Perner">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-user"></i> Nama
+                    </label>
+                    <input type="text" name="grup_temp[nama]" placeholder="Masukkan Nama Anggota">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-camera"></i> Foto
+                    </label>
+                    <input type="file" name="grup_temp[foto]" accept=".jpg, .jpeg, .png" class="file-input">
+                </div>
             </div>
             <input type="hidden" name="grup_data" id="grup_data">
-            <button type="button" class="insert-btn" onclick="addGrup()">+ Anggota</button>
+            <button type="button" class="insert-btn" onclick="addGrup()">
+                <i class="fas fa-user-plus"></i> Anggota
+            </button>
 
             <div class="table-scroll">
                 <table>
@@ -138,16 +168,14 @@
                 </table>
             </div>
 
-            <button type="submit" class="submit-btn">SUBMIT</button>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> SUBMIT
+            </button>
         </form>
 
         @push('scripts')
-            {{-- Get PErusahaan  --}}
             <!-- jQuery CDN -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
 
             <script>
                 $(document).ready(function() {
@@ -202,64 +230,75 @@
                         }
                     });
                 });
+                
                 var grupData = [];
                 var grupIndex = 0;
                 var unitIndex = 0;
 
                 function addGrup() {
-    var jabatan = document.querySelector('[name="grup_temp[jabatan_grup]"]').value;
-    var perner = document.querySelector('[name="grup_temp[perner]"]').value;
-    var nama = document.querySelector('[name="grup_temp[nama]"]').value;
-    var fotoInput = document.querySelector('[name="grup_temp[foto]"]');
-    var foto = fotoInput.files[0];
+                    var jabatan = document.querySelector('[name="grup_temp[jabatan_grup]"]').value;
+                    var perner = document.querySelector('[name="grup_temp[perner]"]').value;
+                    var nama = document.querySelector('[name="grup_temp[nama]"]').value;
+                    var fotoInput = document.querySelector('[name="grup_temp[foto]"]');
+                    var foto = fotoInput.files[0];
 
-    if (!jabatan || !perner || !nama) {
-        alert("Semua kolom harus diisi!");
-        return;
-    }
+                    if (!jabatan || !perner || !nama) {
+                        alert("Semua kolom harus diisi!");
+                        return;
+                    }
 
-    var fotoUrl = foto ? URL.createObjectURL(foto) : null;
+                    var fotoUrl = foto ? URL.createObjectURL(foto) : null;
 
-    grupData.push({
-        jabatan,
-        perner,
-        nama,
-        foto: foto ? foto.name : "Tidak ada foto"
-    });
+                    grupData.push({
+                        jabatan,
+                        perner,
+                        nama,
+                        foto: foto ? foto.name : "Tidak ada foto"
+                    });
 
-    var tableBody = document.getElementById("grup-table-body");
-    var newRow = `
-        <tr id="grup-row-${grupIndex}">
-            <td>${jabatan}</td>
-            <td>${perner}</td>
-            <td>${nama}</td>
-            <td>
-                ${foto ? `<a href="${fotoUrl}" target="_blank">${foto.name}</a>` : 'Tidak ada foto'}
-            </td>
-            <td><button type="button" onclick="removeGrup(${grupIndex})">Delete</button></td>
-        </tr>
-    `;
+                    var tableBody = document.getElementById("grup-table-body");
+                    var newRow = `
+                        <tr id="grup-row-${grupIndex}" class="fade-in">
+                            <td>${jabatan}</td>
+                            <td>${perner}</td>
+                            <td>${nama}</td>
+                            <td>
+                                ${foto ? `<a href="${fotoUrl}" target="_blank">${foto.name}</a>` : 'Tidak ada foto'}
+                            </td>
+                            <td>
+                                <button type="button" class="delete-btn" onclick="removeGrup(${grupIndex})">
+                                    <i class="fas fa-trash-alt"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
 
-    tableBody.insertAdjacentHTML('beforeend', newRow);
+                    tableBody.insertAdjacentHTML('beforeend', newRow);
 
-    document.querySelector('[name="grup_temp[jabatan_grup]"]').value = '';
-    document.querySelector('[name="grup_temp[perner]"]').value = '';
-    document.querySelector('[name="grup_temp[nama]"]').value = '';
-    fotoInput.value = '';
+                    // Clear form fields after adding
+                    document.querySelector('[name="grup_temp[jabatan_grup]"]').value = '';
+                    document.querySelector('[name="grup_temp[perner]"]').value = '';
+                    document.querySelector('[name="grup_temp[nama]"]').value = '';
+                    fotoInput.value = '';
 
-    grupIndex++;
-    updateGrupDataInput();
-}
-
-
+                    grupIndex++;
+                    updateGrupDataInput();
+                }
 
                 function removeGrup(index) {
-                    grupData.splice(index, 1);
                     var row = document.getElementById(`grup-row-${index}`);
-                    if (row) {
-                        row.remove();
-                    }
-                    updateGrupDataInput();
+                    
+                    // Add fade-out animation
+                    row.classList.add('fade-out');
+                    
+                    // After animation completes, remove the row
+                    setTimeout(function() {
+                        grupData.splice(index, 1);
+                        if (row) {
+                            row.remove();
+                        }
+                        updateGrupDataInput();
+                    }, 300);
                 }
 
                 function updateGrupDataInput() {
@@ -307,8 +346,53 @@
                         unitIndex = 0; // Reset unit count
                     }
                 });
-
             </script>
+            
+            <style>
+                .form-row {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    margin-bottom: 20px;
+                }
+                
+                @media (max-width: 768px) {
+                    .form-row {
+                        grid-template-columns: 1fr;
+                    }
+                }
+                
+                .fade-in {
+                    animation: fadeIn 0.5s forwards;
+                }
+                
+                .fade-out {
+                    animation: fadeOut 0.3s forwards;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(10px); }
+                }
+                
+                .file-input {
+                    border: 1px dashed #e1e5e9;
+                    padding: 12px !important;
+                    background-color: #f9fafb;
+                    transition: all 0.3s;
+                    cursor: pointer;
+                }
+                
+                .file-input:hover {
+                    border-color: #4a6b4f;
+                    background-color: rgba(74, 107, 79, 0.05);
+                }
+            </style>
         @endpush
     </div>
 

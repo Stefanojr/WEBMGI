@@ -19,7 +19,7 @@
         <input type="text" id="search-archive" placeholder="Cari Arsip..." class="search-input">
 
         <select id="year-filter" class="filter-dropdown">
-            <option value="">Pilih Tahun</option>
+            <option value="">Semua Tahun</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
             <option value="2022">2022</option>
@@ -27,7 +27,7 @@
         </select>
 
         <select id="category-filter" class="filter-dropdown">
-            <option value="">Pilih Kategori</option>
+            <option value="">Semua Kategori</option>
             <option value="sga">SGA</option>
             <option value="scft">SCFT</option>
             <option value="ss">SS</option>
@@ -69,6 +69,12 @@
 
         <!-- Add more years as needed -->
     </section>
+    
+    <!-- Empty state message (initially hidden) -->
+    <div class="empty-state" id="empty-state">
+        <i class="fas fa-search"></i>
+        <p>Tidak ada arsip yang sesuai dengan kriteria pencarian</p>
+    </div>
 
 </div>
 <script>
@@ -77,12 +83,15 @@
         const yearFilter = document.getElementById('year-filter');
         const categoryFilter = document.getElementById('category-filter');
         const archiveSections = document.querySelectorAll('.year-archive');
+        const emptyState = document.getElementById('empty-state');
 
         // Fungsi utama untuk pencarian dan filter
         function filterAndSearchArchives() {
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
             const selectedCategory = categoryFilter.value;
+            
+            let hasVisibleSection = false;
 
             archiveSections.forEach(section => {
                 const archiveItems = section.querySelectorAll('.archive-list li');
@@ -108,14 +117,34 @@
                 });
 
                 // Tampilkan/sembunyikan section berdasarkan hasil filter
-                section.style.display = hasVisibleItem ? 'block' : 'none';
+                if (hasVisibleItem) {
+                    section.style.display = 'block';
+                    hasVisibleSection = true;
+                } else {
+                    section.style.display = 'none';
+                }
             });
+            
+            // Show empty state if no results found
+            if (!hasVisibleSection) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
         }
+
+        // Add transition delay to cards for staggered animation
+        archiveSections.forEach((section, index) => {
+            section.style.animationDelay = `${index * 0.1}s`;
+        });
 
         // Event listeners untuk semua filter dan input
         searchInput.addEventListener('input', filterAndSearchArchives);
         yearFilter.addEventListener('change', filterAndSearchArchives);
         categoryFilter.addEventListener('change', filterAndSearchArchives);
+        
+        // Initialize search on page load
+        filterAndSearchArchives();
     });
 </script>
 @endsection
