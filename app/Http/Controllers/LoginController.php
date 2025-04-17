@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -14,9 +15,10 @@ class LoginController extends Controller
     {
         if ($user->role == 'superadmin') {
             return redirect()->route('superadmin.home');
-        } elseif ($user->role == 'unit') {
+        } elseif ($user->role == 'user') {
             return redirect()->route('unit.home2');
-
+        } elseif ($user->role == 'komite') {
+            return redirect()->route('superadmin.home');
         }
     }
 }

@@ -26,7 +26,7 @@ class PendaftaranController extends Controller
         $pendaftarans = Pendaftaran::where('id_user', $userId)->get(); //autentikasi berdasarkan user_id pengguna
 
         $step = StepsModel::first();
-        \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+        Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
         return view('unit.daftarImprovement', compact('pendaftarans', 'step'));
     }
@@ -47,7 +47,7 @@ class PendaftaranController extends Controller
         $pendaftarans = Pendaftaran::with('perusahaan')->get(); //menampilkan nama perusahaan berdasarkan id_perusahaan
 
 
-        \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+        Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
         return view('unit.daftarImprovement', compact('pendaftarans'));
     }
@@ -57,7 +57,7 @@ class PendaftaranController extends Controller
     {
         $pendaftarans = Pendaftaran::all();
 
-        \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+        Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
         return view('superadmin.daftarApproval', compact('pendaftarans'));
     }
@@ -66,9 +66,17 @@ class PendaftaranController extends Controller
     {
         $pendaftarans = Pendaftaran::all();
 
-        \Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+        Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
         return view('superadmin.daftarImprovementSA', compact('pendaftarans'));
+    }
+    public function masterData()
+    {
+        $pendaftarans = Pendaftaran::all();
+
+        Log::debug('Pendaftaran data:', $pendaftarans->toArray());
+
+        return view('superadmin.masterData', compact('pendaftarans'));
     }
 
 
@@ -96,19 +104,19 @@ class PendaftaranController extends Controller
                         'tanggal_upload' => $proses ? $proses->tanggal_upload : '-'
                     ];
 
-                    \Log::info('File data:', $data);
+                    Log::info('File data:', $data);
                     return $data;
                 });
 
             if ($files->isEmpty()) {
-                \Log::warning('No files found for id_pendaftaran: ' . $id_pendaftaran);
+                Log::warning('No files found for id_pendaftaran: ' . $id_pendaftaran);
                 return response()->json(['message' => 'No files found for this id_pendaftaran'], 404);
             }
 
-            \Log::info('Returning files data:', ['count' => $files->count(), 'data' => $files->toArray()]);
+            Log::info('Returning files data:', ['count' => $files->count(), 'data' => $files->toArray()]);
             return response()->json($files);
         } catch (\Exception $e) {
-            \Log::error('Error in getFilesByPendaftaran: ' . $e->getMessage());
+            Log::error('Error in getFilesByPendaftaran: ' . $e->getMessage());
             return response()->json(['error' => 'Internal server error'], 500);
         }
     }
@@ -133,7 +141,7 @@ class PendaftaranController extends Controller
 
         $userId = Auth::user()->id_user;
 
-        return view('unit.pendaftaran2', compact('perusahaans', 'units', 'userId'));
+        return view('unit.pendaftaran', compact('perusahaans', 'units', 'userId'));
     }
 
     public function store(Request $request)
@@ -203,9 +211,13 @@ class PendaftaranController extends Controller
 
     public function getUnits(Request $request)
     {
-        $units = Unit::where('id_perusahaan', $request->id_perusahaan)->get();
+        $units = Unit::where('id_perusahaan', $request->id_perusahaan)
+            ->orderBy('nama_unit', 'asc') // Urutkan berdasarkan nama_unit
+            ->get();
+
         return response()->json($units);
     }
+
 
     public function getStrukturAnggota($idPendaftaran)
     {
@@ -234,7 +246,6 @@ class PendaftaranController extends Controller
 
         $grupAnggota = Grup::where('id_pendaftaran', $id_pendaftaran)->get();
         return response()->json(['pendaftaran' => $pendaftaran, 'grupAnggota' => $grupAnggota]);
-
     }
 
     public function statusImprovement($idPendaftaran)
@@ -387,7 +398,7 @@ class PendaftaranController extends Controller
                 'message' => 'File uploaded successfully. Waiting for approval.'
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error uploading file: ' . $e->getMessage());
+            Log::error('Error uploading file: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while uploading the file: ' . $e->getMessage()
