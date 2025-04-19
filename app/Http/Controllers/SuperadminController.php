@@ -27,6 +27,10 @@ class SuperadminController extends Controller
     {
         return view('superadmin/daftarImprovementSA');
     }
+    public function masterData()
+    {
+        return view('superadmin/masterData');
+    }
     public function daftarApproval()
     {
         // Get all pendaftaran records
@@ -55,12 +59,10 @@ class SuperadminController extends Controller
     public function arsip()
     {
         return view('superadmin/arsip');
-
     }
     public function report()
     {
         return view('superadmin/report');
-
     }
 
     public function getAllFiles()
@@ -74,7 +76,7 @@ class SuperadminController extends Controller
         $files = FileModel::where('id_pendaftaran', $id_pendaftaran)
             ->with(['step', 'proses'])
             ->get()
-            ->map(function($file) {
+            ->map(function ($file) {
                 return [
                     'id' => $file->id,
                     'tanggal' => $file->upload_time ? $file->upload_time->format('d-m-Y H:i') : '-',
@@ -142,7 +144,7 @@ class SuperadminController extends Controller
             ];
 
             // Log the data being inserted
-            \Log::info('Attempting to insert approval data:', $approvalData);
+            // Log::info('Attempting to insert approval data:', $approvalData);
 
             $approval = Approval::create($approvalData);
 
@@ -166,8 +168,8 @@ class SuperadminController extends Controller
             return response()->json(['success' => true, 'message' => 'File berhasil disetujui!']);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Approval error: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            // Log::error('Approval error: ' . $e->getMessage());
+            // Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['success' => false, 'message' => 'Gagal approve file: ' . $e->getMessage()], 500);
         }
     }
@@ -229,10 +231,9 @@ class SuperadminController extends Controller
             return response()->json(['success' => true, 'message' => 'File berhasil ditolak!']);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Rejection error: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            // Log::error('Rejection error: ' . $e->getMessage());
+            // Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['success' => false, 'message' => 'Gagal reject file: ' . $e->getMessage()], 500);
         }
     }
 }
-

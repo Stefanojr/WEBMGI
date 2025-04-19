@@ -48,11 +48,11 @@ class AuthController extends Controller
 
         // Redirect berdasarkan role_user
         switch ($user->role_user) {
-            case 'admin':
-                return redirect()->route('sysadmin.home4');
+            case 'superadmin':
+                return redirect()->route('superadmin.home');
             case 'user':
                 return redirect()->route('unit.home2');
-            case 'manager':
+            case 'komite':
                 return redirect()->route('superadmin.home');
             default:
                 return back()->with('error', 'Role tidak ditemukan');
@@ -60,13 +60,12 @@ class AuthController extends Controller
     }
 
     public function logout()
-{
-    Auth::logout();
+    {
+        Auth::logout();
 
-    // Flash success message saat logout
-    session()->flash('success', 'Anda berhasil logout!');
+        // Flash success message saat logout
+        session()->flash('success', 'Anda berhasil logout!');
 
-    return redirect()->route('login');
-}
-
+        return redirect()->route('login');
+    }
 }

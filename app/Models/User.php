@@ -7,17 +7,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable; // Pastikan ini ada
 
 class User extends Authenticatable   // Pastikan User mengextends Authenticatable
 {
-    protected $table = 'tb_user'; // Nama tabel di database
-    protected $primaryKey = 'id_user'; // Nama primary key
-    public $timestamps = false; // Nonaktifkan timestamps otomatis
+    protected $table = 'users'; // Nama tabel di database
+    protected $primaryKey = 'id_user';
+    public $timestamps = false;
 
     protected $fillable = [
-        'id_unit', 'perner', 'password', 'nama_user', 'email_user', 'role_user', 'aktif'];
-
-    protected $casts = [
-            'aktif' => 'integer',
-        ];
-
+        'id_unit',
+        'perner',
+        'password',
+        'nama_user',
+        'email_user',
+        'role_user',
+        'aktif',
+        'created_at'
+    ];
 
     protected $dates = [
         'created_at', 'last_login'  // Ini untuk mengonversi timestamp ke objek Carbon

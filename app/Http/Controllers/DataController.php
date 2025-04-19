@@ -93,7 +93,7 @@ class DataController extends Controller
                 'perner' => 'required|string|max:255',
                 'password' => 'required|string|min:8',
                 'nama_user' => 'required|string|max:255',
-                'email_user' => 'required|email|unique:tb_user,email_user',
+                'email_user' => 'required|email|unique:users,email_user',
                 'role_user' => 'required|string|in:admin,staff,user',
                 'aktif' => 'required|integer|in:0,1',  // Memastikan aktif hanya 0 atau 1
             ]);
@@ -128,24 +128,24 @@ class DataController extends Controller
 
 
     public function edit($id_user)
-{
-    $user = User::findOrFail($id_user);
-    return response()->json($user);
-}
+    {
+        $user = User::findOrFail($id_user);
+        return response()->json($user);
+    }
 
-public function update(Request $request, $id_user)
-{
-    $user = User::findOrFail($id_user);
-    $user->update([
-        'perner' => $request->perner,
-        'nama_user' => $request->nama_user,
-        'email_user' => $request->email_user,
-        'role_user' => $request->role_user,
-        'id_unit' => $request->id_unit,
-        'aktif' => $request->has('aktif') ? 1 : 0,
-    ]);
-    return redirect()->route('users.index');
-}
+    public function update(Request $request, $id_user)
+    {
+        $user = User::findOrFail($id_user);
+        $user->update([
+            'perner' => $request->perner,
+            'nama_user' => $request->nama_user,
+            'email_user' => $request->email_user,
+            'role_user' => $request->role_user,
+            'id_unit' => $request->id_unit,
+            'aktif' => $request->has('aktif') ? 1 : 0,
+        ]);
+        return redirect()->route('users.index');
+    }
 
     public function destroy($id_user)
     {
@@ -153,6 +153,4 @@ public function update(Request $request, $id_user)
         $user->delete(); // Hapus data
         return redirect()->route('sysadmin.user')->with('success', 'User deleted successfully!');
     }
-
-
 }

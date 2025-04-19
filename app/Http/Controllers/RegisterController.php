@@ -26,9 +26,9 @@ class RegisterController extends Controller
         try {
             $request->validate([
                 'nama_user' => 'required|string|max:255',
-                'perner' => 'required|string|max:50|unique:tb_user,perner',
+                'perner' => 'required|string|max:50|unique:users,perner',
                 'password' => 'required|string|min:6',
-                'email_user' => 'required|email|max:255|unique:tb_user,email_user',
+                'email_user' => 'required|email|max:255|unique:users,email_user',
                 'id_perusahaan' => 'required|exists:perusahaan,id_perusahaan',
                 'id_unit' => 'required|exists:unit,id_unit',
             ]);
@@ -44,7 +44,6 @@ class RegisterController extends Controller
             $user->save();
 
             return redirect()->route('register.create')->with('success', 'Registrasi berhasil! Anda akan dialihkan ke halaman login.');
-
         } catch (\Exception $e) {
             return redirect()->route('register.create')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -55,6 +54,4 @@ class RegisterController extends Controller
         $units = Unit::where('id_perusahaan', $id_perusahaan)->get();
         return response()->json($units);
     }
-
-
 }

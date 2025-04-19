@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Perusahaan extends Model
@@ -11,12 +12,4 @@ class Perusahaan extends Model
     public $timestamps = false;
 
     protected $fillable = ['nama_perusahaan'];
-
-    // Relasi ke unit (Perusahaan memiliki banyak unit)
-    public function units()
-    {
-        return $this->hasMany(Unit::class, 'id_perusahaan', 'id_perusahaan');
-    }
-
-    
 }

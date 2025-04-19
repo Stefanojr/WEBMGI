@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Komite Page</title>
+    <title>E-SMIF</title>
     <link rel="stylesheet" href="../../css/main.css">
     <script>
         function confirmLogout() {
@@ -55,6 +55,8 @@
         };
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -83,6 +85,19 @@
                 <i class="fas fa-folder"></i>
                 Arsip SMIF
             </a>
+           <a href="/users">
+    <i class="fas fa-users"></i>
+    Data User
+</a>
+
+             
+              <a href="/superadmin/masterData">
+                <i class="fas fa-database"></i>
+                Master Data
+
+            </a>
+
+
         </div>
         <div class="logout">
             <img src="../images/gambarscft.png" class="logout-icon">
@@ -133,6 +148,9 @@
     <div class="main-content">
         @yield('content')
     </div>
+    <!-- Bootstrap JS (dengan Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stack('scripts')

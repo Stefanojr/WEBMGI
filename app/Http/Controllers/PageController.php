@@ -9,7 +9,8 @@ class PageController extends Controller
 {
 
 
-    public function index(){
+    public function index()
+    {
         return view('welcome');
     }
 
@@ -31,6 +32,12 @@ class PageController extends Controller
     {
         return view('superadmin/approval');
     }
+    public function masterData()
+    {
+        return view('superadmin/masterData');
+    }
+
+
 
 
     // unit
@@ -52,35 +59,35 @@ class PageController extends Controller
     }
 
 
-      // viewer
-      public function home3()
-      {
-          return view('viewer/home3');
-      }
-      public function pendaftaran3()
-      {
-          return view('viewer/pendaftaran3');
-      }
-      public function risalah3()
-      {
-          return view('viewer/risalah3');
-      }
-      public function approval3()
-      {
-          return view('viewer/approval3');
-      }
+    // viewer
+    public function home3()
+    {
+        return view('viewer/home3');
+    }
+    public function pendaftaran3()
+    {
+        return view('viewer/pendaftaran3');
+    }
+    public function risalah3()
+    {
+        return view('viewer/risalah3');
+    }
+    public function approval3()
+    {
+        return view('viewer/approval3');
+    }
 
 
-      //Sysadmin
+    //Sysadmin
 
-      public function home4()
-      {
-          return view('sysadmin/home4');
-      }
-      public function ManagementUser()
-      {
-          return view('sysadmin/ManagementUser');
-      }
+    public function home4()
+    {
+        return view('sysadmin/home4');
+    }
+    public function ManagementUser()
+    {
+        return view('sysadmin/ManagementUser');
+    }
 
     //   Logout
 
