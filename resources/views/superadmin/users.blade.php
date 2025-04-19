@@ -2,6 +2,8 @@
 @section('title', 'Risalah')
 
 @section('content')
+
+<link rel="stylesheet" href="../../css/usersSA.css">
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>DAFTAR USERS</h2>
@@ -18,9 +20,9 @@
                         <th>No</th>
                         <th>Perner</th>
                         <th>Nama User</th>
-                        <th>Email User</th>
-                        <th>Role User</th>
-                        <th>Aktif</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
                         <th>Nama Unit</th>
                         <th>Nama Perusahaan</th>
                         <th>Aksi</th>
@@ -41,12 +43,12 @@
             <td class="d-flex gap-2">
                 <!-- Edit Button -->
                 <button type="button" class="btn btn-warning btn-sm btn-edit-user" data-id="{{ $user->id_user }}">
-                    <i class="fas fa-edit"></i> Edit
+                    Edit
                 </button>
 
                 <!-- Delete Button -->
             <button type="button" class="btn btn-danger btn-sm deleteButton" data-id="{{ $user->id_user }}">
-    <i class="fas fa-trash"></i> Delete
+    Delete
 </button>
 
 
@@ -126,7 +128,7 @@
         <option value="">-- Pilih Unit --</option>
     </select>
 </div>
-                       
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" id="btnSimpanUser">Simpan</button>
@@ -273,7 +275,7 @@ $('#btnTambahUser').click(function () {
             }
         });
     // Trigger ketika tombol edit diklik
-    
+
     $('.btn-edit-user').click(function () {
         var id = $(this).data('id');
 
@@ -314,8 +316,8 @@ $('#btnTambahUser').click(function () {
                         dataUnit.forEach(function (dataUnit) {
                             html += '<option value="' + dataUnit.id_unit + '">' + dataUnit.nama_unit + '</option>';
                         });
- 
-                      
+
+
                         $('#id_unit').html(html);
                          $('[name="id_unit"]').val(data.id_unit).trigger('change');
                     },
@@ -329,7 +331,7 @@ $('#btnTambahUser').click(function () {
                         alert('Gagal mengambil data perusahaan dari unit.');
                     }
                 });
-               
+
             },
             error: function () {
                 alert('Gagal mengambil data user.');
