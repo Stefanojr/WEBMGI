@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../../css/usersSA.css">
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>DAFTAR USERS</h2>
+            <h2>DAFTAR USER</h2>
             <!-- Tombol Tambah -->
            <button type="button" class="btn text-white" style="background-color: #446349;" data-bs-toggle="modal" data-bs-target="#tambahUserModal">
     <i class="fas fa-user-plus"></i> Tambah User

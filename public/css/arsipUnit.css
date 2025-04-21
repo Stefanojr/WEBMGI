@@ -21,7 +21,7 @@ body {
 }
 
 .main-header h2 {
-    font-size: 16px;
+    font-size: 15px;
     color: #2c3e50;
     letter-spacing: 1px;
     font-weight: 600;
@@ -260,11 +260,11 @@ body {
         padding: 25px;
         margin-top: 70px;
     }
-    
+
     .search-filter {
         gap: 15px;
     }
-    
+
     .archive-year-section {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 25px;
@@ -276,23 +276,23 @@ body {
         padding: 20px;
         margin-top: 60px;
     }
-    
+
     .search-filter {
         flex-direction: column;
     }
-    
+
     .search-input, .filter-dropdown {
         width: 100%;
     }
-    
+
     .year-archive {
         padding: 20px;
     }
-    
+
     .year-archive h2 {
         font-size: 22px;
     }
-    
+
     .archive-list a {
         font-size: 14px;
     }

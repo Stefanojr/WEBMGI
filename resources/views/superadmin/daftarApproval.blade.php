@@ -380,7 +380,7 @@
 
                                             // If no more pending approvals for this row, refresh the page
                                             if (!document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr').querySelector('.notification-badge')) {
-                                                location.reload();
+                                            location.reload();
                                             }
                                         }
                                     });
@@ -810,7 +810,7 @@
             </script>
         @endpush
 
-       
+
     </body>
 
     </html>

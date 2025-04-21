@@ -3,7 +3,7 @@
     max-width: 1200px;
     width: 100%;
     margin: auto;
-    margin-top: 0px;
+    margin-top: -40px;
     padding: 30px;
     border-radius: 16px;
     background-color: #ffffff;
@@ -21,14 +21,17 @@
 /* Header Styles */
 .d-flex {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     margin-bottom: 2rem;
+    width: 100%;
+    gap: 20px;
 }
 
 h2 {
     text-align: center;
-    margin-bottom: 30px;
+    margin: 0;
     color: #2c3e50;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
@@ -171,10 +174,64 @@ h2::after {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    width: 100%;
 }
 
-/* Action Buttons Styles */
+/* Main Button (Tambah User) */
+.btn.text-white {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(74, 107, 79, 0.2);
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.btn.text-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 107, 79, 0.3);
+    background: linear-gradient(135deg, #3d5a41 0%, #324c36 100%);
+}
+
+.btn.text-white:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(74, 107, 79, 0.2);
+}
+
+/* Action Buttons (Edit/Delete) */
+.table td:last-child .btn-warning {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    color: white;
+    margin-right: 8px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.table td:last-child .btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
 .table td:last-child .btn {
     padding: 8px 16px;
     border-radius: 6px;
@@ -190,24 +247,7 @@ h2::after {
     letter-spacing: 0.3px;
     position: relative;
     overflow: hidden;
-    flex: 1;
-    min-width: 0;
-}
-
-.table td:last-child .btn i {
-    font-size: 12px;
-    transition: transform 0.2s ease;
-}
-
-.table td:last-child .btn-warning {
-    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
-    color: white;
-    margin-right: 8px;
-}
-
-.table td:last-child .btn-danger {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    color: white;
+    min-width: 80px;
 }
 
 .table td:last-child .btn::before {
@@ -236,7 +276,7 @@ h2::after {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Add icons to buttons */
+/* Add icons to action buttons */
 .table td:last-child .btn-warning::after {
     content: '\f044';
     font-family: 'Font Awesome 5 Free';
@@ -249,42 +289,6 @@ h2::after {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     font-size: 12px;
-}
-
-/* Button Styles */
-.btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    letter-spacing: 0.3px;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.btn-warning {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    color: white;
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    color: white;
-}
-
-.btn-warning:hover, .btn-danger:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-}
-
-.btn-warning:active, .btn-danger:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* Status Badge */
@@ -328,9 +332,9 @@ h2::after {
         font-size: 12px;
     }
 
-    .btn {
-        padding: 6px 12px;
-        font-size: 11px;
+    .btn.text-white {
+        padding: 8px 16px;
+        font-size: 12px;
     }
 
     .status-badge {
@@ -347,6 +351,7 @@ h2::after {
     .table td:last-child .btn {
         padding: 6px 12px;
         font-size: 11px;
+        min-width: 70px;
     }
 
     .table td:last-child .btn i {
@@ -372,4 +377,149 @@ h2::after {
 
 .modal.fade .modal-dialog {
     animation: fadeIn 0.3s ease;
+}
+
+/* Modal Styles */
+.modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin: 0;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    max-height: calc(90vh - 120px);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    flex-shrink: 0;
+}
+
+/* Form Grid Layout */
+.modal-body .row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-body .mb-3 {
+    margin-bottom: 0;
+}
+
+/* Form Styles */
+.form-label {
+    color: #2c3e50;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    display: block;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    height: 38px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4a6b4f;
+    box-shadow: 0 0 0 3px rgba(74, 107, 79, 0.1);
+    background-color: #ffffff;
+}
+
+/* Modal Buttons */
+.modal-footer .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+    height: 38px;
+}
+
+.modal-footer .btn-success {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 2px 6px rgba(74, 107, 79, 0.2);
+}
+
+.modal-footer .btn-secondary {
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    color: #2c3e50;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem;
+        max-height: 95vh;
+    }
+
+    .modal-body {
+        max-height: calc(95vh - 120px);
+    }
+
+    .modal-body .row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-control, .form-select {
+        padding: 7px 12px;
+        font-size: 13px;
+        height: 36px;
+    }
+
+    .modal-footer .btn {
+        padding: 7px 14px;
+        font-size: 13px;
+        height: 36px;
+    }
 }
