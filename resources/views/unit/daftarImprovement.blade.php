@@ -213,6 +213,9 @@
                 <button class="popup-close" id="popup-close-status">
                     <i class="fas fa-times"></i> Tutup
                 </button>
+                <button class="generate-pdf-btn" id="generate-pdf-btn" style="display: none;">
+                    <i class="fas fa-file-pdf"></i> Generate PDF
+                </button>
             </div>
         </div>
 
@@ -334,6 +337,7 @@
                         button.addEventListener('click', function() {
                             document.getElementById('overlay').style.display = 'block';
                             document.getElementById('popup-status').style.display = 'block';
+                            resetStepStatuses(); // Reset step statuses when opening popup
 
                             const idPendaftaran = button.getAttribute('data-id');
                             const statusBody = document.getElementById('status-body');
@@ -410,18 +414,7 @@
                     const isRejected = item.status?.toLowerCase() === 'rejected';
 
                     // Determine if this step's upload button should be disabled
-                    // Only disable if waiting or approved, enable if rejected
                     const isDisabled = isWaiting || isApproved;
-
-                    // Determine the tooltip message
-                    let tooltipMessage = '';
-                    if (isWaiting) {
-                        tooltipMessage = 'File is waiting for approval';
-                    } else if (isApproved) {
-                        tooltipMessage = 'File has been approved';
-                    } else if (isRejected) {
-                        tooltipMessage = 'Upload a new file after rejection';
-                    }
 
                     // Define status badge styles
                     let badgeStyle, badgeClass;
@@ -446,12 +439,52 @@
                             <button class="upload-btn ${isDisabled ? 'disabled-btn' : ''}"
                                 onclick="openUploadModal('${idPendaftaran}', ${item.tahapan})"
                                 ${isDisabled ? 'disabled' : ''}
-                                title="${tooltipMessage}">
+                                title="${isWaiting ? 'File is waiting for approval' : isApproved ? 'File has been approved' : isRejected ? 'Upload a new file after rejection' : ''}">
                                 <i class="fas fa-upload"></i>
                             </button>
                         </td>
                     `;
                     container.appendChild(row);
+
+                    // Store step data for later checking
+                    if (!window.stepStatuses) {
+                        window.stepStatuses = {};
+                    }
+                    window.stepStatuses[stepNumber] = {
+                        status: item.status?.toLowerCase(),
+                        isApproved: isApproved
+                    };
+
+                    // Check all steps up to step 8
+                    const generatePdfBtn = document.getElementById('generate-pdf-btn');
+                    let allStepsApproved = true;
+
+                    for (let i = 1; i <= 8; i++) {
+                        if (!window.stepStatuses[i] || window.stepStatuses[i].status !== 'approved') {
+                            allStepsApproved = false;
+                            break;
+                        }
+                    }
+
+                    if (allStepsApproved) {
+                        generatePdfBtn.style.display = 'block';
+                        generatePdfBtn.className = 'generate-pdf-btn ready';
+                        generatePdfBtn.innerHTML = `
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Generate & Finish</span>
+                        `;
+                        generatePdfBtn.onclick = function() {
+                            generatePdf(idPendaftaran);
+                        };
+                    } else {
+                        generatePdfBtn.style.display = 'none';
+                    }
+                }
+
+                // Add a function to reset step statuses when opening a new status popup
+                function resetStepStatuses() {
+                    window.stepStatuses = {};
+                    document.getElementById('generate-pdf-btn').style.display = 'none';
                 }
 
                 // Helper function to add an empty step row
@@ -653,6 +686,53 @@
                         console.error('Upload form element not found');
                     }
                 });
+
+                // Function to generate PDF
+                function generatePdf(idPendaftaran) {
+                    const filename = `improvement_${idPendaftaran}_${new Date().toISOString().split('T')[0]}`;
+
+                    fetch('/unit/generate-pdf', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            id_pendaftaran: idPendaftaran,
+                            filename: filename
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: data.message,
+                                timer: 3000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                // Close the popup
+                                document.getElementById('overlay').style.display = 'none';
+                                document.getElementById('popup-status').style.display = 'none';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: data.message
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while generating the PDF.'
+                        });
+                    });
+                }
             </script>
 
             <script>
@@ -673,56 +753,7 @@
         @endpush
 
         <style>
-            .popup-close {
-                background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
-            }
 
-            .popup-close:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
-            }
-
-            .popup-close:active {
-                transform: translateY(0);
-            }
-
-            .modal-close {
-                background: linear-gradient(135deg, #7f8c8d 0%, #576574 100%);
-                box-shadow: 0 4px 10px rgba(87, 101, 116, 0.2);
-            }
-
-            .modal-close:hover {
-                box-shadow: 0 6px 15px rgba(87, 101, 116, 0.3);
-            }
-
-            /* Update close button for modals */
-            .close {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                font-size: 28px;
-                font-weight: bold;
-                color: #aaa;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: none;
-            }
-
-            .close:hover {
-                color: #e74c3c;
-            }
         </style>
     </body>
 

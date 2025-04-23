@@ -155,6 +155,9 @@ Route::prefix('unit')->group(function () {
 
     // Rute untuk mengambil unit berdasarkan perusahaan
     Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
+
+    Route::get('/home2', [UnitController::class, 'home2'])->name('unit.home2');
+    Route::post('/filter', [UnitController::class, 'filterData'])->name('unit.filter');
 });
 
 

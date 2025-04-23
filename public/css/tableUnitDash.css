@@ -89,7 +89,7 @@ h3 {
     text-align: center;
     color: white;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     margin-bottom: 20px;
     letter-spacing: 0.3px;
 }
@@ -177,14 +177,14 @@ tr:last-child td:last-child {
 }
 
 /* Column-specific styling for better alignment */
-table td:first-child, 
+table td:first-child,
 table th:first-child {
     padding-left: 22px;
     width: 50px;
     text-align: center;
 }
 
-table td:last-child, 
+table td:last-child,
 table th:last-child {
     padding-right: 22px;
     text-align: center;
@@ -801,11 +801,11 @@ label {
         margin-left: 0;
         padding: 20px 15px;
     }
-    
+
     table td, table th {
         padding: 12px 15px;
     }
-    
+
     .status-badge {
         min-width: 60px;
         padding: 5px 10px;
@@ -1053,12 +1053,179 @@ label {
         width: 95%;
         padding: 20px;
     }
-    
+
     .leadership-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .anggota-container {
         grid-template-columns: 1fr;
     }
+}
+
+
+
+.popup-close {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+}
+
+.popup-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+}
+
+.popup-close:active {
+    transform: translateY(0);
+}
+
+.modal-close {
+    background: linear-gradient(135deg, #7f8c8d 0%, #576574 100%);
+    box-shadow: 0 4px 10px rgba(87, 101, 116, 0.2);
+}
+
+.modal-close:hover {
+    box-shadow: 0 6px 15px rgba(87, 101, 116, 0.3);
+}
+
+/* Update close button for modals */
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.close:hover {
+    color: #e74c3c;
+}
+
+.generate-pdf-btn {
+    background: #ffffff;
+    color: #324c36;
+    border: 2px solid #324c36;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-left: 15px;
+    z-index: 1;
+}
+
+.generate-pdf-btn:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #324c36, #4a6b4f);
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease;
+}
+
+.generate-pdf-btn:hover {
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.generate-pdf-btn:hover:after {
+    transform: scaleY(1);
+}
+
+.generate-pdf-btn i {
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: linear-gradient(45deg, #324c36, #4a6b4f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    margin-right: 5px;
+}
+
+.generate-pdf-btn:hover i {
+    background: #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: translateY(-2px);
+}
+
+.generate-pdf-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+/* Add a subtle pulse animation */
+@keyframes subtle-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.generate-pdf-btn.ready {
+    animation: subtle-pulse 2s infinite;
+}
+
+/* Add shadow on hover */
+.generate-pdf-btn:hover {
+    box-shadow: 0 5px 15px rgba(50, 76, 54, 0.15);
+}
+
+/* Active state */
+.generate-pdf-btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    .generate-pdf-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .generate-pdf-btn i {
+        font-size: 14px;
+    }
+}
+
+/* Appear animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.generate-pdf-btn {
+    animation: slideInUp 0.4s ease-out forwards;
 }

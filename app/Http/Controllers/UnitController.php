@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
+use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -83,6 +84,13 @@ class UnitController extends Controller
 
     public function home2()
     {
+        $userId = auth()->id();
+        $pendaftarans = Pendaftaran::where('id_user', $userId)
+            ->with(['files' => function($query) {
+                $query->orderBy('id_step', 'asc');
+            }])
+            ->get();
+
         // Menghitung jumlah unik id_unit
         $jumlahUnit = DB::table('unit')->select('id_unit')->distinct()->count();
         // Menghitung jumlah unik id_pendaftaran
@@ -90,7 +98,7 @@ class UnitController extends Controller
         // Menghitung jumlah komite (manager)
         $jumlahManager = DB::table('users')->where('role_user', 'manager')->count();
 
-        return view('unit.home2', compact('jumlahUnit', 'jumlahGrup', 'jumlahManager'));
+        return view('unit.home2', compact('jumlahUnit', 'jumlahGrup', 'jumlahManager', 'pendaftarans'));
     }
 
     public function daftarImprovement()
