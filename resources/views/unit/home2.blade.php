@@ -41,43 +41,43 @@
 
     <!-- Stats Section -->
     <section class="stats-section">
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Quality">
             <i class="fas fa-award stat-icon"></i>
             <div class="stat-info">
                 <p>Quality</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Cost">
             <i class="fas fa-money-bill-wave stat-icon"></i>
             <div class="stat-info">
                 <p>Cost</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Delivery">
             <i class="fas fa-box stat-icon"></i>
             <div class="stat-info">
                 <p>Delivery</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Safety">
             <i class="fas fa-shield-alt stat-icon"></i>
             <div class="stat-info">
                 <p>Safety</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Moral">
             <i class="fas fa-heart stat-icon"></i>
             <div class="stat-info">
                 <p>Moral</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Productivity">
             <i class="fas fa-chart-line stat-icon"></i>
             <div class="stat-info">
                 <p>Productivity</p>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" data-parameter="Environment">
             <i class="fas fa-globe stat-icon"></i>
             <div class="stat-info">
                 <p>Environment</p>
@@ -89,18 +89,22 @@
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="popup-close">&times;</span>
-        <h2>Detail</h2>
+        <h2 id="popup-title">Detail</h2>
         <table id="popup-table" class="popup-table">
             <thead>
                 <tr>
+                    <th>Nama Grup</th>
                     <th>Before</th>
                     <th>After</th>
+                    <th>Tahun</th>
                 </tr>
             </thead>
-            <tbody>
-
+            <tbody id="popup-table-body">
             </tbody>
         </table>
+        <div id="no-data-message" style="display: none; text-align: center; padding: 20px; color: #6c757d;">
+            Tidak ada data untuk parameter ini
+        </div>
     </div>
 </div>
 
@@ -123,13 +127,21 @@
                                 $files = $pendaftaran->files->sortBy('id_step');
                                 $latestApprovedStep = 0;
                                 $lastUpdate = null;
+                                $allStepsApproved = true;
 
                                 foreach($files as $file) {
                                     if($file->status === 'approved') {
                                         $latestApprovedStep = $file->id_step;
-                                        if(!$lastUpdate || $file->updated_at > $lastUpdate) {
-                                            $lastUpdate = $file->updated_at;
+                                    }
+                                    // Track the most recent update from any file
+                                    if($file->proses && $file->proses->tanggal_upload) {
+                                        $currentUpdate = \Carbon\Carbon::parse($file->proses->tanggal_upload);
+                                        if(!$lastUpdate || $currentUpdate > $lastUpdate) {
+                                            $lastUpdate = $currentUpdate;
                                         }
+                                    }
+                                    if($file->status !== 'approved') {
+                                        $allStepsApproved = false;
                                     }
                                 }
                             @endphp
@@ -179,9 +191,17 @@
                             </div>
                             <div class="last-update">
                                 <i class="fas fa-clock"></i>
-                                <span>Last update: {{ $lastUpdate ? $lastUpdate->format('d M Y') : 'N/A' }}</span>
+                                <span>Last update: {{ $lastUpdate ? $lastUpdate->format('d M Y H:i') : 'N/A' }}</span>
                             </div>
                         </div>
+
+                        @if($allStepsApproved)
+                            <div class="generate-section" style="display: none;">
+                                <div class="alert alert-success">
+                                    Berhasil dikumpulkan
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -196,6 +216,12 @@
         const filterGroup = document.getElementById('filterGroup');
         const applyFilter = document.getElementById('applyFilter');
         const progressCards = document.querySelectorAll('.progress-card');
+        const statCards = document.querySelectorAll('.stat-card');
+        const popup = document.getElementById('popup');
+        const popupClose = document.querySelector('.popup-close');
+        const popupTitle = document.getElementById('popup-title');
+        const popupTableBody = document.getElementById('popup-table-body');
+        const noDataMessage = document.getElementById('no-data-message');
 
         // Set current year as default
         const currentYear = new Date().getFullYear();
@@ -277,22 +303,102 @@
             filterGroup.value = latestId;
         }
 
-        // Popup untuk stat card
-        const statCards = document.querySelectorAll('.stat-card');
-        const popup = document.getElementById('popup');
-        const popupClose = document.querySelector('.popup-close');
-
         // Event listener untuk setiap stat card
         statCards.forEach(card => {
-            card.addEventListener('click', function () {
-                popup.style.display = 'block';
+            card.addEventListener('click', function() {
+                const parameter = this.getAttribute('data-parameter');
+                const year = filterYear.value;
+                const groupId = filterGroup.value;
+
+                // Fetch data from server
+                fetch(`/unit/get-qcdsmpe-data?parameter=${parameter}&year=${year}&group_id=${groupId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        popupTitle.textContent = `Detail ${parameter}`;
+                        popupTableBody.innerHTML = '';
+
+                        if (data.length === 0) {
+                            document.getElementById('popup-table').style.display = 'none';
+                            noDataMessage.style.display = 'block';
+                        } else {
+                            document.getElementById('popup-table').style.display = 'table';
+                            noDataMessage.style.display = 'none';
+
+                            data.forEach(item => {
+                                const row = document.createElement('tr');
+                                const date = new Date(item.tahun);
+                                row.innerHTML = `
+                                    <td>${item.nama_grup}</td>
+                                    <td>${item.before || '-'}</td>
+                                    <td>${item.after || '-'}</td>
+                                    <td>${date.getFullYear()}</td>
+                                `;
+                                popupTableBody.appendChild(row);
+                            });
+                        }
+                        popup.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat mengambil data');
+                    });
             });
         });
 
         // Close popup
-        popupClose.addEventListener('click', () => popup.style.display = 'none');
+        popupClose.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+
         window.addEventListener('click', event => {
-            if (event.target === popup) popup.style.display = 'none';
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+
+        // Function to check QCDSMPE status and update button visibility
+        function checkQcdsmpeStatus(idPendaftaran) {
+            fetch(`/unit/qcdsmpe/${idPendaftaran}`)
+                .then(response => response.json())
+                .then(data => {
+                    const qcdsmpeBtn = document.querySelector(`[data-id="${idPendaftaran}"] .btn_qcdsmpe`);
+
+                    if (data.success && data.data && data.data.length > 0) {
+                        // If QCDSMPE data exists
+                        if (qcdsmpeBtn) {
+                            qcdsmpeBtn.remove(); // Remove the QCDSMPE button
+                        }
+                        // Store status in localStorage
+                        localStorage.setItem(`qcdsmpe_submitted_${idPendaftaran}`, 'true');
+                    }
+                })
+                .catch(error => console.error('Error checking QCDSMPE status:', error));
+        }
+
+        // Check QCDSMPE status when opening status popup
+        document.querySelectorAll('.popup-btn-status').forEach(button => {
+            button.addEventListener('click', function() {
+                const idPendaftaran = this.getAttribute('data-id');
+
+                // Check if QCDSMPE has been submitted
+                if (localStorage.getItem(`qcdsmpe_submitted_${idPendaftaran}`) === 'true') {
+                    const qcdsmpeBtn = document.querySelector(`[data-id="${idPendaftaran}"] .btn_qcdsmpe`);
+                    if (qcdsmpeBtn) {
+                        qcdsmpeBtn.remove();
+                    }
+                } else {
+                    // If not in localStorage, check with server
+                    checkQcdsmpeStatus(idPendaftaran);
+                }
+            });
+        });
+
+        // Check all QCDSMPE statuses on page load
+        progressCards.forEach(card => {
+            const idPendaftaran = card.getAttribute('data-id');
+            if (idPendaftaran) {
+                checkQcdsmpeStatus(idPendaftaran);
+            }
         });
     });
 </script>

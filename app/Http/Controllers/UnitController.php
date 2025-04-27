@@ -6,6 +6,7 @@ use App\Models\Unit;
 use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UnitController extends Controller
 {
@@ -84,21 +85,49 @@ class UnitController extends Controller
 
     public function home2()
     {
-        $userId = auth()->id();
-        $pendaftarans = Pendaftaran::where('id_user', $userId)
-            ->with(['files' => function($query) {
-                $query->orderBy('id_step', 'asc');
-            }])
+        $userId = Auth::user()->id_user;
+        $pendaftarans = Pendaftaran::where('id_user', $userId)->get();
+
+        // Fetch QCDSMPE data for each pendaftaran
+        $qcdsmpeData = DB::table('qcdsmpe')
+            ->join('pendaftaran', 'qcdsmpe.id_pendaftaran', '=', 'pendaftaran.id_pendaftaran')
+            ->where('pendaftaran.id_user', $userId)
+            ->select('qcdsmpe.*', 'pendaftaran.created_at as tahun')
             ->get();
 
-        // Menghitung jumlah unik id_unit
-        $jumlahUnit = DB::table('unit')->select('id_unit')->distinct()->count();
-        // Menghitung jumlah unik id_pendaftaran
-        $jumlahGrup = DB::table('pendaftaran')->select('id_pendaftaran')->distinct()->count();
-        // Menghitung jumlah komite (manager)
-        $jumlahManager = DB::table('users')->where('role_user', 'manager')->count();
+        return view('unit.home2', compact('pendaftarans', 'qcdsmpeData'));
+    }
 
-        return view('unit.home2', compact('jumlahUnit', 'jumlahGrup', 'jumlahManager', 'pendaftarans'));
+    public function getQcdsmpeData(Request $request)
+    {
+        $userId = Auth::user()->id_user;
+        $year = $request->year;
+        $groupId = $request->group_id;
+        $parameter = $request->parameter;
+
+        $query = DB::table('qcdsmpe')
+            ->join('pendaftaran', 'qcdsmpe.id_pendaftaran', '=', 'pendaftaran.id_pendaftaran')
+            ->where('pendaftaran.id_user', $userId)
+            ->where('qcdsmpe.parameter', $parameter);
+
+        if ($year !== 'all') {
+            $query->whereYear('pendaftaran.created_at', $year);
+        }
+
+        if ($groupId) {
+            $query->where('qcdsmpe.id_pendaftaran', $groupId);
+        }
+
+        $data = $query->select(
+            'qcdsmpe.parameter',
+            'qcdsmpe.sebelum as before',
+            'qcdsmpe.sesudah as after',
+            'pendaftaran.id_pendaftaran',
+            'pendaftaran.nama_grup',
+            'pendaftaran.created_at as tahun'
+        )->get();
+
+        return response()->json($data);
     }
 
     public function daftarImprovement()

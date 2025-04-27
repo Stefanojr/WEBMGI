@@ -10,6 +10,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\QcdsmpeController;
 
 // Rute untuk login
 Route::get('/', function () {
@@ -79,9 +80,6 @@ Route::get('/unit/pendaftaran2', function () {
 Route::get('/unit/timetable', function () {
     return view('unit.timetable');
 })->name('unit.timetable');
-Route::get('/unit/qcdsmpe', function () {
-    return view('unit.qcdsmpe');
-})->name('unit.qcdsmpe');
 Route::get('/unit/arsip2', function () {
     return view('unit.arsip2');
 })->name('unit.arsip2');
@@ -157,6 +155,7 @@ Route::prefix('unit')->group(function () {
     Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
 
     Route::get('/home2', [UnitController::class, 'home2'])->name('unit.home2');
+    Route::get('/get-qcdsmpe-data', [UnitController::class, 'getQcdsmpeData'])->name('unit.getQcdsmpeData');
     Route::post('/filter', [UnitController::class, 'filterData'])->name('unit.filter');
 });
 
@@ -291,3 +290,8 @@ Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('u
 
 
 Route::get('/get-perusahaan-by-unit/{id_unit}', [UnitController::class, 'getPerusahaanByUnit']);
+
+// QCDSMPE Routes
+Route::get('/unit/qcdsmpe/{id_pendaftaran}', [QcdsmpeController::class, 'index'])->name('qcdsmpe.index');
+Route::post('/unit/submit-qcdsmpe', [QcdsmpeController::class, 'store'])->name('qcdsmpe.store')->middleware('web');
+Route::get('/unit/qcdsmpe/data/{id_pendaftaran}', [QcdsmpeController::class, 'show'])->name('qcdsmpe.show');

@@ -66,7 +66,7 @@ p{
     padding: 32px;
     text-align: center;
     width: 220px;
-    margin-top: 8px;
+    margin-top: 5px;
     margin-bottom: 10px;
     transition: transform 0.3s, box-shadow 0.4s;
     border: 1px solid rgba(0, 0, 0, 0.03);
@@ -478,7 +478,7 @@ p{
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     margin-top: -20px;
     margin-bottom: 30px;
-    height: 350px;
+    height: 360px;
 }
 
 .progress-section h2 {
@@ -764,3 +764,4 @@ p{
         min-width: 50px;
     }
 }
+

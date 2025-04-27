@@ -12,6 +12,7 @@
         <title>Daftar Pengajuan</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="../../css/tableUnitDash.css">
+        <link rel="stylesheet" href="../../css/qcdsmpe-popup.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </head>
@@ -57,7 +58,11 @@
                                 <td>{{ $pendaftaran->created_at ? $pendaftaran->created_at->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     <button class="popup-btn-status"
-                                        data-id="{{ $pendaftaran->id_pendaftaran }}">Detail</button>
+                                        data-id="{{ $pendaftaran->id_pendaftaran }}">
+                                        Detail
+                                        <span class="notification-badge" style="display: none;"></span>
+                                    </button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -213,9 +218,89 @@
                 <button class="popup-close" id="popup-close-status">
                     <i class="fas fa-times"></i> Tutup
                 </button>
-                <button class="generate-pdf-btn" id="generate-pdf-btn" style="display: none;">
-                    <i class="fas fa-file-pdf"></i> Generate PDF
+                <button class="btn_qcdsmpe" id="qcdsmpe-btn">
+                    <i class="fas fa-file-alt"></i> QCDSMPE
                 </button>
+            </div>
+        </div>
+
+        <!-- Popup for QCDSMPE form -->
+        <div class="popup qcdsmpe-popup" id="qcdsmpe-popup">
+            <div class="popup-header">
+                <h3>Form QCDSMPE</h3>
+                <button class="close-btn" id="close-qcdsmpe">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-content">
+                <div class="form-group id-group">
+                    <label for="id_daftar">ID Daftar</label>
+                    <input type="text" id="id_daftar" name="id_daftar" readonly>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="alat-kontrol">
+                            <i class="fas fa-chart-line"></i>
+                            Parameter
+                        </label>
+                        <select id="alat-kontrol" name="alat-kontrol">
+                            <option value="" disabled selected>Pilih Parameter</option>
+                            <option value="Quality">Quality</option>
+                            <option value="Cost">Cost</option>
+                            <option value="Delivery">Delivery</option>
+                            <option value="Safety">Safety</option>
+                            <option value="Moral">Moral</option>
+                            <option value="Productivity">Productivity</option>
+                            <option value="Environment">Environment</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="before">
+                            <i class="fas fa-arrow-left"></i>
+                            Before
+                        </label>
+                        <input type="text" id="before" name="before" placeholder="Masukkan nilai before">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="after">
+                            <i class="fas fa-arrow-right"></i>
+                            After
+                        </label>
+                        <input type="text" id="after" name="after" placeholder="Masukkan nilai after">
+                    </div>
+                </div>
+
+                <button class="insert-btn" id="addRowBtn">
+                    <i class="fas fa-plus"></i> Tambah Data
+                </button>
+
+                <div class="table-container">
+                    <div class="table-scroll">
+                        <table id="strukturOrganisasiTable">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Parameter</th>
+                                    <th>Before</th>
+                                    <th>After</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analysisTableBody">
+                                <!-- Data tabel akan ditambahkan di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="submit-btn" id="submit-qcdsmpe">
+                        <i class="fas fa-paper-plane"></i> Save
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -339,10 +424,35 @@
                             document.getElementById('popup-status').style.display = 'block';
                             resetStepStatuses(); // Reset step statuses when opening popup
 
-                            const idPendaftaran = button.getAttribute('data-id');
+                            const idPendaftaran = this.getAttribute('data-id');
                             const statusBody = document.getElementById('status-body');
                             statusBody.innerHTML = '';
 
+                            // First check QCDSMPE status
+                            fetch(`/unit/qcdsmpe/${idPendaftaran}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
+
+                                    if (data.success && data.data && data.data.length > 0) {
+                                        // If QCDSMPE data exists, hide QCDSMPE button
+                                        if (qcdsmpeBtn) {
+                                            qcdsmpeBtn.style.display = 'none';
+                                            qcdsmpeBtn.disabled = true;
+                                        }
+                                    } else {
+                                        // If no QCDSMPE data, show QCDSMPE button
+                                        if (qcdsmpeBtn) {
+                                            qcdsmpeBtn.style.display = 'flex';
+                                            qcdsmpeBtn.disabled = false;
+                                        }
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error checking QCDSMPE status:', error);
+                                });
+
+                            // Then fetch and display status data
                             fetch(`/files/pendaftaran/${idPendaftaran}`)
                                 .then(response => {
                                     if (!response.ok) {
@@ -397,7 +507,6 @@
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
-                                    // If there's an error (e.g., no files found), show the first step
                                     statusBody.innerHTML = '';
                                     addEmptyStepRow(1, idPendaftaran, statusBody);
                                 });
@@ -456,7 +565,7 @@
                     };
 
                     // Check all steps up to step 8
-                    const generatePdfBtn = document.getElementById('generate-pdf-btn');
+                    const generatePdfBtn = document.getElementById('qcdsmpe-btn');
                     let allStepsApproved = true;
 
                     for (let i = 1; i <= 8; i++) {
@@ -468,13 +577,13 @@
 
                     if (allStepsApproved) {
                         generatePdfBtn.style.display = 'block';
-                        generatePdfBtn.className = 'generate-pdf-btn ready';
+                        generatePdfBtn.className = 'qcdsmpe-btn ready';
                         generatePdfBtn.innerHTML = `
-                            <i class="fas fa-file-pdf"></i>
-                            <span>Generate & Finish</span>
+                            <i class="fas fa-file"></i>
+                            <span>QCDSMPE</span>
                         `;
                         generatePdfBtn.onclick = function() {
-                            generatePdf(idPendaftaran);
+                            generateQCDSMPE(idPendaftaran);
                         };
                     } else {
                         generatePdfBtn.style.display = 'none';
@@ -484,7 +593,7 @@
                 // Add a function to reset step statuses when opening a new status popup
                 function resetStepStatuses() {
                     window.stepStatuses = {};
-                    document.getElementById('generate-pdf-btn').style.display = 'none';
+                    document.getElementById('qcdsmpe-btn').style.display = 'none';
                 }
 
                 // Helper function to add an empty step row
@@ -688,50 +797,173 @@
                 });
 
                 // Function to generate PDF
-                function generatePdf(idPendaftaran) {
-                    const filename = `improvement_${idPendaftaran}_${new Date().toISOString().split('T')[0]}`;
+                function generateQCDSMPE(idPendaftaran) {
+                    // Show the QCDSMPE popup first
+                    document.getElementById('overlay').style.display = 'block';
+                    document.getElementById('qcdsmpe-popup').style.display = 'block';
+                    document.getElementById('id_daftar').value = idPendaftaran;
 
-                    fetch('/unit/generate-pdf', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            id_pendaftaran: idPendaftaran,
-                            filename: filename
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: data.message,
-                                timer: 3000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Close the popup
-                                document.getElementById('overlay').style.display = 'none';
-                                document.getElementById('popup-status').style.display = 'none';
-                            });
-                        } else {
+                    // Setup QCDSMPE form functionality
+                    setupQcdsmpeForm(idPendaftaran);
+                }
+
+                // Function to setup QCDSMPE form
+                function setupQcdsmpeForm(idPendaftaran) {
+                    const alatKontrolElement = document.getElementById('alat-kontrol');
+                    const beforeElement = document.getElementById('before');
+                    const afterElement = document.getElementById('after');
+                    const analysisTableBody = document.getElementById('analysisTableBody');
+                    const addRowBtn = document.getElementById('addRowBtn');
+                    let count = 0;
+
+                    // Add row button click handler
+                    addRowBtn.addEventListener('click', function () {
+                        const parameter = alatKontrolElement.value;
+                        const before = beforeElement.value;
+                        const after = afterElement.value;
+
+                        // Validate inputs
+                        if (!parameter || !before || !after) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error!',
-                                text: data.message
+                                text: 'Harap lengkapi semua input!',
+                                confirmButtonColor: '#4a6b4f'
                             });
+                            return;
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'An error occurred while generating the PDF.'
+
+                        // Create new row
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                            <td>${count + 1}</td>
+                            <td>${parameter}</td>
+                            <td>${before}</td>
+                            <td>${after}</td>
+                            <td>
+                                <button class="delete-btn" onclick="this.closest('tr').remove(); updateRowNumbers();">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        `;
+
+                        analysisTableBody.appendChild(row);
+                        count++;
+
+                        // Reset inputs
+                        alatKontrolElement.value = '';
+                        beforeElement.value = '';
+                        afterElement.value = '';
+                    });
+
+                    // Submit QCDSMPE form
+                    document.getElementById('submit-qcdsmpe').addEventListener('click', function() {
+                        const rows = analysisTableBody.getElementsByTagName('tr');
+                        if (rows.length === 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Harap tambahkan minimal satu data QCDSMPE!'
+                            });
+                            return;
+                        }
+
+                        // Collect data from table
+                        const qcdsmpeData = Array.from(rows).map(row => ({
+                            parameter: row.cells[1].textContent,
+                            before: row.cells[2].textContent,
+                            after: row.cells[3].textContent
+                        }));
+
+                        const data = {
+                            id_pendaftaran: idPendaftaran,
+                            qcdsmpe_data: qcdsmpeData
+                        };
+
+                        console.log('Sending data:', data);
+
+                        // Send data to server
+                        fetch('/unit/submit-qcdsmpe', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.text().then(text => {
+                                    throw new Error(text);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: data.message,
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // Close popups and clear form
+                                    document.getElementById('qcdsmpe-popup').style.display = 'none';
+                                    document.getElementById('overlay').style.display = 'none';
+                                    analysisTableBody.innerHTML = '';
+
+                                    // Hide QCDSMPE button and show Generate & Save in status popup
+                                    const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
+                                    const generateSaveBtn = document.getElementById('generate-save-btn');
+                                    if (qcdsmpeBtn) {
+                                        qcdsmpeBtn.style.display = 'none';
+                                        qcdsmpeBtn.disabled = true;
+                                        qcdsmpeBtn.remove();
+                                    }
+                                    if (generateSaveBtn) {
+                                        generateSaveBtn.style.display = 'flex';
+                                    }
+
+                                    // Store in localStorage that QCDSMPE has been submitted for this ID
+                                    localStorage.setItem(`qcdsmpe_submitted_${idPendaftaran}`, 'true');
+
+                                    // Refresh page to ensure all states are updated
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: data.message || 'Failed to save QCDSMPE data'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An error occurred while submitting QCDSMPE data: ' + error.message
+                            });
                         });
                     });
+
+                    // Close QCDSMPE popup
+                    document.getElementById('close-qcdsmpe').addEventListener('click', function() {
+                        document.getElementById('qcdsmpe-popup').style.display = 'none';
+                        document.getElementById('overlay').style.display = 'none';
+                    });
+                }
+
+                // Function to update row numbers
+                function updateRowNumbers() {
+                    const rows = document.getElementById('analysisTableBody').getElementsByTagName('tr');
+                    for (let i = 0; i < rows.length; i++) {
+                        rows[i].cells[0].textContent = i + 1;
+                    }
                 }
             </script>
 
@@ -750,11 +982,131 @@
                 // Auto-close setelah 5 detik
                 setTimeout(closeMessage, 5000);
             </script>
+
+
+
+            <script>
+                // Add this function to check for status changes
+                function checkStatusChanges() {
+                    document.querySelectorAll('.popup-btn-status').forEach(button => {
+                        const idPendaftaran = button.getAttribute('data-id');
+                        fetch(`/files/pendaftaran/${idPendaftaran}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'waiting');
+                                const badge = button.querySelector('.notification-badge');
+
+                                if (waitingItems.length > 0) {
+                                    badge.textContent = waitingItems.length;
+                                    badge.style.display = 'flex';
+                                    button.classList.add('has-notification');
+                                } else {
+                                    badge.style.display = 'none';
+                                    button.classList.remove('has-notification');
+                                }
+                            })
+                            .catch(error => console.error('Error checking status:', error));
+                    });
+                }
+
+                // Call the function when the page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    checkStatusChanges();
+                    // Check for changes every 30 seconds
+                    setInterval(checkStatusChanges, 30000);
+                });
+
+                // Modify the existing status popup click handler
+                document.querySelectorAll('.popup-btn-status').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const idPendaftaran = this.getAttribute('data-id');
+                        // ... existing code to show popup ...
+
+                        // After showing the popup, update the notification badge
+                        const badge = this.querySelector('.notification-badge');
+                        if (badge) {
+                            badge.style.display = 'none';
+                            this.classList.remove('has-notification');
+                        }
+                    });
+                });
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Check QCDSMPE status when status popup opens
+                    document.querySelectorAll('.popup-btn-status').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const idPendaftaran = this.getAttribute('data-id');
+                            checkQcdsmpeStatus(idPendaftaran);
+                        });
+                    });
+                });
+
+                function checkQcdsmpeStatus(idPendaftaran) {
+                    fetch(`/unit/qcdsmpe/${idPendaftaran}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
+                            const rowQcdsmpeBtn = document.querySelector(`button.btn_qcdsmpe[data-id="${idPendaftaran}"]`);
+
+                            if (data.success && data.data && data.data.length > 0) {
+                                // If QCDSMPE data exists
+                                if (qcdsmpeBtn) {
+                                    qcdsmpeBtn.style.display = 'none';
+                                    qcdsmpeBtn.disabled = true;
+                                }
+                                if (rowQcdsmpeBtn) {
+                                    rowQcdsmpeBtn.style.display = 'none';
+                                    rowQcdsmpeBtn.disabled = true;
+                                }
+                            } else {
+                                // If no QCDSMPE data
+                                if (qcdsmpeBtn) {
+                                    qcdsmpeBtn.style.display = 'flex';
+                                    qcdsmpeBtn.disabled = false;
+                                }
+                                if (rowQcdsmpeBtn) {
+                                    rowQcdsmpeBtn.style.display = 'inline-block';
+                                    rowQcdsmpeBtn.disabled = false;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+
+                // Check QCDSMPE status for all buttons when page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Check all QCDSMPE buttons on page load
+                    document.querySelectorAll('.btn_qcdsmpe').forEach(button => {
+                        const idPendaftaran = button.getAttribute('data-id');
+                        if (idPendaftaran) {
+                            checkQcdsmpeStatus(idPendaftaran);
+                        }
+                    });
+
+                    // Check when status popup opens
+                    document.querySelectorAll('.popup-btn-status').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const idPendaftaran = this.getAttribute('data-id');
+                            if (idPendaftaran) {
+                                setTimeout(() => {
+                                    checkQcdsmpeStatus(idPendaftaran);
+                                }, 100);
+                            }
+                        });
+                    });
+                });
+            </script>
+
         @endpush
 
-        <style>
+        @push('styles')
+            <link rel="stylesheet" href="{{ asset('css/qcdsmpe-popup.css') }}">
+        @endpush
 
-        </style>
     </body>
 
     </html>

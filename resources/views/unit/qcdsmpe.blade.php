@@ -13,7 +13,7 @@
 
     <div class="form-group" style="margin-bottom: 30px;">
         <label for="id_daftar">ID Daftar</label>
-        <input type="text" id="id_daftar" name="id_daftar" readonly>
+        <input type="text" id="id_daftar" name="id_daftar" value="{{ $id_pendaftaran }}" readonly>
     </div>
 
     <div class="form-grid">
@@ -63,7 +63,7 @@
         </table>
     </div>
 
-    <button class="submit-btn">
+    <button class="submit-btn" id="submitBtn">
         <i class="fas fa-check"></i> SUBMIT
     </button>
 </div>
@@ -75,9 +75,71 @@
     const afterElement = document.getElementById('after');
     const analysisTableBody = document.getElementById('analysisTableBody');
     const addRowBtn = document.getElementById('addRowBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const idDaftarElement = document.getElementById('id_daftar');
+
+    // Load existing data if any
+    window.addEventListener('load', function() {
+        const id_pendaftaran = idDaftarElement.value;
+        if (id_pendaftaran) {
+            fetch(`/unit/qcdsmpe/${id_pendaftaran}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.data) {
+                        result.data.forEach(item => {
+                            addRowToTable(item.parameter, item.sebelum, item.sesudah);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    });
 
     // Mengatur nomor awal
     let count = 0;
+
+    // Function to add row to table
+    function addRowToTable(parameter, before, after) {
+        const row = document.createElement('tr');
+
+        // Membuat elemen td untuk tiap kolom
+        const noCell = document.createElement('td');
+        noCell.textContent = count + 1;
+
+        const parameterCell = document.createElement('td');
+        parameterCell.textContent = parameter;
+
+        const beforeCell = document.createElement('td');
+        beforeCell.textContent = before;
+
+        const afterCell = document.createElement('td');
+        afterCell.textContent = after;
+
+        const actionCell = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteBtn.onclick = function() {
+            row.remove();
+            updateRowNumbers();
+        };
+        actionCell.appendChild(deleteBtn);
+
+        // Menambahkan semua cell ke dalam baris
+        row.appendChild(noCell);
+        row.appendChild(parameterCell);
+        row.appendChild(beforeCell);
+        row.appendChild(afterCell);
+        row.appendChild(actionCell);
+
+        // Menambahkan baris baru ke dalam tubuh tabel
+        analysisTableBody.appendChild(row);
+
+        // Increment counter
+        count++;
+    }
 
     // Fungsi untuk menambahkan baris baru ke tabel
     addRowBtn.addEventListener('click', function () {
@@ -87,45 +149,7 @@
 
         // Validasi input
         if (parameter && before && after) {
-            // Membuat elemen tr baru
-            const row = document.createElement('tr');
-
-            // Membuat elemen td untuk tiap kolom
-            const noCell = document.createElement('td');
-            noCell.textContent = count + 1;
-
-            const parameterCell = document.createElement('td');
-            parameterCell.textContent = parameter;
-
-            const beforeCell = document.createElement('td');
-            beforeCell.textContent = before;
-
-            const afterCell = document.createElement('td');
-            afterCell.textContent = after;
-
-            const actionCell = document.createElement('td');
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-            deleteBtn.onclick = function() {
-                row.remove();
-                // Update row numbers after deletion
-                updateRowNumbers();
-            };
-            actionCell.appendChild(deleteBtn);
-
-            // Menambahkan semua cell ke dalam baris
-            row.appendChild(noCell);
-            row.appendChild(parameterCell);
-            row.appendChild(beforeCell);
-            row.appendChild(afterCell);
-            row.appendChild(actionCell);
-
-            // Menambahkan baris baru ke dalam tubuh tabel
-            analysisTableBody.appendChild(row);
-
-            // Increment counter
-            count++;
+            addRowToTable(parameter, before, after);
 
             // Reset input form
             alatKontrolElement.value = '';
@@ -142,7 +166,54 @@
         for (let i = 0; i < rows.length; i++) {
             rows[i].cells[0].textContent = i + 1;
         }
+        count = rows.length;
     }
+
+    // Handle form submission
+    submitBtn.addEventListener('click', function() {
+        const rows = analysisTableBody.getElementsByTagName('tr');
+        const qcdsmpeData = [];
+
+        // Collect data from table rows
+        for (let i = 0; i < rows.length; i++) {
+            qcdsmpeData.push({
+                parameter: rows[i].cells[1].textContent,
+                before: rows[i].cells[2].textContent,
+                after: rows[i].cells[3].textContent
+            });
+        }
+
+        // Prepare the data
+        const data = {
+            id_pendaftaran: idDaftarElement.value,
+            qcdsmpe_data: qcdsmpeData
+        };
+
+        // Send the data to the server
+        fetch('/unit/submit-qcdsmpe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Data QCDSMPE berhasil disimpan!');
+                // Optional: Clear the table after successful submission
+                analysisTableBody.innerHTML = '';
+                count = 0;
+            } else {
+                alert('Gagal menyimpan data: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menyimpan data');
+        });
+    });
 </script>
 
 @endsection

@@ -175,7 +175,7 @@
 
                         if (perusahaanId) {
                             $.ajax({
-                                url: '/get-units/' + perusahaanId,
+                                url: '/unitByPerusahaan/' + perusahaanId,
                                 type: 'GET',
                                 success: function(data) {
                                     $('#unit').empty().append(
@@ -184,33 +184,10 @@
                                         $('#unit').append('<option value="' + unit.id_unit +
                                             '">' + unit.nama_unit + '</option>');
                                     });
-                                }
-                            });
-                        } else {
-                            $('#unit').empty().append('<option value="" disabled selected>Pilih Unit</option>');
-                        }
-                    });
-                });
-            </script>
-            <script>
-                $(document).ready(function() {
-                    $('#pabrik').on('change', function() {
-                        var perusahaanId = $(this).val();
-
-                        // Kosongkan dropdown unit sebelum mengisi data baru
-                        $('#unit').empty().append('<option value="" disabled selected>Loading...</option>');
-
-                        if (perusahaanId) {
-                            $.ajax({
-                                url: '/get-units/' + perusahaanId,
-                                type: 'GET',
-                                success: function(data) {
-                                    $('#unit').empty().append(
-                                        '<option value="" disabled selected>Pilih Unit</option>');
-                                    $.each(data, function(key, unit) {
-                                        $('#unit').append('<option value="' + unit.id_unit +
-                                            '">' + unit.nama_unit + '</option>');
-                                    });
+                                },
+                                error: function() {
+                                    alert('Gagal memuat data unit');
+                                    $('#unit').html('<option value="" disabled selected>Pilih Unit</option>');
                                 }
                             });
                         } else {
@@ -292,33 +269,6 @@
                     var grupDataInput = document.getElementById('grup_data');
                     grupDataInput.value = JSON.stringify(grupData);
                 }
-
-                document.getElementById('pabrik').addEventListener('change', function() {
-                    var perusahaanId = this.value;
-
-                    if (perusahaanId) {
-                        fetch('{{ route('get-units') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({
-                                    id_perusahaan: perusahaanId
-                                })
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                var unitSelect = document.getElementById('unit');
-                                unitSelect.innerHTML = '<option value="" disabled selected>Pilih Unit</option>';
-
-                                data.units.forEach(unit => {
-                                    unitSelect.innerHTML +=
-                                        `<option value="${unit.id_unit}">${unit.nama_unit}</option>`;
-                                });
-                            });
-                    }
-                });
             </script>
 
 

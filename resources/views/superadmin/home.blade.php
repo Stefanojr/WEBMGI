@@ -73,8 +73,14 @@
                     <h5><i class="fas fa-chart-line"></i> Grafik Jumlah Peserta Improvement</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Grafik bisa ditambahkan di sini menggunakan chart.js atau library lainnya -->
-                    <canvas id="proposalChart"></canvas>
+                    <!-- Debug info -->
+                    <div style="margin-bottom: 10px">
+                        <small>SGA Count: {{ $sgaCount }}     SCFT Count: {{ $scftCount }}</small>
+                    </div>
+                    <!-- Chart container with fixed height -->
+                    <div style="height: 400px;">
+                        <canvas id="proposalChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,117 +91,104 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Chart.js setup for proposal per category
-    var ctx = document.getElementById('proposalChart').getContext('2d');
-    var proposalChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['SGA', 'SCFT'],
-            datasets: [{
-                label: 'Jumlah Proposal',
-                data: [50, 40],
-                backgroundColor: [
-                    'rgba(30, 72, 48, 0.8)',  // SGA - new dark green color
-                    'rgba(30, 72, 48, 0.8)'   // SCFT - new dark green color
-                ],
-                borderColor: [
-                    'rgba(30, 72, 48, 1)',    // SGA - new dark green color
-                    'rgba(30, 72, 48, 1)'     // SCFT - new dark green color
-                ],
-                borderWidth: 2,
-                borderRadius: 12,
-                barThickness: 50,
-                hoverBackgroundColor: [
-                    'rgba(30, 72, 48, 1)',    // SGA - new dark green color
-                    'rgba(30, 72, 48, 1)'     // SCFT - new dark green color
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(30, 72, 48, 0.9)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderColor: 'rgba(30, 72, 48, 1)',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: false,
-                    callbacks: {
-                        label: function(context) {
-                            return `Jumlah: ${context.raw}`;
-                        }
-                    }
-                }
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('proposalChart').getContext('2d');
+        var proposalChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['SGA', 'SCFT'],
+                datasets: [{
+                    label: 'Jumlah Proposal',
+                    data: [{{ $sgaCount }}, {{ $scftCount }}],
+                    backgroundColor: [
+                        'rgba(30, 72, 48, 0.8)',  // SGA - dark green color
+                        'rgba(30, 72, 48, 0.8)'   // SCFT - dark green color
+                    ],
+                    borderColor: [
+                        'rgba(30, 72, 48, 1)',    // SGA - dark green color
+                        'rgba(30, 72, 48, 1)'     // SCFT - dark green color
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 12,
+                    barThickness: 50,
+                    hoverBackgroundColor: [
+                        'rgba(30, 72, 48, 1)',    // SGA - dark green color
+                        'rgba(30, 72, 48, 1)'     // SCFT - dark green color
+                    ]
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(30, 72, 48, 0.1)',
-                        drawBorder: false
-                    },
-                    ticks: {
-                        color: '#1e4830',
-                        font: {
-                            size: 12,
-                            family: "'Poppins', sans-serif",
-                            weight: '500'
-                        },
-                        padding: 10
-                    }
-                },
-                x: {
-                    grid: {
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
                         display: false
                     },
-                    ticks: {
-                        color: '#1e4830',
-                        font: {
-                            size: 12,
-                            family: "'Poppins', sans-serif",
-                            weight: '500'
-                        },
-                        padding: 10
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 72, 48, 0.9)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: 'rgba(30, 72, 48, 1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `Total: ${context.raw}`;
+                            }
+                        }
                     }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(30, 72, 48, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#1e4830',
+                            font: {
+                                size: 12,
+                                family: "'Poppins', sans-serif",
+                                weight: '500'
+                            },
+                            padding: 10
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#1e4830',
+                            font: {
+                                size: 12,
+                                family: "'Poppins', sans-serif",
+                                weight: '500'
+                            },
+                            padding: 10
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
                 }
-            },
-            animation: {
-                duration: 1500,
-                easing: 'easeInOutQuart'
             }
-        }
+        });
+
+        // Store chart in window object for later access
+        window.proposalChart = proposalChart;
     });
 
     function updateLaporan() {
         var tahun = document.getElementById('tahun').value;
-        var newData = [];
-
-        if (tahun === "2021") {
-            document.getElementById('jumlah-proposal').innerText = "120";
-            document.getElementById('tingkat-partisipasi').innerText = "60%";
-            newData = [40, 30];
-        } else if (tahun === "2022") {
-            document.getElementById('jumlah-proposal').innerText = "150";
-            document.getElementById('tingkat-partisipasi').innerText = "75%";
-            newData = [50, 40];
-        } else if (tahun === "2023") {
-            document.getElementById('jumlah-proposal').innerText = "200";
-            document.getElementById('tingkat-partisipasi').innerText = "85%";
-            newData = [70, 60];
-        } else if (tahun === "2024") {
-            document.getElementById('jumlah-proposal').innerText = "180";
-            document.getElementById('tingkat-partisipasi').innerText = "80%";
-            newData = [60, 50];
+        // Update chart data using the stored chart reference
+        if (window.proposalChart) {
+            window.proposalChart.data.datasets[0].data = [{{ $sgaCount }}, {{ $scftCount }}];
+            window.proposalChart.update();
         }
-
-        // Animate the chart update
-        proposalChart.data.datasets[0].data = newData;
-        proposalChart.update('none');
     }
 </script>
 

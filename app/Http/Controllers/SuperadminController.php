@@ -14,10 +14,32 @@ class SuperadminController extends Controller
 {
     public function home()
     {
-        // Menghitung jumlah unik id_pendaftaran
-        $jumlahGrup = DB::table('pendaftaran')->select('id_pendaftaran')->distinct()->count();
+        // Menghitung jumlah unik id_pendaftaran dari tabel pendaftaran
+        $jumlahGrup = DB::table('pendaftaran')
+            ->select('id_pendaftaran')
+            ->distinct()
+            ->count();
 
-        return view('superadmin.home', compact('jumlahGrup'));
+        // Menghitung jumlah grup untuk setiap kriteria
+        $kriteriaCounts = DB::table('pendaftaran')
+            ->select('kreteria_grup', DB::raw('count(*) as total'))
+            ->groupBy('kreteria_grup')
+            ->get();
+
+        // Initialize counts
+        $sgaCount = 0;
+        $scftCount = 0;
+
+        // Calculate totals for each kriteria
+        foreach ($kriteriaCounts as $kriteria) {
+            if (strtolower($kriteria->kreteria_grup) === 'sga') {
+                $sgaCount = $kriteria->total;
+            } elseif (strtolower($kriteria->kreteria_grup) === 'scft') {
+                $scftCount = $kriteria->total;
+            }
+        }
+
+        return view('superadmin.home', compact('jumlahGrup', 'sgaCount', 'scftCount'));
     }
     public function pendaftaran()
     {
