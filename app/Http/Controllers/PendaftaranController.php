@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Approval;
 use App\Models\FileModel;
+use App\Models\Qcdsmpe;
 use App\Models\StepsModel;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
@@ -29,6 +30,18 @@ class PendaftaranController extends Controller
         Log::debug('Pendaftaran data:', $pendaftarans->toArray());
 
         return view('unit.daftarImprovement', compact('pendaftarans', 'step'));
+    }
+
+    // In PendaftaranController.php
+    public function showStatusQcdsmpe($id)
+    {
+        $data = Qcdsmpe::where('id_pendaftaran', $id)->first();
+
+        return response()->json([
+            'success' => $data->status,
+            'exists' => !is_null($data),
+            'download_url' => route('qcdsmpe.download', $id) // Add this line
+        ]);
     }
 
     public function terimastatus($id)

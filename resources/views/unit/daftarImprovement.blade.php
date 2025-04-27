@@ -57,8 +57,7 @@
                                 <td>{{ $pendaftaran->judul }}</td>
                                 <td>{{ $pendaftaran->created_at ? $pendaftaran->created_at->format('d/m/Y') : '-' }}</td>
                                 <td>
-                                    <button class="popup-btn-status"
-                                        data-id="{{ $pendaftaran->id_pendaftaran }}">
+                                    <button class="popup-btn-status" data-id="{{ $pendaftaran->id_pendaftaran }}">
                                         Detail
                                         <span class="notification-badge" style="display: none;"></span>
                                     </button>
@@ -126,7 +125,8 @@
                                     <input type="text" id="sponsor" name="sponsor" readonly placeholder="Nama Sponsor">
                                 </div>
                                 <div class="member-perner">
-                                    <input type="text" id="sponsor-perner" name="sponsor-perner" readonly placeholder="Perner">
+                                    <input type="text" id="sponsor-perner" name="sponsor-perner" readonly
+                                        placeholder="Perner">
                                 </div>
                             </div>
                         </div>
@@ -138,10 +138,12 @@
                             </div>
                             <div class="member-data">
                                 <div class="member-name">
-                                    <input type="text" id="fasilitator" name="fasilitator" readonly placeholder="Nama Fasilitator">
+                                    <input type="text" id="fasilitator" name="fasilitator" readonly
+                                        placeholder="Nama Fasilitator">
                                 </div>
                                 <div class="member-perner">
-                                    <input type="text" id="fasilitator-perner" name="fasilitator-perner" readonly placeholder="Perner">
+                                    <input type="text" id="fasilitator-perner" name="fasilitator-perner" readonly
+                                        placeholder="Perner">
                                 </div>
                             </div>
                         </div>
@@ -156,7 +158,8 @@
                                     <input type="text" id="ketua" name="ketua" readonly placeholder="Nama Ketua">
                                 </div>
                                 <div class="member-perner">
-                                    <input type="text" id="ketua-perner" name="ketua-perner" readonly placeholder="Perner">
+                                    <input type="text" id="ketua-perner" name="ketua-perner" readonly
+                                        placeholder="Perner">
                                 </div>
                             </div>
                         </div>
@@ -168,10 +171,12 @@
                             </div>
                             <div class="member-data">
                                 <div class="member-name">
-                                    <input type="text" id="sekretaris" name="sekretaris" readonly placeholder="Nama Sekretaris">
+                                    <input type="text" id="sekretaris" name="sekretaris" readonly
+                                        placeholder="Nama Sekretaris">
                                 </div>
                                 <div class="member-perner">
-                                    <input type="text" id="sekretaris-perner" name="sekretaris-perner" readonly placeholder="Perner">
+                                    <input type="text" id="sekretaris-perner" name="sekretaris-perner" readonly
+                                        placeholder="Perner">
                                 </div>
                             </div>
                         </div>
@@ -237,6 +242,7 @@
                     <label for="id_daftar">ID Daftar</label>
                     <input type="text" id="id_daftar" name="id_daftar" readonly>
                 </div>
+                <input type="text" name="status" id="status" value="1" readonly>
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -377,29 +383,40 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data && data.length > 0) {
-                                        document.getElementById('id-pendaftaran').value = data[0].id_pendaftaran;
+                                        document.getElementById('id-pendaftaran').value = data[0]
+                                            .id_pendaftaran;
 
                                         data.forEach((grup) => {
                                             switch (grup.jabatan_grup) {
                                                 case 'sponsor':
-                                                    document.getElementById('sponsor').value = grup.nama || '-';
-                                                    document.getElementById('sponsor-perner').value = grup.perner || '-';
+                                                    document.getElementById('sponsor').value =
+                                                        grup.nama || '-';
+                                                    document.getElementById('sponsor-perner')
+                                                        .value = grup.perner || '-';
                                                     break;
                                                 case 'fasilitator':
-                                                    document.getElementById('fasilitator').value = grup.nama || '-';
-                                                    document.getElementById('fasilitator-perner').value = grup.perner || '-';
+                                                    document.getElementById('fasilitator')
+                                                        .value = grup.nama || '-';
+                                                    document.getElementById(
+                                                            'fasilitator-perner').value = grup
+                                                        .perner || '-';
                                                     break;
                                                 case 'ketua':
-                                                    document.getElementById('ketua').value = grup.nama || '-';
-                                                    document.getElementById('ketua-perner').value = grup.perner || '-';
+                                                    document.getElementById('ketua').value =
+                                                        grup.nama || '-';
+                                                    document.getElementById('ketua-perner')
+                                                        .value = grup.perner || '-';
                                                     break;
                                                 case 'sekretaris':
-                                                    document.getElementById('sekretaris').value = grup.nama || '-';
-                                                    document.getElementById('sekretaris-perner').value = grup.perner || '-';
+                                                    document.getElementById('sekretaris')
+                                                        .value = grup.nama || '-';
+                                                    document.getElementById('sekretaris-perner')
+                                                        .value = grup.perner || '-';
                                                     break;
                                                 case 'anggota':
                                                     // Create anggota card with improved styling
-                                                    const divAnggota = document.createElement('div');
+                                                    const divAnggota = document.createElement(
+                                                        'div');
                                                     divAnggota.classList.add('input-container');
                                                     divAnggota.innerHTML = `
                                         <label>Anggota</label>
@@ -464,7 +481,8 @@
                                     console.log('Received data:', data);
 
                                     // Check if we received an empty array or a 404 message wrapped in JSON
-                                    if (!data.length || (data.message && data.message.includes('No files found'))) {
+                                    if (!data.length || (data.message && data.message.includes(
+                                            'No files found'))) {
                                         console.log('No files found, showing default Step 1');
                                         // If no files yet, show the first step for upload
                                         addEmptyStepRow(1, idPendaftaran, statusBody);
@@ -486,7 +504,8 @@
                                         }
 
                                         // Track the latest approved step
-                                        if (item.status === 'approved' && stepNumber > latestApprovedStep) {
+                                        if (item.status === 'approved' && stepNumber >
+                                            latestApprovedStep) {
                                             latestApprovedStep = stepNumber;
                                         }
                                     });
@@ -500,7 +519,8 @@
                                     });
 
                                     // Add rows for missing steps up to the next available step
-                                    if (latestApprovedStep > 0 && nextStep <= 8 && !data.some(item => parseInt(item.tahapan) === nextStep)) {
+                                    if (latestApprovedStep > 0 && nextStep <= 8 && !data.some(item =>
+                                            parseInt(item.tahapan) === nextStep)) {
                                         // Add next step row for upload
                                         addEmptyStepRow(nextStep, idPendaftaran, statusBody);
                                     }
@@ -576,6 +596,7 @@
                     }
 
                     if (allStepsApproved) {
+
                         generatePdfBtn.style.display = 'block';
                         generatePdfBtn.className = 'qcdsmpe-btn ready';
                         generatePdfBtn.innerHTML = `
@@ -585,10 +606,61 @@
                         generatePdfBtn.onclick = function() {
                             generateQCDSMPE(idPendaftaran);
                         };
+
+                        showStatusQcdsmpe(idPendaftaran);
+
                     } else {
                         generatePdfBtn.style.display = 'none';
                     }
                 }
+
+                // Replace the showStatusQcdsmpe function with:
+                function showStatusQcdsmpe(idPendaftaran) {
+                    fetch(`/unit/qcdsmpe/status/${idPendaftaran}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
+                            const rowQcdsmpeBtn = document.querySelector(`button.btn_qcdsmpe[data-id="${idPendaftaran}"]`);
+
+                            console.log(data);
+                            if (data.success === 1) {
+                                // Replace button with download link
+                                if (qcdsmpeBtn) {
+                                    qcdsmpeBtn.innerHTML = `
+                        <a href="${data.download_url}" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            Download QCDSMPE
+                        </a>
+                    `;
+                                    qcdsmpeBtn.style.display = 'flex';
+                                }
+                                if (rowQcdsmpeBtn) {
+                                    rowQcdsmpeBtn.innerHTML = `
+                        <a href="${data.download_url}" class="download-btn">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    `;
+                                }
+                            } else {
+                                // Show normal button
+                                if (qcdsmpeBtn) {
+                                    qcdsmpeBtn.innerHTML = `
+                        <i class="fas fa-file"></i>
+                        <span>QCDSMPE</span>
+                    `;
+                                    qcdsmpeBtn.style.display = 'flex';
+                                }
+                                if (rowQcdsmpeBtn) {
+                                    rowQcdsmpeBtn.innerHTML = `QCDSMPE`;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+
+
 
                 // Add a function to reset step statuses when opening a new status popup
                 function resetStepStatuses() {
@@ -731,7 +803,8 @@
                             const formData = new FormData(this);
 
                             // Add CSRF token to formData instead of headers
-                            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content');
                             formData.append('_token', csrfToken);
 
                             // Debug FormData contents
@@ -742,54 +815,56 @@
 
                             console.log('Sending fetch request to /upload-file');
                             fetch('/unit/daftarImprovement/upload', {
-                                method: 'POST',
-                                body: formData
-                                // Removing headers when using FormData with files
-                            })
-                            .then(response => {
-                                console.log('Received response with status:', response.status);
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('Response data:', data);
-                                if (data.success) {
-                                    // Show success message
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: data.message,
-                                        timer: 3000,
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        // Close the modal with animation
-                                        const modal = document.getElementById('upload-modal');
-                                        modal.classList.remove('show');
+                                    method: 'POST',
+                                    body: formData
+                                    // Removing headers when using FormData with files
+                                })
+                                .then(response => {
+                                    console.log('Received response with status:', response.status);
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Response data:', data);
+                                    if (data.success) {
+                                        // Show success message
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success!',
+                                            text: data.message,
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            // Close the modal with animation
+                                            const modal = document.getElementById('upload-modal');
+                                            modal.classList.remove('show');
 
-                                        // Wait for animation to complete before hiding
-                                        setTimeout(() => {
-                                            modal.style.display = 'none';
-                                            document.getElementById('overlay').style.display = 'none';
-                                            // Refresh the page to show the updated data
-                                            window.location.href = window.location.pathname; // Refresh without query params
-                                        }, 300);
-                                    });
-                                } else {
-                                    // Show error message
+                                            // Wait for animation to complete before hiding
+                                            setTimeout(() => {
+                                                modal.style.display = 'none';
+                                                document.getElementById('overlay').style
+                                                    .display = 'none';
+                                                // Refresh the page to show the updated data
+                                                window.location.href = window.location
+                                                    .pathname; // Refresh without query params
+                                            }, 300);
+                                        });
+                                    } else {
+                                        // Show error message
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: data.message
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Error!',
-                                        text: data.message
+                                        text: 'An error occurred while uploading the file.'
                                     });
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error!',
-                                    text: 'An error occurred while uploading the file.'
                                 });
-                            });
                         });
                     } else {
                         console.error('Upload form element not found');
@@ -802,7 +877,7 @@
                     document.getElementById('overlay').style.display = 'block';
                     document.getElementById('qcdsmpe-popup').style.display = 'block';
                     document.getElementById('id_daftar').value = idPendaftaran;
-
+                    document.getElementById('status').value = '1';
                     // Setup QCDSMPE form functionality
                     setupQcdsmpeForm(idPendaftaran);
                 }
@@ -817,7 +892,7 @@
                     let count = 0;
 
                     // Add row button click handler
-                    addRowBtn.addEventListener('click', function () {
+                    addRowBtn.addEventListener('click', function() {
                         const parameter = alatKontrolElement.value;
                         const before = beforeElement.value;
                         const after = afterElement.value;
@@ -841,6 +916,7 @@
                             <td>${parameter}</td>
                             <td>${before}</td>
                             <td>${after}</td>
+
                             <td>
                                 <button class="delete-btn" onclick="this.closest('tr').remove(); updateRowNumbers();">
                                     <i class="fas fa-trash-alt"></i>
@@ -873,82 +949,85 @@
                         const qcdsmpeData = Array.from(rows).map(row => ({
                             parameter: row.cells[1].textContent,
                             before: row.cells[2].textContent,
-                            after: row.cells[3].textContent
+                            after: row.cells[3].textContent,
+                            status: '1'
                         }));
 
                         const data = {
                             id_pendaftaran: idPendaftaran,
-                            qcdsmpe_data: qcdsmpeData
+                            qcdsmpe_data: qcdsmpeData,
+                            status: '1'
                         };
 
                         console.log('Sending data:', data);
 
                         // Send data to server
                         fetch('/unit/submit-qcdsmpe', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify(data)
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.text().then(text => {
-                                    throw new Error(text);
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: data.message,
-                                    timer: 3000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    // Close popups and clear form
-                                    document.getElementById('qcdsmpe-popup').style.display = 'none';
-                                    document.getElementById('overlay').style.display = 'none';
-                                    analysisTableBody.innerHTML = '';
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                        'content'),
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.text().then(text => {
+                                        throw new Error(text);
+                                    });
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: data.message,
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Close popups and clear form
+                                        document.getElementById('qcdsmpe-popup').style.display = 'none';
+                                        document.getElementById('overlay').style.display = 'none';
+                                        analysisTableBody.innerHTML = '';
 
-                                    // Hide QCDSMPE button and show Generate & Save in status popup
-                                    const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
-                                    const generateSaveBtn = document.getElementById('generate-save-btn');
-                                    if (qcdsmpeBtn) {
-                                        qcdsmpeBtn.style.display = 'none';
-                                        qcdsmpeBtn.disabled = true;
-                                        qcdsmpeBtn.remove();
-                                    }
-                                    if (generateSaveBtn) {
-                                        generateSaveBtn.style.display = 'flex';
-                                    }
+                                        // Hide QCDSMPE button and show Generate & Save in status popup
+                                        const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
+                                        const generateSaveBtn = document.getElementById('generate-save-btn');
+                                        if (qcdsmpeBtn) {
+                                            qcdsmpeBtn.style.display = 'none';
+                                            qcdsmpeBtn.disabled = true;
+                                            qcdsmpeBtn.remove();
+                                        }
+                                        if (generateSaveBtn) {
+                                            generateSaveBtn.style.display = 'flex';
+                                        }
 
-                                    // Store in localStorage that QCDSMPE has been submitted for this ID
-                                    localStorage.setItem(`qcdsmpe_submitted_${idPendaftaran}`, 'true');
+                                        // Store in localStorage that QCDSMPE has been submitted for this ID
+                                        localStorage.setItem(`qcdsmpe_submitted_${idPendaftaran}`, 'true');
 
-                                    // Refresh page to ensure all states are updated
-                                    window.location.reload();
-                                });
-                            } else {
+                                        // Refresh page to ensure all states are updated
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: data.message || 'Failed to save QCDSMPE data'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error!',
-                                    text: data.message || 'Failed to save QCDSMPE data'
+                                    text: 'An error occurred while submitting QCDSMPE data: ' + error.message
                                 });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: 'An error occurred while submitting QCDSMPE data: ' + error.message
                             });
-                        });
                     });
 
                     // Close QCDSMPE popup
@@ -1100,7 +1179,6 @@
                     });
                 });
             </script>
-
         @endpush
 
         @push('styles')

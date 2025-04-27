@@ -295,3 +295,7 @@ Route::get('/get-perusahaan-by-unit/{id_unit}', [UnitController::class, 'getPeru
 Route::get('/unit/qcdsmpe/{id_pendaftaran}', [QcdsmpeController::class, 'index'])->name('qcdsmpe.index');
 Route::post('/unit/submit-qcdsmpe', [QcdsmpeController::class, 'store'])->name('qcdsmpe.store')->middleware('web');
 Route::get('/unit/qcdsmpe/data/{id_pendaftaran}', [QcdsmpeController::class, 'show'])->name('qcdsmpe.show');
+
+Route::get('/unit/qcdsmpe/status/{id_pendaftaran}', [PendaftaranController::class, 'showStatusQcdsmpe'])->name('qcdsmpe.showStatusQcdsmpe');
+// In web.php
+Route::get('/unit/qcdsmpe/download/{id_pendaftaran}', [QcdsmpeController::class, 'download'])->name('qcdsmpe.download');

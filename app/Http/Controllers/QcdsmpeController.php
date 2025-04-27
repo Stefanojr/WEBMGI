@@ -26,6 +26,7 @@ class QcdsmpeController extends Controller
                 'qcdsmpe_data.*.before' => 'required|string',
                 'qcdsmpe_data.*.after' => 'required|string',
                 'qcdsmpe_data.*.status' => 'required|string',
+                'status' => 'required|string',
             ]);
 
             Log::info('Received QCDSMPE data:', $data);
@@ -35,7 +36,7 @@ class QcdsmpeController extends Controller
 
             // Insert new QCDSMPE data using raw SQL to ensure proper value escaping
             foreach ($data['qcdsmpe_data'] as $item) {
-                DB::insert('INSERT INTO qcdsmpe (id_pendaftaran, parameter, sebelum, sesudah) VALUES (?, ?, ?, ?)', [
+                DB::insert('INSERT INTO qcdsmpe (id_pendaftaran, parameter, sebelum, sesudah, status) VALUES (?, ?, ?, ?, ?)', [
                     $data['id_pendaftaran'],
                     $item['parameter'],
                     $item['before'],
@@ -60,6 +61,20 @@ class QcdsmpeController extends Controller
                 'message' => 'Failed to save QCDSMPE data: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    // In QcdsmpeController.php
+    public function download($id_pendaftaran)
+    {
+        // Add your PDF generation/download logic here
+        // Example:
+        $file = storage_path('app/qcdsmpe/' . $id_pendaftaran . '.pdf');
+
+        if (file_exists($file)) {
+            return response()->download($file);
+        }
+
+        return abort(404);
     }
 
     public function show($id_pendaftaran)
