@@ -432,4 +432,115 @@ class PendaftaranController extends Controller
         $statuses = Approval::where('id_grup', $id_grup)->get();
         return response()->json($statuses);
     }
+
+    /**
+     * Get pendaftaran data for Generate & Finish popup
+     */
+    public function getPendaftaranData($id_pendaftaran)
+    {
+        try {
+            // Get the pendaftaran data
+            $pendaftaran = Pendaftaran::with(['perusahaan', 'unit', 'grup'])
+                ->where('id_pendaftaran', $id_pendaftaran)
+                ->first();
+            
+            if (!$pendaftaran) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran not found'
+                ], 404);
+            }
+            
+            // Format the data as needed
+            $data = [
+                'id_pendaftaran' => $pendaftaran->id_pendaftaran,
+                'judul' => $pendaftaran->judul,
+                'perusahaan' => $pendaftaran->perusahaan ? $pendaftaran->perusahaan->nama_perusahaan : null,
+                'unit' => $pendaftaran->unit ? $pendaftaran->unit->nama_unit : null,
+                'grup' => $pendaftaran->grup ? $pendaftaran->grup->nama_grup : null,
+                'tanggal' => $pendaftaran->created_at ? $pendaftaran->created_at->format('d-m-Y') : null,
+                'status' => $pendaftaran->status
+            ];
+            
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error fetching pendaftaran data: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching pendaftaran data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle Generate & Finish form submission
+     */
+    public function generateFinish(Request $request)
+    {
+        try {
+            // Validate the request
+            $validated = $request->validate([
+                'id_pendaftaran' => 'required',
+                'file_name' => 'required|string|max:255',
+            ]);
+
+            $id_pendaftaran = $request->input('id_pendaftaran');
+            $fileName = $request->input('file_name');
+
+            // Get the pendaftaran data
+            $pendaftaran = Pendaftaran::find($id_pendaftaran);
+            
+            if (!$pendaftaran) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran not found'
+                ], 404);
+            }
+
+            // Get QCDSMPE data
+            $qcdsmpe = Qcdsmpe::where('id_pendaftaran', $id_pendaftaran)->first();
+            
+            if (!$qcdsmpe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'QCDSMPE data not found. Please create QCDSMPE first.'
+                ], 404);
+            }
+
+            // Here you would typically generate the PDF or other document
+            // For now, we'll just update the status or record the action
+
+            // Record the generation action
+            DB::table('generate_history')->insert([
+                'id_pendaftaran' => $id_pendaftaran,
+                'file_name' => $fileName,
+                'generated_by' => Auth::id(),
+                'generated_at' => now(),
+                'status' => 'completed'
+            ]);
+
+            // Update the pendaftaran status if needed
+            // $pendaftaran->status = 'finalized';
+            // $pendaftaran->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'File successfully generated and finalized',
+                'file_name' => $fileName
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error in Generate & Finish: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing your request: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

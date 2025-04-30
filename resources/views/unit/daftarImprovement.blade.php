@@ -204,6 +204,12 @@
         <!-- Popup Status -->
         <div class="popup" id="popup-status">
             <h3>Status</h3>
+            <!-- Add new button for popup when status = 1 -->
+            <div class="status-header-actions">
+                <button class="status-comment-btn" id="status-comment-btn" style="display: none;">
+                    <i class="fas fa-file-pdf"></i> Generate & Finish
+                </button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -229,20 +235,37 @@
             </div>
         </div>
 
+        <!-- New popup for status comment -->
+        <div class="popup" id="generate-popup">
+            <h3>Generate & Finish</h3>
+            <div class="form-group">
+                <input type="text" id="id_daftar" name="id_daftar" readonly>
+                <label for="status-comment">Nama File</label>
+                <input type="text" id="status-comment" name="status-comment" placeholder="Contoh: SidoIT_SGA_2025">
+            </div>
+            <div class="form-actions">
+                <button class="popup-close" id="generate-popup-close">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="submit-btn" id="submit-comment">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+            </div>
+        </div>
+
         <!-- Popup for QCDSMPE form -->
         <div class="popup qcdsmpe-popup" id="qcdsmpe-popup">
             <div class="popup-header">
-                <h3>Form QCDSMPE</h3>
+                <h3> QCDSMPE</h3>
                 <button class="close-btn" id="close-qcdsmpe">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="popup-content">
                 <div class="form-group id-group">
-                    <label for="id_daftar">ID Daftar</label>
-                    <input type="text" id="id_daftar" name="id_daftar" readonly>
+                    <input type="text" id="id_daftar" name="id_daftar" hidden>
                 </div>
-                <input type="text" name="status" id="status" value="1" readonly>
+                <input type="text" name="status" id="status" value="1" hidden>
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -621,28 +644,23 @@
                         .then(data => {
                             const qcdsmpeBtn = document.getElementById('qcdsmpe-btn');
                             const rowQcdsmpeBtn = document.querySelector(`button.btn_qcdsmpe[data-id="${idPendaftaran}"]`);
+                            const statusCommentBtn = document.getElementById('status-comment-btn');
 
                             console.log(data);
                             if (data.success === 1) {
-                                // Replace button with download link
+                                // Hide QCDSMPE button when status is 1
                                 if (qcdsmpeBtn) {
-                                    qcdsmpeBtn.innerHTML = `
-                        <a href="${data.download_url}" class="download-btn">
-                            <i class="fas fa-download"></i>
-                            Download QCDSMPE
-                        </a>
-                    `;
-                                    qcdsmpeBtn.style.display = 'flex';
+                                    qcdsmpeBtn.style.display = 'none';
                                 }
                                 if (rowQcdsmpeBtn) {
-                                    rowQcdsmpeBtn.innerHTML = `
-                        <a href="${data.download_url}" class="download-btn">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    `;
+                                    rowQcdsmpeBtn.style.display = 'none';
+                                }
+                                // Show comment button when status is 1
+                                if (statusCommentBtn) {
+                                    statusCommentBtn.style.display = 'block';
                                 }
                             } else {
-                                // Show normal button
+                                // Show normal button when status is not 1
                                 if (qcdsmpeBtn) {
                                     qcdsmpeBtn.innerHTML = `
                         <i class="fas fa-file"></i>
@@ -652,11 +670,16 @@
                                 }
                                 if (rowQcdsmpeBtn) {
                                     rowQcdsmpeBtn.innerHTML = `QCDSMPE`;
+                                    rowQcdsmpeBtn.style.display = 'inline-block';
+                                }
+                                // Hide comment button when status is not 1
+                                if (statusCommentBtn) {
+                                    statusCommentBtn.style.display = 'none';
                                 }
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
+                            console.error('Error checking QCDSMPE status:', error);
                         });
                 }
 
@@ -1179,7 +1202,167 @@
                     });
                 });
             </script>
-        @endpush
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Setup for generate popup
+                    const statusCommentBtn = document.getElementById('status-comment-btn');
+                    const generatePopup = document.getElementById('generate-popup');
+                    const generatePopupClose = document.getElementById('generate-popup-close');
+                    const submitComment = document.getElementById('submit-comment');
+                    
+                    if (statusCommentBtn) {
+                        statusCommentBtn.addEventListener('click', function() {
+                            document.getElementById('overlay').style.display = 'block';
+                            generatePopup.style.display = 'block';
+                            document.getElementById('popup-status').style.display = 'none';
+                        });
+                    }
+                    
+                    if (generatePopupClose) {
+                        generatePopupClose.addEventListener('click', function() {
+                            generatePopup.style.display = 'none';
+                            document.getElementById('popup-status').style.display = 'block';
+                        });
+                    }
+                    
+                    if (submitComment) {
+                        submitComment.addEventListener('click', function() {
+                            const comment = document.getElementById('status-comment').value;
+                            if (comment.trim() !== '') {
+                                // Here you can add code to submit the comment to your backend
+                                console.log('Submitting comment:', comment);
+                                
+                                // Close the generate popup and return to status popup
+                                generatePopup.style.display = 'none';
+                                document.getElementById('popup-status').style.display = 'block';
+                                document.getElementById('status-comment').value = '';
+                            }
+                        });
+                    }
+                });
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const statusCommentBtn = document.getElementById('status-comment-btn');
+                    let currentIdPendaftaran = null;
+
+                    if (statusCommentBtn) {
+                        statusCommentBtn.addEventListener('click', function() {
+                            // Get the current id_pendaftaran from the status popup
+                            currentIdPendaftaran = document.querySelector('#popup-status').getAttribute('data-id');
+                            
+                            // Set the id_daftar value in the generate popup
+                            const idDaftarInput = document.getElementById('id_daftar');
+                            if (idDaftarInput && currentIdPendaftaran) {
+                                idDaftarInput.value = currentIdPendaftaran;
+                                
+                                // Fetch additional data from the database if needed
+                                fetch(`/unit/get-pendaftaran-data/${currentIdPendaftaran}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            // You can set additional data here if needed
+                                            console.log('Pendaftaran data:', data);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching pendaftaran data:', error);
+                                    });
+                            }
+                            
+                            // Show the generate popup
+                            document.getElementById('overlay').style.display = 'block';
+                            const generatePopup = document.getElementById('generate-popup');
+                            generatePopup.style.display = 'block';
+                            
+                            // Focus on the status-comment input field
+                            setTimeout(() => {
+                                document.getElementById('status-comment').focus();
+                            }, 100);
+                        });
+                    }
+                    
+                    // Close button for generate popup
+                    const generatePopupClose = document.getElementById('generate-popup-close');
+                    if (generatePopupClose) {
+                        generatePopupClose.addEventListener('click', function() {
+                            document.getElementById('generate-popup').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none';
+                        });
+                    }
+                    
+                    // Submit button for generate popup
+                    const submitCommentBtn = document.getElementById('submit-comment');
+                    if (submitCommentBtn) {
+                        submitCommentBtn.addEventListener('click', function() {
+                            const fileName = document.getElementById('status-comment').value;
+                            const idDaftar = document.getElementById('id_daftar').value;
+                            
+                            if (!fileName) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Harap masukkan nama file!',
+                                    confirmButtonColor: '#4a6b4f'
+                                });
+                                return;
+                            }
+                            
+                            // Send data to server
+                            const data = {
+                                id_pendaftaran: idDaftar,
+                                file_name: fileName
+                            };
+                            
+                            fetch('/unit/generate-finish', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: data.message,
+                                        confirmButtonColor: '#4a6b4f'
+                                    }).then(() => {
+                                        // Close the popup
+                                        document.getElementById('generate-popup').style.display = 'none';
+                                        document.getElementById('overlay').style.display = 'none';
+                                        
+                                        // Refresh the page or update UI as needed
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: data.message,
+                                        confirmButtonColor: '#4a6b4f'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'An error occurred while processing your request.',
+                                    confirmButtonColor: '#4a6b4f'
+                                });
+                            });
+                        });
+                    }
+                });
+            </script>
 
         @push('styles')
             <link rel="stylesheet" href="{{ asset('css/qcdsmpe-popup.css') }}">

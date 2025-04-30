@@ -252,7 +252,7 @@ tr + tr {
 .popup-btn-id,
 .popup-btn-judul,
 .popup-btn-status {
-    background-color: #4a6b4f;
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
     color: white;
     border: none;
     padding: 8px 14px;
@@ -263,12 +263,33 @@ tr + tr {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     font-weight: 500;
     letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-btn-id::before,
+.popup-btn-judul::before,
+.popup-btn-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.popup-btn-id:hover::before,
+.popup-btn-judul:hover::before,
+.popup-btn-status:hover::before {
+    left: 100%;
 }
 
 .popup-btn-id:hover,
 .popup-btn-judul:hover,
 .popup-btn-status:hover {
-    background-color: #3d5a41;
+    background: linear-gradient(135deg, #3d5a41 0%, #324c36 100%);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
 }
@@ -280,7 +301,152 @@ tr + tr {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-/* Popup styling */
+.popup-close {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+    margin-top: -15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-close::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.popup-close:hover::before {
+    left: 100%;
+}
+
+.popup-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+}
+
+.popup-close:active {
+    transform: translateY(0);
+}
+
+.btn_qcdsmpe {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 107, 79, 0.2);
+    margin-top: -15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn_qcdsmpe::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.btn_qcdsmpe:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 79, 0.3);
+}
+
+.btn_qcdsmpe:hover::before {
+    left: 100%;
+}
+
+.btn_qcdsmpe:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(74, 107, 79, 0.1);
+}
+
+.upload-btn {
+    background: rgba(74, 107, 79, 0.08);
+    border: none;
+    cursor: pointer;
+    color: #4a6b4f;
+    padding: 8px 10px;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all 0.6s ease;
+}
+
+.upload-btn:hover::before {
+    left: 100%;
+}
+
+.upload-btn:hover {
+    background: linear-gradient(135deg, rgba(74, 107, 79, 0.2) 0%, rgba(74, 107, 79, 0.3) 100%);
+    color: #324c36;
+    transform: translateY(-2px);
+}
+
+.upload-btn:active {
+    transform: translateY(0);
+}
+
+/* Form actions alignment */
+#popup-status .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+    position: relative;
+}
+
+#popup-status .btn_qcdsmpe {
+    position: absolute;
+    left: 0;
+}
+
+#popup-status .popup-close {
+    margin-left: auto;
+}
+
 .popup {
     display: none;
     position: fixed;
@@ -295,6 +461,12 @@ tr + tr {
     width: 800px;
     max-width: 100%;
     text-align: center;
+    height: 950px;
+}
+
+/* Prevent scrolling for specific popups */
+#popup-status {
+    overflow: hidden;
 }
 
 .popup-content {
@@ -373,6 +545,7 @@ label {
     gap: 8px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+    margin-top: -15px;
 }
 
 .popup-close:hover {
@@ -481,7 +654,6 @@ label {
     justify-content: center;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
-
 
 .form-group {
     margin-bottom: 20px;
@@ -813,9 +985,8 @@ label {
     }
 }
 
-
- /* Modern popup styling */
- .popup {
+/* Modern popup styling */
+.popup {
     display: none;
     position: fixed;
     top: 50%;
@@ -1048,23 +1219,6 @@ label {
     box-shadow: 0 6px 15px rgba(87, 101, 116, 0.3);
 }
 
-@media (max-width: 768px) {
-    .popup {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .leadership-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .anggota-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-
 .popup-close {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     color: white;
@@ -1174,5 +1328,137 @@ label {
     .generate-pdf-btn,
     .generate-pdf-btn i {
         display: none;
+    }
+}
+
+/* Status header actions */
+.status-header-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.status-comment-btn {
+    background: linear-gradient(135deg, #4a6b4f 0%, #3d5a41 100%);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(74, 107, 79, 0.2);
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-comment-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.status-comment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 79, 0.3);
+}
+
+.status-comment-btn:hover::before {
+    left: 100%;
+}
+
+.status-comment-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(74, 107, 79, 0.1);
+}
+
+.status-comment-btn i {
+    font-size: 16px;
+    margin-right: 2px;
+}
+
+/* Generate popup styles */
+#generate-popup {
+    width: 400px;
+    max-width: 90%;
+    overflow: hidden; /* Prevent scrolling */
+    height: 250px;
+}
+
+#generate-popup .form-group {
+    margin-bottom: 20px;
+}
+
+#generate-popup label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: -40px;
+}
+
+#generate-popup input[type="text"] {
+    width: 380px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+#generate-popup input[type="text"]:focus {
+    border-color: #4a6b4f;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 107, 79, 0.1);
+}
+
+#generate-popup .submit-btn {
+    background: linear-gradient(135deg, #4a6b4f 0%, #324c36 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 107, 79, 0.2);
+    margin-top: -15px;
+}
+
+#generate-popup .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 79, 0.3);
+}
+
+#generate-popup .submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(74, 107, 79, 0.1);
+}
+
+/* Media queries for generate popup */
+@media (max-width: 768px) {
+    #generate-popup {
+        width: 95%;
+    }
+    
+    #generate-popup input[type="text"] {
+        min-height: 100px;
     }
 }

@@ -299,3 +299,6 @@ Route::get('/unit/qcdsmpe/data/{id_pendaftaran}', [QcdsmpeController::class, 'sh
 Route::get('/unit/qcdsmpe/status/{id_pendaftaran}', [PendaftaranController::class, 'showStatusQcdsmpe'])->name('qcdsmpe.showStatusQcdsmpe');
 // In web.php
 Route::get('/unit/qcdsmpe/download/{id_pendaftaran}', [QcdsmpeController::class, 'download'])->name('qcdsmpe.download');
+
+// Route to get pendaftaran data for Generate & Finish popup
+Route::get('/unit/get-pendaftaran-data/{id_pendaftaran}', [PendaftaranController::class, 'getPendaftaranData'])->name('pendaftaran.getData');
