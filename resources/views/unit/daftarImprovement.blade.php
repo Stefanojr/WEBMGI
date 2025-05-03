@@ -206,7 +206,7 @@
             <h3>Status</h3>
             <!-- Add new button for popup when status = 1 -->
             <div class="status-header-actions">
-                <button class="status-comment-btn" id="status-comment-btn" style="display: none;">
+                <button data-id="{{ $pendaftaran->id_pendaftaran }}" class="status-comment-btn" id="status-comment-btn" style="display: none;">
                     <i class="fas fa-file-pdf"></i> Generate & Finish
                 </button>
             </div>
@@ -239,7 +239,7 @@
         <div class="popup" id="generate-popup">
             <h3>Generate & Finish</h3>
             <div class="form-group">
-                <input type="text" id="id_daftar" name="id_daftar" readonly>
+            <input type="text" id="id_daftar" name="id_daftar" readonly>
                 <label for="status-comment">Nama File</label>
                 <input type="text" id="status-comment" name="status-comment" placeholder="Contoh: SidoIT_SGA_2025">
             </div>
@@ -465,6 +465,8 @@
                             resetStepStatuses(); // Reset step statuses when opening popup
 
                             const idPendaftaran = this.getAttribute('data-id');
+                            const popupStatus = document.getElementById('popup-status');
+                        popupStatus.setAttribute('data-id', idPendaftaran);
                             const statusBody = document.getElementById('status-body');
                             statusBody.innerHTML = '';
 
@@ -1122,6 +1124,8 @@
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
                     button.addEventListener('click', function() {
                         const idPendaftaran = this.getAttribute('data-id');
+                        const popupStatus = document.getElementById('popup-status');
+                        popupStatus.setAttribute('data-id', idPendaftaran);
                         // ... existing code to show popup ...
 
                         // After showing the popup, update the notification badge
@@ -1140,6 +1144,8 @@
                     document.querySelectorAll('.popup-btn-status').forEach(button => {
                         button.addEventListener('click', function() {
                             const idPendaftaran = this.getAttribute('data-id');
+                            const popupStatus = document.getElementById('popup-status');
+                        popupStatus.setAttribute('data-id', idPendaftaran);F
                             checkQcdsmpeStatus(idPendaftaran);
                         });
                     });
@@ -1193,6 +1199,8 @@
                     document.querySelectorAll('.popup-btn-status').forEach(button => {
                         button.addEventListener('click', function() {
                             const idPendaftaran = this.getAttribute('data-id');
+                            const popupStatus = document.getElementById('popup-status');
+                        popupStatus.setAttribute('data-id', idPendaftaran);
                             if (idPendaftaran) {
                                 setTimeout(() => {
                                     checkQcdsmpeStatus(idPendaftaran);

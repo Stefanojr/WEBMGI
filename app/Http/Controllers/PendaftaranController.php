@@ -526,12 +526,12 @@ class PendaftaranController extends Controller
             }
 
             // Record the generation action
-            DB::table('generate_history')->insert([
+            DB::table('arsip')->insert([
                 'id_pendaftaran' => $id_pendaftaran,
-                'file_name' => $fileName,
-                'generated_by' => Auth::id(),
-                'generated_at' => now(),
-                'status' => 'completed'
+                'nama_file' => $fileName,
+                'file_path' => 'pdf/' . $fileName,
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             return response()->json([
