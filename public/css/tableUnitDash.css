@@ -1393,7 +1393,7 @@ label {
     width: 400px;
     max-width: 90%;
     overflow: hidden; /* Prevent scrolling */
-    height: 250px;
+    height: 270px;
 }
 
 #generate-popup .form-group {

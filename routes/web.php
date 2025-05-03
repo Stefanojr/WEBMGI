@@ -302,3 +302,9 @@ Route::get('/unit/qcdsmpe/download/{id_pendaftaran}', [QcdsmpeController::class,
 
 // Route to get pendaftaran data for Generate & Finish popup
 Route::get('/unit/get-pendaftaran-data/{id_pendaftaran}', [PendaftaranController::class, 'getPendaftaranData'])->name('pendaftaran.getData');
+
+Route::get('/unit/get-file/{id_pendaftaran}', [PendaftaranController::class, 'getWordFile'])->name('pendaftaran.getFile');
+
+Route::post('/unit/submit-comment', [PendaftaranController::class, 'generateFinish'])->name('pendaftaran.generateFinish');
+
+Route::get('/unit/get-file/{id_pendaftaran}', [PendaftaranController::class, 'getWordFile'])->name('pendaftaran.getFile');

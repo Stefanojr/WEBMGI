@@ -202,7 +202,7 @@
 
 
         <!-- Popup Status -->
-        <div class="popup" id="popup-status">
+        <div class="popup" id="popup-status" data-id="">
             <h3>Status</h3>
             <!-- Add new button for popup when status = 1 -->
             <div class="status-header-actions">
@@ -1228,15 +1228,78 @@
                     
                     if (submitComment) {
                         submitComment.addEventListener('click', function() {
-                            const comment = document.getElementById('status-comment').value;
-                            if (comment.trim() !== '') {
-                                // Here you can add code to submit the comment to your backend
-                                console.log('Submitting comment:', comment);
+                            const fileName = document.getElementById('status-comment').value;
+                            const idDaftar = document.getElementById('id_daftar').value;
+                            
+                            if (fileName.trim() !== '' && idDaftar) {
+                                // Show loading indicator
+                                Swal.fire({
+                                    title: 'Generating PDF...',
+                                    text: 'Please wait while we generate your file',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
                                 
-                                // Close the generate popup and return to status popup
-                                generatePopup.style.display = 'none';
-                                document.getElementById('popup-status').style.display = 'block';
-                                document.getElementById('status-comment').value = '';
+                                // Submit the data to the backend
+                                fetch('/unit/submit-comment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    },
+                                    body: JSON.stringify({
+                                        id_pendaftaran: idDaftar,
+                                        file_name: fileName
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success',
+                                            text: 'File generated successfully!',
+                                            confirmButtonText: 'Download PDF',
+                                            showCancelButton: true,
+                                            cancelButtonText: 'Close'
+                                        }).then((result) => {
+                                            if (result.isConfirmed && data.download_url) {
+                                                // Open the download URL in a new tab
+                                                window.open(data.download_url, '_blank');
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: data.message || 'Failed to generate file'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'An error occurred while generating the file'
+                                    });
+                                })
+                                .finally(() => {
+                                    // Close the generate popup and return to status popup
+                                    const generatePopup = document.getElementById('generate-popup');
+                                    generatePopup.style.display = 'none';
+                                    document.getElementById('popup-status').style.display = 'block';
+                                    document.getElementById('status-comment').value = '';
+                                });
+                            } else {
+                                // Show validation error
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Validation Error',
+                                    text: 'Please enter a file name and make sure ID Pendaftaran is selected'
+                                });
                             }
                         });
                     }
@@ -1251,36 +1314,30 @@
                     if (statusCommentBtn) {
                         statusCommentBtn.addEventListener('click', function() {
                             // Get the current id_pendaftaran from the status popup
-                            currentIdPendaftaran = document.querySelector('#popup-status').getAttribute('data-id');
+                            const popupStatus = document.getElementById('popup-status');
+                            currentIdPendaftaran = popupStatus.getAttribute('data-id');
                             
-                            // Set the id_daftar value in the generate popup
-                            const idDaftarInput = document.getElementById('id_daftar');
-                            if (idDaftarInput && currentIdPendaftaran) {
-                                idDaftarInput.value = currentIdPendaftaran;
+                            if (currentIdPendaftaran) {
+                                // Set the id_daftar value in the generate popup
+                                const idDaftarInput = document.getElementById('id_daftar');
+                                if (idDaftarInput) {
+                                    idDaftarInput.value = currentIdPendaftaran;
+                                    idDaftarInput.classList.add('visible-readonly');
+                                }
                                 
-                                // Fetch additional data from the database if needed
-                                fetch(`/unit/get-pendaftaran-data/${currentIdPendaftaran}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            // You can set additional data here if needed
-                                            console.log('Pendaftaran data:', data);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error fetching pendaftaran data:', error);
-                                    });
+                                // Show the generate popup
+                                document.getElementById('overlay').style.display = 'block';
+                                const generatePopup = document.getElementById('generate-popup');
+                                generatePopup.style.display = 'block';
+                                
+                                // Hide the status popup
+                                popupStatus.style.display = 'none';
+                                
+                                // Focus on the status-comment input field
+                                setTimeout(() => {
+                                    document.getElementById('status-comment').focus();
+                                }, 100);
                             }
-                            
-                            // Show the generate popup
-                            document.getElementById('overlay').style.display = 'block';
-                            const generatePopup = document.getElementById('generate-popup');
-                            generatePopup.style.display = 'block';
-                            
-                            // Focus on the status-comment input field
-                            setTimeout(() => {
-                                document.getElementById('status-comment').focus();
-                            }, 100);
                         });
                     }
                     
@@ -1288,8 +1345,9 @@
                     const generatePopupClose = document.getElementById('generate-popup-close');
                     if (generatePopupClose) {
                         generatePopupClose.addEventListener('click', function() {
-                            document.getElementById('generate-popup').style.display = 'none';
-                            document.getElementById('overlay').style.display = 'none';
+                            const generatePopup = document.getElementById('generate-popup');
+                            generatePopup.style.display = 'none';
+                            document.getElementById('popup-status').style.display = 'block';
                         });
                     }
                     
@@ -1300,65 +1358,59 @@
                             const fileName = document.getElementById('status-comment').value;
                             const idDaftar = document.getElementById('id_daftar').value;
                             
-                            if (!fileName) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error!',
-                                    text: 'Harap masukkan nama file!',
-                                    confirmButtonColor: '#4a6b4f'
-                                });
-                                return;
-                            }
-                            
-                            // Send data to server
-                            const data = {
-                                id_pendaftaran: idDaftar,
-                                file_name: fileName
-                            };
-                            
-                            fetch('/unit/generate-finish', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                                    'Accept': 'application/json'
-                                },
-                                body: JSON.stringify(data)
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: data.message,
-                                        confirmButtonColor: '#4a6b4f'
-                                    }).then(() => {
-                                        // Close the popup
-                                        document.getElementById('generate-popup').style.display = 'none';
-                                        document.getElementById('overlay').style.display = 'none';
-                                        
-                                        // Refresh the page or update UI as needed
-                                        window.location.reload();
-                                    });
-                                } else {
+                            if (fileName.trim() !== '' && idDaftar) {
+                                // Submit the data to the backend
+                                fetch('/unit/submit-comment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    },
+                                    body: JSON.stringify({
+                                        id_pendaftaran: idDaftar,
+                                        file_name: fileName
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success',
+                                            text: 'File generated successfully!',
+                                            confirmButtonText: 'Download PDF',
+                                            showCancelButton: true,
+                                            cancelButtonText: 'Close'
+                                        }).then((result) => {
+                                            if (result.isConfirmed && data.download_url) {
+                                                // Open the download URL in a new tab
+                                                window.open(data.download_url, '_blank');
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: data.message || 'Failed to generate file'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
                                     Swal.fire({
                                         icon: 'error',
-                                        title: 'Error!',
-                                        text: data.message,
-                                        confirmButtonColor: '#4a6b4f'
+                                        title: 'Error',
+                                        text: 'An error occurred while generating the file'
                                     });
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error!',
-                                    text: 'An error occurred while processing your request.',
-                                    confirmButtonColor: '#4a6b4f'
+                                })
+                                .finally(() => {
+                                    // Close the generate popup and return to status popup
+                                    const generatePopup = document.getElementById('generate-popup');
+                                    generatePopup.style.display = 'none';
+                                    document.getElementById('popup-status').style.display = 'block';
+                                    document.getElementById('status-comment').value = '';
                                 });
-                            });
+                            }
                         });
                     }
                 });

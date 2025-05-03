@@ -16,6 +16,7 @@ use App\Models\Progress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Export\ProposalPdfExport;
 
 class PendaftaranController extends Controller
 {
@@ -512,8 +513,17 @@ class PendaftaranController extends Controller
                 ], 404);
             }
 
-            // Here you would typically generate the PDF or other document
-            // For now, we'll just update the status or record the action
+            // Generate the PDF file
+            $exporter = new ProposalPdfExport();
+            $pdfResult = $exporter->exportByPendaftaranId($id_pendaftaran, $fileName);
+            
+            // If there was an error generating the PDF
+            if (isset($pdfResult->original) && isset($pdfResult->original['error'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $pdfResult->original['error']
+                ], 500);
+            }
 
             // Record the generation action
             DB::table('generate_history')->insert([
@@ -524,14 +534,11 @@ class PendaftaranController extends Controller
                 'status' => 'completed'
             ]);
 
-            // Update the pendaftaran status if needed
-            // $pendaftaran->status = 'finalized';
-            // $pendaftaran->save();
-
             return response()->json([
                 'success' => true,
                 'message' => 'File successfully generated and finalized',
-                'file_name' => $fileName
+                'file_name' => $fileName,
+                'download_url' => route('pendaftaran.getFile', ['id_pendaftaran' => $id_pendaftaran])
             ]);
             
         } catch (\Exception $e) {
@@ -542,5 +549,12 @@ class PendaftaranController extends Controller
                 'message' => 'Error processing your request: ' . $e->getMessage()
             ], 500);
         }
+    }
+    // Get Word File
+    public function getWordFile($id_pendaftaran)
+    {
+        $exporter = new ProposalPdfExport();
+
+        return $exporter->exportByPendaftaranId($id_pendaftaran);
     }
 }
