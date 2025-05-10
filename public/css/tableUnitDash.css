@@ -759,28 +759,51 @@ label {
     color: #155724;
     border-left: 5px solid #28a745;
     padding: 15px;
-    margin: 20px 0;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
+    margin-bottom: 20px;
+    border-radius: 8px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.5s ease-in-out;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.5s ease-out;
+}
+
+.success-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 5px;
+    background-color: #28a745;
 }
 
 .success-message .close-btn {
     background: none;
     border: none;
-    font-size: 20px;
-    font-weight: bold;
     color: #155724;
+    font-size: 20px;
     cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0;
+    margin-left: 15px;
 }
 
 .success-message .close-btn:hover {
-    color: #0c3e1f;
+    color: #0b2e13;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Animasi fade-in */
@@ -1460,5 +1483,56 @@ label {
     
     #generate-popup input[type="text"] {
         min-height: 100px;
+    }
+}
+
+/* Notification badge styling */
+.popup-btn-status {
+    position: relative;
+    padding: 6px 12px;
+    background-color: #4a6b4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.popup-btn-status:hover {
+    background-color: #427e4b;
+    transform: translateY(-2px);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: pulse 1.5s infinite;
+}
+
+.has-notification {
+    animation: pulse-button 2s infinite;
+}
+
+@keyframes pulse-button {
+    0% {
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
     }
 }

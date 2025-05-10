@@ -38,4 +38,9 @@ class User extends Authenticatable   // Pastikan User mengextends Authenticatabl
     {
         return $this->hasOneThrough(Perusahaan::class, Unit::class, 'id_unit', 'id_perusahaan', 'id_unit', 'id_perusahaan');
     }
+
+    public function pendaftaran()
+    {
+        return $this->hasMany(Pendaftaran::class, 'id_user');
+    }
 }

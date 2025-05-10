@@ -1097,7 +1097,7 @@
                         fetch(`/files/pendaftaran/${idPendaftaran}`)
                             .then(response => response.json())
                             .then(data => {
-                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'waiting');
+                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'approved' || item.status?.toLowerCase() === 'rejected');
                                 const badge = button.querySelector('.notification-badge');
 
                                 if (waitingItems.length > 0) {

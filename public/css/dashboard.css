@@ -2,8 +2,9 @@ body {
     margin: 0;
     font-family: 'Poppins', Arial, sans-serif;
     background-color: #f9fafb;
-    position: fixed;
+    position: relative;
     margin-left: 70px;
+    margin-top: -10px;
 }
 
 .dashboard-content {
@@ -571,12 +572,14 @@ p{
     margin: 20px 0;
     position: relative;
     padding: 0 10px;
+   
 }
 
 .step-container {
     display: flex;
     align-items: center;
     flex: 1;
+    height: 100px;
 }
 
 .step-indicator {

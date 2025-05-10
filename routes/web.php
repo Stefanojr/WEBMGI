@@ -11,6 +11,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QcdsmpeController;
+use App\Http\Controllers\ArsipController;
 
 // Rute untuk login
 Route::get('/', function () {
@@ -62,9 +63,7 @@ Route::get('/superadmin/daftarApproval', function () {
     return view('superadmin.daftarApproval');
 })->name('superadmin.daftarApproval');
 
-Route::get('/superadmin/arsip', function () {
-    return view('superadmin.arsip');
-})->name('superadmin.arsip');
+Route::get('/superadmin/arsip', [ArsipController::class, 'showAllArsip'])->name('superadmin.arsip');
 
 Route::get('/superadmin/report', function () {
     return view('superadmin.report');
@@ -308,3 +307,9 @@ Route::get('/unit/get-file/{id_pendaftaran}', [PendaftaranController::class, 'ge
 Route::post('/unit/submit-comment', [PendaftaranController::class, 'generateFinish'])->name('pendaftaran.generateFinish');
 
 Route::get('/unit/get-file/{id_pendaftaran}', [PendaftaranController::class, 'getWordFile'])->name('pendaftaran.getFile');
+
+
+Route::get('/unit/get-arsip/{id_pendaftaran}', [ArsipController::class, 'showArsip'])->name('arsip.showArsip');
+Route::get('/unit/get-archives', [ArsipController::class, 'getArchives'])->name('arsip.getArchives');
+Route::get('/unit/download-archive/{id}', [ArsipController::class, 'downloadArchive'])->name('arsip.downloadArchive');
+Route::get('/superadmin/get-all-archives', [ArsipController::class, 'getAllArchives'])->name('arsip.getAllArchives');

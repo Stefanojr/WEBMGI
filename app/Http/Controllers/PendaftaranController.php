@@ -33,7 +33,7 @@ class PendaftaranController extends Controller
         return view('unit.daftarImprovement', compact('pendaftarans', 'step'));
     }
 
-    // In PendaftaranController.php
+    
     public function showStatusQcdsmpe($id)
     {
         $data = Qcdsmpe::where('id_pendaftaran', $id)->first();
