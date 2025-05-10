@@ -19,6 +19,9 @@ class SuperadminController extends Controller
             ->select('id_pendaftaran')
             ->distinct()
             ->count();
+            
+        // Menghitung total arsip dari database
+        $totalArsip = DB::table('arsip')->count();
 
         // Menghitung jumlah grup untuk setiap kriteria
         $kriteriaCounts = DB::table('pendaftaran')
@@ -39,7 +42,7 @@ class SuperadminController extends Controller
             }
         }
 
-        return view('superadmin.home', compact('jumlahGrup', 'sgaCount', 'scftCount'));
+        return view('superadmin.home', compact('jumlahGrup', 'sgaCount', 'scftCount', 'totalArsip'));
     }
     public function pendaftaran()
     {

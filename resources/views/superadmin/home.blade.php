@@ -31,10 +31,10 @@
         <div class="col-md-4">
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
-                    <h5><i class="fas fa-file-alt"></i> Jumlah Total Risalah</h5>
+                    <h5><i class="fas fa-file-alt"></i> Jumlah Total Arsip</h5>
                 </div>
                 <div class="card-body text-center">
-                    <h2 id="jumlah-proposal" class="text-primary">150</h2> <!-- Update dengan data yang relevan -->
+                    <h2 id="jumlah-proposal" class="text-primary">{{ $totalArsip }}</h2>
                     <p>Total Proposal Diajukan</p>
                 </div>
             </div>
