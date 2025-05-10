@@ -1,6 +1,6 @@
 @extends('superadmin.layout.main')
 
-@section('title', 'Pendaftaran')
+@section('title', 'Arsip Digital')
 
 @section('content')
 
@@ -20,53 +20,53 @@
 
         <select id="year-filter" class="filter-dropdown">
             <option value="">Semua Tahun</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <!-- Add more years as needed -->
+            @foreach($years as $year)
+                <option value="{{ $year }}">{{ $year }}</option>
+            @endforeach
         </select>
 
-        <select id="category-filter" class="filter-dropdown">
-            <option value="">Semua Kategori</option>
-            <option value="sga">SGA</option>
-            <option value="scft">SCFT</option>
+        <select id="pendaftaran-filter" class="filter-dropdown">
+            <option value="">Semua Pendaftaran</option>
+            @foreach($pendaftaranWithArchives as $pendaftaran)
+                <option value="{{ $pendaftaran->id_pendaftaran }}">{{ $pendaftaran->nama_grup }} - {{ $pendaftaran->judul }}</option>
+            @endforeach
         </select>
+
+
     </section>
 
     <!-- Arsip per Tahun -->
-    <section class="archive-year-section">
+    <section class="archive-year-section" id="archive-section">
+        @php
+            $groupedArchives = $pendaftaranWithArchives->sortByDesc(function($pendaftaran) {
+                return $pendaftaran->arsip->max('created_at') ?? $pendaftaran->created_at;
+            })->groupBy(function($pendaftaran) {
+                $latestArchive = $pendaftaran->arsip->sortByDesc('created_at')->first();
+                return $latestArchive ? date('Y', strtotime($latestArchive->created_at)) : date('Y', strtotime($pendaftaran->created_at));
+            });
+        @endphp
 
-        <!-- Year 2024 -->
-        <div class="year-archive" data-year="2024">
-            <h2>2024</h2>
-            <ul class="archive-list">
-                <li><a href="#">Risalah IT SGA</a></li>
-                <li><a href="#">Risalah HR SCFT</a></li>
-                <li><a href="#">Risalah SS</a></li>
-            </ul>
-        </div>
-
-        <!-- Year 2023 -->
-        <div class="year-archive" data-year="2023">
-            <h2>2023</h2>
-            <ul class="archive-list">
-                <li><a href="#">Risalah IT SGA</a></li>
-                <li><a href="#">Risalah HR SCFT</a></li>
-                <li><a href="#">Risalah SS</a></li>
-            </ul>
-        </div>
-
-        <!-- Year 2022 -->
-        <div class="year-archive" data-year="2022">
-            <h2>2022</h2>
-            <ul class="archive-list">
-                <li><a href="#">Risalah IT SGA</a></li>
-                <li><a href="#">Risalah HR SCFT</a></li>
-                <li><a href="#">Risalah SS</a></li>
-            </ul>
-        </div>
-
-        <!-- Add more years as needed -->
+        @foreach($groupedArchives as $year => $pendaftaranGroup)
+            <div class="year-archive" data-year="{{ $year }}">
+                <h2>{{ $year }}</h2>
+                <ul class="archive-list">
+                    @foreach($pendaftaranGroup as $pendaftaran)
+                        @if(count($pendaftaran->arsip) > 0)
+                            @foreach($pendaftaran->arsip as $archive)
+                                <li data-pendaftaran="{{ $pendaftaran->id_pendaftaran }}">
+                                    <a href="{{ url('/unit/download-archive/' . $archive->id_arsip) }}" title="{{ $archive->nama_file }}">
+                                        {{ $archive->nama_file }}
+                                    </a>
+                                    <span class="file-details">
+                                        ({{ $pendaftaran->nama_grup }} - {{ $pendaftaran->unit }})
+                                    </span>
+                                </li>
+                            @endforeach
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        @endforeach
     </section>
 
     <!-- Empty state message (initially hidden) -->
@@ -80,7 +80,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('search-archive');
         const yearFilter = document.getElementById('year-filter');
-        const categoryFilter = document.getElementById('category-filter');
+        const pendaftaranFilter = document.getElementById('pendaftaran-filter');
+
         const archiveSections = document.querySelectorAll('.year-archive');
         const emptyState = document.getElementById('empty-state');
 
@@ -88,7 +89,8 @@
         function filterAndSearchArchives() {
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
-            const selectedCategory = categoryFilter.value;
+            const selectedPendaftaran = pendaftaranFilter.value;
+    
 
             let hasVisibleSection = false;
 
@@ -99,15 +101,17 @@
 
                 archiveItems.forEach(item => {
                     const itemText = item.textContent.toLowerCase();
-                    const itemCategory = item.textContent.toLowerCase(); // Misal kategori ada dalam teks
+                    const pendaftaranId = item.getAttribute('data-pendaftaran');
+
 
                     // Logika Pencocokan
                     const matchesSearch = searchTerm === '' || itemText.includes(searchTerm);
                     const matchesYear = selectedYear === '' || sectionYear === selectedYear;
-                    const matchesCategory = selectedCategory === '' || itemCategory.includes(selectedCategory);
+                    const matchesPendaftaran = selectedPendaftaran === '' || pendaftaranId === selectedPendaftaran;
+
 
                     // Tentukan apakah item ditampilkan
-                    if (matchesSearch && matchesYear && matchesCategory) {
+                    if (matchesSearch && matchesYear && matchesPendaftaran) {
                         item.style.display = 'block';
                         hasVisibleItem = true;
                     } else {
@@ -140,7 +144,8 @@
         // Event listeners untuk semua filter dan input
         searchInput.addEventListener('input', filterAndSearchArchives);
         yearFilter.addEventListener('change', filterAndSearchArchives);
-        categoryFilter.addEventListener('change', filterAndSearchArchives);
+        pendaftaranFilter.addEventListener('change', filterAndSearchArchives);
+
 
         // Initialize search on page load
         filterAndSearchArchives();
