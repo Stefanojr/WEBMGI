@@ -25,9 +25,8 @@ Route::post('/', [AuthController::class, 'login']);
 
 // Dashboard routes untuk masing-masing role
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('superadmin/home', function () {
-        return view('superadmin/home');
-    })->name('superadmin.home');
+    Route::get('superadmin/home', [SuperadminController::class, 'home'])->name('superadmin.home');
+    Route::get('superadmin/get-filtered-dashboard-data', [SuperadminController::class, 'getFilteredDashboardData'])->name('superadmin.getFilteredDashboardData');
 
     Route::get('/unit/home2', function () {
         return view('unit/home2');

@@ -15,15 +15,20 @@
         <div class="col-md-12">
             <div class="form-group">
                 <select id="tahun" name="tahun" class="form-control" onchange="updateLaporan()">
-                    <option value="2021" disabled selected>Pilih Tahun</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <!-- Tambahkan tahun lain sesuai kebutuhan -->
+                    @foreach($availableYears as $year)
+                        <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
+    </div>
+    
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="text-center mb-4" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Memuat data...</p>
     </div>
 
     <!-- Statistik Proposal -->
@@ -184,11 +189,40 @@
 
     function updateLaporan() {
         var tahun = document.getElementById('tahun').value;
-        // Update chart data using the stored chart reference
-        if (window.proposalChart) {
-            window.proposalChart.data.datasets[0].data = [{{ $sgaCount }}, {{ $scftCount }}];
-            window.proposalChart.update();
-        }
+        var loadingIndicator = document.getElementById('loading-indicator');
+        
+        // Show loading indicator
+        loadingIndicator.style.display = 'block';
+        
+        // Make AJAX request to get filtered data
+        fetch(`/superadmin/get-filtered-dashboard-data?tahun=${tahun}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update statistics
+                document.getElementById('jumlah-proposal').textContent = data.totalArsip;
+                document.getElementById('tingkat-partisipasi').textContent = data.jumlahGrup;
+                
+                // Update chart data
+                if (window.proposalChart) {
+                    window.proposalChart.data.datasets[0].data = [data.sgaCount, data.scftCount];
+                    window.proposalChart.update();
+                }
+                
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                // Hide loading indicator even if there's an error
+                loadingIndicator.style.display = 'none';
+                // Show error message to user
+                alert('Terjadi kesalahan saat memuat data. Silakan coba lagi.');
+            });
     }
 </script>
 

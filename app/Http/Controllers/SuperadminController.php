@@ -12,19 +12,54 @@ use App\Models\Approval;
 
 class SuperadminController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        // Menghitung jumlah unik id_pendaftaran dari tabel pendaftaran
+        // Get selected year from request or use current year as default
+        $selectedYear = $request->input('tahun', date('Y'));
+        
+        // Get dashboard data based on selected year
+        $dashboardData = $this->getDashboardData($selectedYear);
+        
+        // Add selected year to the data
+        $dashboardData['selectedYear'] = $selectedYear;
+        
+        // Get all available years for the filter
+        $availableYears = $this->getAvailableYears();
+        $dashboardData['availableYears'] = $availableYears;
+        
+        return view('superadmin.home', $dashboardData);
+    }
+    
+    /**
+     * Get filtered dashboard data for AJAX requests
+     */
+    public function getFilteredDashboardData(Request $request)
+    {
+        $year = $request->input('tahun', date('Y'));
+        $data = $this->getDashboardData($year);
+        return response()->json($data);
+    }
+    
+    /**
+     * Get dashboard data based on year
+     */
+    private function getDashboardData($year)
+    {
+        // Menghitung jumlah unik id_pendaftaran dari tabel pendaftaran dengan filter tahun
         $jumlahGrup = DB::table('pendaftaran')
+            ->whereYear('created_at', $year)
             ->select('id_pendaftaran')
             ->distinct()
             ->count();
             
-        // Menghitung total arsip dari database
-        $totalArsip = DB::table('arsip')->count();
+        // Menghitung total arsip dari database dengan filter tahun
+        $totalArsip = DB::table('arsip')
+            ->whereYear('created_at', $year)
+            ->count();
 
-        // Menghitung jumlah grup untuk setiap kriteria
+        // Menghitung jumlah grup untuk setiap kriteria dengan filter tahun
         $kriteriaCounts = DB::table('pendaftaran')
+            ->whereYear('created_at', $year)
             ->select('kreteria_grup', DB::raw('count(*) as total'))
             ->groupBy('kreteria_grup')
             ->get();
@@ -42,7 +77,40 @@ class SuperadminController extends Controller
             }
         }
 
-        return view('superadmin.home', compact('jumlahGrup', 'sgaCount', 'scftCount', 'totalArsip'));
+        return compact('jumlahGrup', 'sgaCount', 'scftCount', 'totalArsip');
+    }
+    
+    /**
+     * Get all available years for filtering
+     */
+    private function getAvailableYears()
+    {
+        // Get years from pendaftaran table
+        $pendaftaranYears = DB::table('pendaftaran')
+            ->selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+            
+        // Get years from arsip table
+        $arsipYears = DB::table('arsip')
+            ->selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+            
+        // Merge and get unique years
+        $years = array_unique(array_merge($pendaftaranYears, $arsipYears));
+        rsort($years);
+        
+        // If no years found, add current year
+        if (empty($years)) {
+            $years[] = date('Y');
+        }
+        
+        return $years;
     }
     public function pendaftaran()
     {
