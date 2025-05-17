@@ -34,9 +34,9 @@
                             <th>Tahapan</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
                         @foreach ($pendaftarans as $key => $pendaftaran)
-                            <tr>
+                            <tr data-id="{{ $pendaftaran->id_pendaftaran }}" class="data-row">
                                 <td>{{ $key + 1 }}</td>
                                 <td>
                                     <button class="popup-btn-id" data-id="{{ $pendaftaran->id_pendaftaran }}">
@@ -186,7 +186,7 @@
             <script>
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
                     button.addEventListener('click', function() {
-                        const idPendaftaran = this.closest('tr').querySelector('.popup-btn-id').getAttribute('data-id');
+                        const idPendaftaran = this.closest('tr').getAttribute('data-id');
                         const namaGrup = this.closest('tr').querySelector('td:nth-child(3)').textContent;
 
                         document.getElementById('overlay-tahapan').style.display = 'block';

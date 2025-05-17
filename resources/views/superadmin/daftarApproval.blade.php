@@ -35,11 +35,12 @@
                             <th>Judul</th>
                             <th>Tanggal</th>
                             <th>Tahapan</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
                         @foreach ($pendaftarans as $key => $pendaftaran)
-                            <tr>
+                            <tr data-id="{{ $pendaftaran->id_pendaftaran }}" class="data-row">
                                 <td>{{ $key + 1 }}</td>
                                 <td>
                                     <button class="popup-btn-id" data-id="{{ $pendaftaran->id_pendaftaran }}">
@@ -54,7 +55,15 @@
                                 <td>{{ $pendaftaran->judul }}</td>
                                 <td>{{ $pendaftaran->updated_at ? $pendaftaran->updated_at->format('d/m/Y') : '-' }}</td>
                                 <td>
+                                    <div style="position: relative;">
                                     <button class="popup-btn-status">Detail</button>
+                                        <span class="notification-badge" style="display: none;"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn-delete" data-id="{{ $pendaftaran->id_pendaftaran }}" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -187,9 +196,80 @@
 
         @push('scripts')
             <script>
+                // Function to check for status changes and add notifications
+                function checkNotifications() {
+                    document.querySelectorAll('.data-row').forEach(row => {
+                        const idPendaftaran = row.getAttribute('data-id');
+                        const notificationBadge = row.querySelector('.notification-badge');
+
+                        fetch(`/files/pendaftaran/${idPendaftaran}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Check if there are any items with status 'waiting'
+                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'waiting');
+
+                                if (waitingItems.length > 0) {
+                                    // Show notification badge with count
+                                    notificationBadge.textContent = waitingItems.length;
+                                    notificationBadge.style.display = 'flex';
+
+                                    // Add has-notification class to the button for additional styling
+                                    const detailButton = row.querySelector('.popup-btn-status');
+                                    detailButton.classList.add('has-notification');
+
+                                    // Add a data attribute to mark this row as having notifications
+                                    row.setAttribute('data-has-notification', 'true');
+                                } else {
+                                    // Hide notification badge
+                                    notificationBadge.style.display = 'none';
+
+                                    // Remove has-notification class
+                                    const detailButton = row.querySelector('.popup-btn-status');
+                                    detailButton.classList.remove('has-notification');
+
+                                    // Remove the data attribute
+                                    row.removeAttribute('data-has-notification');
+                                }
+
+                                // Sort the table to move notified rows to the top
+                                sortTableByNotifications();
+                            })
+                            .catch(error => console.error('Error checking for notifications:', error));
+                    });
+                }
+
+                // Function to sort table rows, moving rows with notifications to the top
+                function sortTableByNotifications() {
+                    const tbody = document.getElementById('table-body');
+                    const rows = Array.from(tbody.querySelectorAll('.data-row'));
+
+                    // Sort rows: notifications first, then by ID
+                    rows.sort((a, b) => {
+                        const aHasNotification = a.getAttribute('data-has-notification') === 'true';
+                        const bHasNotification = b.getAttribute('data-has-notification') === 'true';
+
+                        // Primary sort: notification status (true comes first)
+                        if (aHasNotification && !bHasNotification) return -1;
+                        if (!aHasNotification && bHasNotification) return 1;
+
+                        // Secondary sort: by ID (if notification status is the same)
+                        const aId = parseInt(a.getAttribute('data-id').split('-')[1]) || 0;
+                        const bId = parseInt(b.getAttribute('data-id').split('-')[1]) || 0;
+                        return aId - bId;
+                    });
+
+                    // Reorder the rows in the table
+                    rows.forEach((row, index) => {
+                        tbody.appendChild(row);
+
+                        // Update the row numbers
+                        row.querySelector('td:first-child').textContent = index + 1;
+                    });
+                }
+
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
                     button.addEventListener('click', function() {
-                        const idPendaftaran = this.closest('tr').querySelector('.popup-btn-id').getAttribute('data-id');
+                        const idPendaftaran = this.closest('tr').getAttribute('data-id');
                         const namaGrup = this.closest('tr').querySelector('td:nth-child(3)').textContent;
 
                         // Tampilkan popup
@@ -269,6 +349,9 @@
                                     row.querySelector('td:last-child').appendChild(actionButtons);
                                     tbody.appendChild(row);
                                 });
+
+                                // After viewing details, refresh notifications
+                                checkNotifications();
                             })
                             .catch(error => console.error('Error:', error));
                     });
@@ -360,28 +443,8 @@
                                             document.getElementById('overlay-tahapan').style.display = 'none';
                                             document.getElementById('popup-tahapan').style.display = 'none';
 
-                                            // Update the notification badge for this row
-                                            const mainTableRow = document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr');
-                                            if (mainTableRow) {
-                                                const statusButton = mainTableRow.querySelector('.popup-btn-status');
-                                                if (statusButton) {
-                                                    const badge = statusButton.querySelector('.notification-badge');
-                                                    if (badge) {
-                                                        const count = parseInt(badge.textContent) - 1;
-                                                        if (count > 0) {
-                                                            badge.textContent = count;
-                                                        } else {
-                                                            badge.remove();
-                                                            statusButton.classList.remove('has-notification');
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            // If no more pending approvals for this row, refresh the page
-                                            if (!document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr').querySelector('.notification-badge')) {
-                                            location.reload();
-                                            }
+                                            // Refresh notifications after approval
+                                            checkNotifications();
                                         }
                                     });
                                 } else {
@@ -398,15 +461,16 @@
 
                                 try {
                                     const errorData = JSON.parse(error.message);
-                                    errorMessage = errorData.message || errorMessage;
+                                    if (errorData && errorData.message) {
+                                        errorMessage = errorData.message;
+                                    }
                                 } catch (e) {
-                                    // If error message is not JSON, use it as is
                                     errorMessage = error.message || errorMessage;
                                 }
 
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Error!',
+                                    title: 'Gagal!',
                                     text: errorMessage
                                 });
                             });
@@ -414,318 +478,6 @@
                     });
                 }
 
-                // Fungsi untuk menampilkan popup komentar reject
-                function showRejectCommentPopup(id_file, id_pendaftaran) {
-                    Swal.fire({
-                        title: 'Alasan Penolakan',
-                        input: 'textarea',
-                        inputPlaceholder: 'Tulis alasan penolakan...',
-                        inputAttributes: {
-                            'aria-label': 'Tulis alasan penolakan'
-                        },
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fas fa-times-circle"></i> Tolak',
-                        cancelButtonText: '<i class="fas fa-arrow-left"></i> Kembali',
-                        confirmButtonColor: '#e74c3c',
-                        cancelButtonColor: '#7f8c8d',
-                        width: '450px',
-                        padding: '20px',
-                        backdrop: `rgba(0,0,0,0.4)`,
-                        showClass: {
-                            popup: 'animate__animated animate__fadeInDown'
-                        },
-                        hideClass: {
-                            popup: 'animate__animated animate__fadeOutUp'
-                        },
-                        customClass: {
-                            confirmButton: 'btn-confirm',
-                            cancelButton: 'btn-cancel',
-                            input: 'custom-textarea',
-                            popup: 'custom-popup',
-                            title: 'custom-title'
-                        },
-                        inputValidator: (value) => {
-                            if (!value) {
-                                return 'Harap masukkan alasan penolakan'
-                            }
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                            fetch('/reject-file', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': token,
-                                    'Accept': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    id_file: id_file,
-                                    id_pendaftaran: id_pendaftaran,
-                                    komentar: result.value
-                                })
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    return response.text().then(text => {
-                                        throw new Error(text);
-                                    });
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (data.success) {
-                                    // Remove the row from the table
-                                    const row = document.querySelector(`tr[data-file-id="${id_file}"]`);
-                                    if (row) {
-                                        row.remove();
-                                    }
-
-                                    // Check if there are any remaining rows
-                                    const tbody = document.getElementById('tahapan-body');
-                                    if (tbody.children.length === 0 ||
-                                        (tbody.children.length === 1 && tbody.children[0].querySelector('td[colspan="5"]'))) {
-                                        // If no rows left or only the "No pending approval requests" message, close the popup
-                                        document.getElementById('overlay-tahapan').style.display = 'none';
-                                        document.getElementById('popup-tahapan').style.display = 'none';
-
-                                        // Update the notification badge for this row
-                                        const mainTableRow = document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr');
-                                        if (mainTableRow) {
-                                            const statusButton = mainTableRow.querySelector('.popup-btn-status');
-                                            if (statusButton) {
-                                                const badge = statusButton.querySelector('.notification-badge');
-                                                if (badge) {
-                                                    const count = parseInt(badge.textContent) - 1;
-                                                    if (count > 0) {
-                                                        badge.textContent = count;
-                                                    } else {
-                                                        badge.remove();
-                                                        statusButton.classList.remove('has-notification');
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        // If no more pending approvals for this row, refresh the page
-                                        if (!document.querySelector(`button.popup-btn-id[data-id="${id_pendaftaran}"]`).closest('tr').querySelector('.notification-badge')) {
-                                            location.reload();
-                                        }
-                                    }
-
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: data.message,
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Gagal!',
-                                        text: data.message
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                let errorMessage = 'Terjadi kesalahan saat menolak dokumen';
-
-                                try {
-                                    const errorData = JSON.parse(error.message);
-                                    errorMessage = errorData.message || errorMessage;
-                                } catch (e) {
-                                    errorMessage = error.message || errorMessage;
-                                }
-
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error!',
-                                    text: errorMessage
-                                });
-                            });
-                        }
-                    });
-                }
-
-                // Fungsi untuk menutup popup
-                document.getElementById('close-tahapan').addEventListener('click', function() {
-                    document.getElementById('overlay-tahapan').style.display = 'none';
-                    document.getElementById('popup-tahapan').style.display = 'none';
-                });
-
-                // Add this new function to check for pending approvals and update the UI
-                function checkPendingApprovals() {
-                    // Get all rows in the main table
-                    const mainTableRows = document.querySelectorAll('table tbody tr');
-                    const tbody = document.querySelector('table tbody');
-                    const rowsWithNotifications = [];
-                    const rowsWithoutNotifications = [];
-
-                    // For each row, check if there are pending approvals
-                    mainTableRows.forEach(row => {
-                        const idButton = row.querySelector('.popup-btn-id');
-                        if (!idButton) return;
-
-                        const idPendaftaran = idButton.getAttribute('data-id');
-                        const statusButton = row.querySelector('.popup-btn-status');
-
-                        // Fetch data for this row
-                        fetch(`/files/pendaftaran/${idPendaftaran}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                // Check if there are any waiting items
-                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'waiting');
-
-                                if (waitingItems.length > 0) {
-                                    // Add notification badge to the status button
-                                    if (statusButton) {
-                                        // Remove any existing notification
-                                        const existingBadge = statusButton.querySelector('.notification-badge');
-                                        if (existingBadge) {
-                                            existingBadge.remove();
-                                        }
-
-                                        // Create new notification badge
-                                        const badge = document.createElement('span');
-                                        badge.className = 'notification-badge';
-                                        badge.textContent = waitingItems.length;
-                                        statusButton.appendChild(badge);
-
-                                        // Add pulse animation class
-                                        statusButton.classList.add('has-notification');
-                                    }
-                                    rowsWithNotifications.push(row);
-                                } else {
-                                    // Remove notification if no waiting items
-                                    if (statusButton) {
-                                        const badge = statusButton.querySelector('.notification-badge');
-                                        if (badge) {
-                                            badge.remove();
-                                        }
-                                        statusButton.classList.remove('has-notification');
-                                    }
-                                    rowsWithoutNotifications.push(row);
-                                }
-
-                                // After processing all rows, reorder the table
-                                if (rowsWithNotifications.length + rowsWithoutNotifications.length === mainTableRows.length) {
-                                    // Clear the table body
-                                    tbody.innerHTML = '';
-
-                                    // Add rows with notifications first
-                                    rowsWithNotifications.forEach(row => {
-                                        tbody.appendChild(row);
-                                    });
-
-                                    // Add rows without notifications
-                                    rowsWithoutNotifications.forEach(row => {
-                                        tbody.appendChild(row);
-                                    });
-                                }
-                            })
-                            .catch(error => console.error('Error checking pending approvals:', error));
-                    });
-                }
-
-                // Call the function when the page loads
-                document.addEventListener('DOMContentLoaded', function() {
-                    checkPendingApprovals();
-                });
-            </script>
-
-
-
-
-<script>
-    document.querySelectorAll('.popup-btn-id').forEach(button => {
-        button.addEventListener('click', function() {
-            // Menampilkan popup
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('popup').style.display = 'block';
-
-            const idPendaftaran = button.getAttribute('data-id'); // Mengambil data-id dari button
-
-            // Bersihkan container anggota sebelum memuat data baru
-            const anggotaContainer = document.getElementById('anggota-container');
-            anggotaContainer.innerHTML = ''; // Hapus semua elemen di dalam container
-
-            // Ambil data dari server berdasarkan id_pendaftaran
-            fetch(`/superadmin/daftarImprovementSA/${idPendaftaran}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); // Debug: Periksa apakah data diterima
-
-                    // Menampilkan id_pendaftaran di form
-                    document.getElementById('id-pendaftaran').value = data[0]
-                        .id_pendaftaran; // Pastikan data.id_pendaftaran ada
-
-                    // Menampilkan data anggota ke input form berdasarkan jabatan_grup
-                    data.forEach((grup, index) => {
-                        if (grup.jabatan_grup === 'sponsor') {
-                            document.getElementById('sponsor').value = grup.nama || '-';
-                            document.getElementById('sponsor-perner').value = grup.perner || '-';
-                        } else if (grup.jabatan_grup === 'fasilitator') {
-                            document.getElementById('fasilitator').value = grup.nama || '-';
-                            document.getElementById('fasilitator-perner').value = grup.perner || '-';
-                        } else if (grup.jabatan_grup === 'ketua') {
-                            document.getElementById('ketua').value = grup.nama || '-';
-                            document.getElementById('ketua-perner').value = grup.perner || '-';
-                        } else if (grup.jabatan_grup === 'sekretaris') {
-                            document.getElementById('sekretaris').value = grup.nama || '-';
-                            document.getElementById('sekretaris-perner').value = grup.perner || '-';
-                        } else if (grup.jabatan_grup === 'anggota') {
-                            // Create anggota card with improved styling
-                            const divAnggota = document.createElement('div');
-                            divAnggota.classList.add('input-container');
-
-                            // Label Anggota
-                            const label = document.createElement('label');
-                            label.textContent = `Anggota ${index + 1}`;
-                            divAnggota.appendChild(label);
-
-                            // Input untuk nama anggota
-                            const inputNama = document.createElement('input');
-                            inputNama.type = 'text';
-                            inputNama.value = grup.nama || '-';
-                            inputNama.readOnly = true;
-                            inputNama.placeholder = 'Nama';
-                            divAnggota.appendChild(inputNama);
-
-                            // Input untuk perner anggota
-                            const inputPerner = document.createElement('input');
-                            inputPerner.type = 'text';
-                            inputPerner.value = grup.perner || '-';
-                            inputPerner.readOnly = true;
-                            inputPerner.placeholder = 'Perner';
-                            divAnggota.appendChild(inputPerner);
-
-                            // Menambahkan div anggota ke container anggota
-                            anggotaContainer.appendChild(divAnggota);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    // Fungsi untuk menutup popup
-    document.getElementById('popup-close-id').addEventListener('click', function() {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('popup').style.display = 'none';
-    });
-</script>
-
-
-
-            <script>
                 document.querySelectorAll('.popup-btn-id').forEach(button => {
                     button.addEventListener('click', function() {
                         // Menampilkan popup
@@ -739,7 +491,7 @@
                         anggotaContainer.innerHTML = ''; // Hapus semua elemen di dalam container
 
                         // Ambil data dari server berdasarkan id_pendaftaran
-                        fetch(`/superadmin/daftarImprovementSA/${idPendaftaran}`, {
+                        fetch(`/superadmin/daftarApproval/${idPendaftaran}`, {
                                 method: 'GET',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -807,10 +559,147 @@
                     document.getElementById('overlay').style.display = 'none';
                     document.getElementById('popup').style.display = 'none';
                 });
+
+                // Fungsi untuk menutup popup
+                document.getElementById('close-tahapan').addEventListener('click', function() {
+                    document.getElementById('overlay-tahapan').style.display = 'none';
+                    document.getElementById('popup-tahapan').style.display = 'none';
+                });
+
+                // Check for notifications when the page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    checkNotifications();
+
+                    // Setup periodic checks for new notifications (every 30 seconds)
+                    setInterval(checkNotifications, 30000);
+                });
+
+                // Function to show reject comment popup
+                function showRejectCommentPopup(id_file, id_pendaftaran) {
+                    Swal.fire({
+                        title: 'Berikan Alasan Penolakan',
+                        input: 'textarea',
+                        inputPlaceholder: 'Tuliskan alasan penolakan disini...',
+                        inputAttributes: {
+                            'aria-label': 'Tuliskan alasan penolakan disini',
+                            'class': 'custom-textarea'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fas fa-times-circle"></i> Tolak',
+                        cancelButtonText: '<i class="fas fa-arrow-left"></i> Kembali',
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#7f8c8d',
+                        width: '500px',
+                        padding: '20px',
+                        backdrop: `rgba(0,0,0,0.4)`,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        },
+                        customClass: {
+                            confirmButton: 'btn-confirm',
+                            cancelButton: 'btn-cancel',
+                            popup: 'custom-popup',
+                            title: 'custom-title',
+                            input: 'custom-textarea'
+                        },
+                        inputValidator: (value) => {
+                            if (!value || value.trim() === '') {
+                                return 'Alasan penolakan tidak boleh kosong!';
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const komentar = result.value;
+                            handleRejection(id_file, id_pendaftaran, komentar);
+                        }
+                    });
+                }
+
+                // Handle delete button click
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const idPendaftaran = this.getAttribute('data-id');
+
+                        Swal.fire({
+                            title: 'Konfirmasi Penghapusan',
+                            text: 'Anda yakin ingin menghapus data ini? Semua data terkait termasuk file akan dihapus secara permanen.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '<i class="fas fa-trash-alt"></i> Hapus',
+                            cancelButtonText: '<i class="fas fa-arrow-left"></i> Batal',
+                            confirmButtonColor: '#dc3545',
+                            cancelButtonColor: '#6c757d',
+                            reverseButtons: true,
+                            focusCancel: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Show loading indicator
+                                Swal.fire({
+                                    title: 'Menghapus Data...',
+                                    text: 'Mohon tunggu sebentar',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                // Get CSRF token
+                                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                                // Send delete request
+                                fetch(`/pendaftaran/delete/${idPendaftaran}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': token
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            title: 'Berhasil!',
+                                            text: 'Data telah dihapus.',
+                                            icon: 'success',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            // Remove the row from the table
+                                            const row = document.querySelector(`tr[data-id="${idPendaftaran}"]`);
+                                            if (row) {
+                                                row.remove();
+                                                // Reorder row numbers
+                                                const rows = document.querySelectorAll('#table-body tr');
+                                                rows.forEach((row, index) => {
+                                                    row.querySelector('td:first-child').textContent = index + 1;
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Gagal!',
+                                            text: data.message || 'Terjadi kesalahan saat menghapus data.',
+                                            icon: 'error'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Terjadi kesalahan saat menghapus data.',
+                                        icon: 'error'
+                                    });
+                                });
+                            }
+                        });
+                    });
+                });
             </script>
         @endpush
-
-
     </body>
 
     </html>

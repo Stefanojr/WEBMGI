@@ -288,6 +288,9 @@ Route::put('/users/update/{id}', [UserController::class, 'update']);
 // routes/web.php
 Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 
+// Delete pendaftaran entry
+Route::delete('/pendaftaran/delete/{id}', [PendaftaranController::class, 'destroyPendaftaran'])->name('pendaftaran.delete');
+
 
 Route::get('/get-perusahaan-by-unit/{id_unit}', [UnitController::class, 'getPerusahaanByUnit']);
 

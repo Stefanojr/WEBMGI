@@ -33,7 +33,7 @@ class PendaftaranController extends Controller
         return view('unit.daftarImprovement', compact('pendaftarans', 'step'));
     }
 
-    
+
     public function showStatusQcdsmpe($id)
     {
         $data = Qcdsmpe::where('id_pendaftaran', $id)->first();
@@ -444,14 +444,14 @@ class PendaftaranController extends Controller
             $pendaftaran = Pendaftaran::with(['perusahaan', 'unit', 'grup'])
                 ->where('id_pendaftaran', $id_pendaftaran)
                 ->first();
-            
+
             if (!$pendaftaran) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Pendaftaran not found'
                 ], 404);
             }
-            
+
             // Format the data as needed
             $data = [
                 'id_pendaftaran' => $pendaftaran->id_pendaftaran,
@@ -462,15 +462,15 @@ class PendaftaranController extends Controller
                 'tanggal' => $pendaftaran->created_at ? $pendaftaran->created_at->format('d-m-Y') : null,
                 'status' => $pendaftaran->status
             ];
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $data
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error('Error fetching pendaftaran data: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching pendaftaran data: ' . $e->getMessage()
@@ -495,7 +495,7 @@ class PendaftaranController extends Controller
 
             // Get the pendaftaran data
             $pendaftaran = Pendaftaran::find($id_pendaftaran);
-            
+
             if (!$pendaftaran) {
                 return response()->json([
                     'success' => false,
@@ -505,7 +505,7 @@ class PendaftaranController extends Controller
 
             // Get QCDSMPE data
             $qcdsmpe = Qcdsmpe::where('id_pendaftaran', $id_pendaftaran)->first();
-            
+
             if (!$qcdsmpe) {
                 return response()->json([
                     'success' => false,
@@ -516,7 +516,7 @@ class PendaftaranController extends Controller
             // Generate the PDF file
             $exporter = new ProposalPdfExport();
             $pdfResult = $exporter->exportByPendaftaranId($id_pendaftaran, $fileName);
-            
+
             // If there was an error generating the PDF
             if (isset($pdfResult->original) && isset($pdfResult->original['error'])) {
                 return response()->json([
@@ -540,10 +540,10 @@ class PendaftaranController extends Controller
                 'file_name' => $fileName,
                 'download_url' => route('pendaftaran.getFile', ['id_pendaftaran' => $id_pendaftaran])
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error('Error in Generate & Finish: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error processing your request: ' . $e->getMessage()
@@ -556,5 +556,64 @@ class PendaftaranController extends Controller
         $exporter = new ProposalPdfExport();
 
         return $exporter->exportByPendaftaranId($id_pendaftaran);
+    }
+
+    /**
+     * Delete a pendaftaran entry and related data
+     */
+    public function destroyPendaftaran($id)
+    {
+        try {
+            // Find the pendaftaran
+            $pendaftaran = Pendaftaran::findOrFail($id);
+
+            // Delete related files
+            $files = FileModel::where('id_pendaftaran', $id)->get();
+            foreach ($files as $file) {
+                // Delete the physical file if it exists
+                $filePath = public_path($file->file_path);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+
+                // Delete related process entries
+                Proses::where('id_file', $file->id)->delete();
+
+                // Delete the file record
+                $file->delete();
+            }
+
+            // Delete related group members
+            Grup::where('id_pendaftaran', $id)->delete();
+
+            // Delete related QCDSMPE data
+            Qcdsmpe::where('id_pendaftaran', $id)->delete();
+
+            // Delete any archives/PDFs
+            $archives = DB::table('arsip')->where('id_pendaftaran', $id)->get();
+            foreach ($archives as $archive) {
+                $archivePath = public_path($archive->file_path);
+                if (file_exists($archivePath)) {
+                    unlink($archivePath);
+                }
+            }
+            DB::table('arsip')->where('id_pendaftaran', $id)->delete();
+
+            // Finally delete the pendaftaran entry
+            $pendaftaran->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data successfully deleted'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error deleting pendaftaran: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting data: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

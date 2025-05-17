@@ -1242,83 +1242,84 @@
                         });
                     }
 
-                    if (submitComment) {
-                        submitComment.addEventListener('click', function() {
-                            const fileName = document.getElementById('status-comment').value;
-                            const idDaftar = document.getElementById('id_daftar').value;
+                    // if (submitComment) {
+                    //     submitComment.addEventListener('click', function() {
+                    //         const fileName = document.getElementById('status-comment').value;
+                    //         const idDaftar = document.getElementById('id_daftar').value;
 
-                            if (fileName.trim() !== '' && idDaftar) {
-                                // Show loading indicator
-                                Swal.fire({
-                                    title: 'Generating PDF...',
-                                    text: 'Please wait while we generate your file',
-                                    allowOutsideClick: false,
-                                    didOpen: () => {
-                                        Swal.showLoading();
-                                    }
-                                });
+                    //         if (fileName.trim() !== '' && idDaftar) {
+                    //             // Show loading indicator
+                    //             Swal.fire({
+                    //                 title: 'Generating PDF...',
+                    //                 text: 'Please wait while we generate your file',
+                    //                 allowOutsideClick: false,
+                    //                 didOpen: () => {
+                    //                     Swal.showLoading();
+                    //                 }
+                    //             });
 
-                                // Submit the data to the backend
-                                fetch('/unit/submit-comment', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    },
-                                    body: JSON.stringify({
-                                        id_pendaftaran: idDaftar,
-                                        file_name: fileName
-                                    })
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Success',
-                                            text: 'File generated successfully!',
-                                            confirmButtonText: 'Download PDF',
-                                            showCancelButton: true,
-                                            cancelButtonText: 'Close'
-                                        }).then((result) => {
-                                            if (result.isConfirmed && data.download_url) {
-                                                // Open the download URL in a new tab
-                                                window.open(data.download_url, '_blank');
-                                            }
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: data.message || 'Failed to generate file'
-                                        });
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: 'An error occurred while generating the file'
-                                    });
-                                })
-                                .finally(() => {
-                                    // Close the generate popup and return to status popup
-                                    const generatePopup = document.getElementById('generate-popup');
-                                    generatePopup.style.display = 'none';
-                                    document.getElementById('popup-status').style.display = 'block';
-                                    document.getElementById('status-comment').value = '';
-                                });
-                            } else {
-                                // Show validation error
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: 'Validation Error',
-                                    text: 'Please enter a file name and make sure ID Pendaftaran is selected'
-                                });
-                            }
-                        });
-                    }
+                    //             // Submit the data to the backend
+                    //             fetch('/unit/submit-comment', {
+                    //                 method: 'POST',
+                    //                 headers: {
+                    //                     'Content-Type': 'application/json',
+                    //                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    //                 },
+                    //                 body: JSON.stringify({
+                    //                     id_pendaftaran: idDaftar,
+                    //                     file_name: fileName
+                    //                 })
+                    //             })
+                    //             .then(response => response.json())
+                    //             .then(data => {
+                    //                 if (data.success) {
+                    //                     Swal.fire({
+                    //                         icon: 'success',
+                    //                         title: 'Success',
+                    //                         text: 'File generated successfully!',
+                    //                         confirmButtonText: 'Download PDF',
+                    //                         showCancelButton: true,
+                    //                         cancelButtonText: 'Close'
+                    //                     }).then((result) => {
+                    //                         if (result.isConfirmed && data.download_url) {
+                    //                             // Open the download URL in a new tab
+                    //                             window.open(data.download_url, '_blank');
+                    //                         }
+                    //                     });
+                    //                 } else {
+                    //                     Swal.fire({
+                    //                         icon: 'error',
+                    //                         title: 'Error',
+                    //                         text: data.message || 'Failed to generate file'
+                    //                     });
+                    //                 }
+                    //             })
+                    //             .catch(error => {
+                    //                 console.error('Error:', error);
+                    //                 Swal.fire({
+                    //                     icon: 'error',
+                    //                     title: 'Error',
+                    //                     text: 'An error occurred while generating the file'
+                    //                 });
+                    //             })
+                    //             .finally(() => {
+                    //                 // Close the generate popup and return to status popup
+                    //                 const generatePopup = document.getElementById('generate-popup');
+                    //                 generatePopup.style.display = 'none';
+                    //                 document.getElementById('popup-status').style.display = 'block';
+                    //                 document.getElementById('status-comment').value = '';
+                    //             });
+                    //         } else {
+                    //             // Show validation error
+                    //             Swal.fire({
+                    //                 icon: 'warning',
+                    //                 title: 'Validation Error',
+                    //                 text: 'Please enter a file name and make sure ID Pendaftaran is selected'
+                    //             });
+                    //         }
+                    //     });
+                    // }
+
                 });
             </script>
 
@@ -1432,6 +1433,7 @@
                             }
                         });
                     }
+
                 });
             </script>
 
