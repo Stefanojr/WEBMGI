@@ -2,7 +2,7 @@ body {
     margin: 0;
     font-family: 'Poppins', Arial, sans-serif;
     background-color: #f9fafb;
-    position: relative;
+    position: fixed;
     margin-left: 70px;
     margin-top: -10px;
 }
@@ -572,7 +572,7 @@ p{
     margin: 20px 0;
     position: relative;
     padding: 0 10px;
-   
+
 }
 
 .step-container {

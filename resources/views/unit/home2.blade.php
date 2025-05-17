@@ -285,23 +285,20 @@
         // Initial update of group options
         updateGroupOptions();
 
-        // Show only the latest registration by default
+        // Sort cards by ID and show all by default
         const sortedCards = Array.from(progressCards).sort((a, b) => {
-            const idA = parseInt(a.getAttribute('data-id').split('-')[1]);
-            const idB = parseInt(b.getAttribute('data-id').split('-')[1]);
-            return idB - idA;
+            const idA = parseInt(a.getAttribute('data-id').split('-')[1]) || 0;
+            const idB = parseInt(b.getAttribute('data-id').split('-')[1]) || 0;
+            return idA - idB; // Sort in ascending order by ID
         });
 
-        progressCards.forEach(card => {
-            card.style.display = 'none';
+        // Show all cards by default
+        sortedCards.forEach(card => {
+            card.style.display = 'block';
         });
 
-        if (sortedCards.length > 0) {
-            sortedCards[0].style.display = 'block';
-            // Set the group filter to the latest registration
-            const latestId = sortedCards[0].getAttribute('data-id');
-            filterGroup.value = latestId;
-        }
+        // Don't pre-select any specific group in the filter
+        filterGroup.value = "";
 
         // Event listener untuk setiap stat card
         statCards.forEach(card => {

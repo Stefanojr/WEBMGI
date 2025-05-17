@@ -1480,29 +1480,13 @@ label {
     #generate-popup {
         width: 95%;
     }
-    
+
     #generate-popup input[type="text"] {
         min-height: 100px;
     }
 }
 
 /* Notification badge styling */
-.popup-btn-status {
-    position: relative;
-    padding: 6px 12px;
-    background-color: #4a6b4f;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.popup-btn-status:hover {
-    background-color: #427e4b;
-    transform: translateY(-2px);
-}
-
 .notification-badge {
     position: absolute;
     top: -8px;
@@ -1519,6 +1503,7 @@ label {
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     animation: pulse 1.5s infinite;
+    z-index: 9999;
 }
 
 .has-notification {
@@ -1533,6 +1518,21 @@ label {
         box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
     }
     100% {
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 6px rgba(231, 76, 60, 0);
+    }
+    100% {
+        transform: scale(1);
         box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
     }
 }

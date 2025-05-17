@@ -57,11 +57,12 @@
                                 <td>{{ $pendaftaran->judul }}</td>
                                 <td>{{ $pendaftaran->created_at ? $pendaftaran->created_at->format('d/m/Y') : '-' }}</td>
                                 <td>
-                                    <button class="popup-btn-status" data-id="{{ $pendaftaran->id_pendaftaran }}">
-                                        Detail
+                                    <div style="position: relative;">
+                                        <button class="popup-btn-status" data-id="{{ $pendaftaran->id_pendaftaran }}">
+                                            Detail
+                                        </button>
                                         <span class="notification-badge" style="display: none;"></span>
-                                    </button>
-
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -206,7 +207,7 @@
             <h3>Status</h3>
             <!-- Add new button for popup when status = 1 -->
             <div class="status-header-actions">
-                <button data-id="{{ $pendaftaran->id_pendaftaran }}" class="status-comment-btn" id="status-comment-btn" style="display: none;">
+                <button class="status-comment-btn" id="status-comment-btn" style="display: none;">
                     <i class="fas fa-file-pdf"></i> Generate & Finish
                 </button>
             </div>
@@ -241,7 +242,7 @@
             <div class="form-group">
             <input type="text" id="id_daftar" name="id_daftar" readonly>
                 <label for="status-comment">Nama File</label>
-                <input type="text" id="status-comment" name="status-comment" placeholder="Contoh: SidoIT_SGA_2025">
+                <input type="text" id="status-comment" name="status-comment" placeholder="Format: namagrup_kategori_tahun">
             </div>
             <div class="form-actions">
                 <button class="popup-close" id="generate-popup-close">
@@ -1090,51 +1091,58 @@
 
 
             <script>
-                // Add this function to check for status changes
-                function checkStatusChanges() {
+                // Function to check for status changes
+                function checkNotifications() {
                     document.querySelectorAll('.popup-btn-status').forEach(button => {
                         const idPendaftaran = button.getAttribute('data-id');
+                        const container = button.closest('div');
+                        const badge = container.querySelector('.notification-badge');
+
                         fetch(`/files/pendaftaran/${idPendaftaran}`)
                             .then(response => response.json())
                             .then(data => {
-                                const waitingItems = data.filter(item => item.status?.toLowerCase() === 'approved' || item.status?.toLowerCase() === 'rejected');
-                                const badge = button.querySelector('.notification-badge');
+                                // Filter for items that have been approved or rejected
+                                const changedItems = data.filter(item =>
+                                    item.status === 'approved' || item.status === 'rejected'
+                                );
 
-                                if (waitingItems.length > 0) {
-                                    badge.textContent = waitingItems.length;
+                                if (changedItems.length > 0) {
+                                    // Show notification badge with count
+                                    badge.textContent = changedItems.length;
                                     badge.style.display = 'flex';
-                                    button.classList.add('has-notification');
+                                    container.classList.add('has-notification');
                                 } else {
+                                    // Hide notification badge
                                     badge.style.display = 'none';
-                                    button.classList.remove('has-notification');
+                                    container.classList.remove('has-notification');
                                 }
                             })
-                            .catch(error => console.error('Error checking status:', error));
+                            .catch(error => console.error('Error checking notifications:', error));
                     });
                 }
 
-                // Call the function when the page loads
-                document.addEventListener('DOMContentLoaded', function() {
-                    checkStatusChanges();
-                    // Check for changes every 30 seconds
-                    setInterval(checkStatusChanges, 30000);
-                });
-
-                // Modify the existing status popup click handler
+                // Status popup click handler
                 document.querySelectorAll('.popup-btn-status').forEach(button => {
                     button.addEventListener('click', function() {
                         const idPendaftaran = this.getAttribute('data-id');
                         const popupStatus = document.getElementById('popup-status');
                         popupStatus.setAttribute('data-id', idPendaftaran);
-                        // ... existing code to show popup ...
 
-                        // After showing the popup, update the notification badge
-                        const badge = this.querySelector('.notification-badge');
+                        // Clear notification when viewing details
+                        const container = this.closest('div');
+                        const badge = container.querySelector('.notification-badge');
                         if (badge) {
                             badge.style.display = 'none';
-                            this.classList.remove('has-notification');
+                            container.classList.remove('has-notification');
                         }
                     });
+                });
+
+                // Check for notifications when page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    checkNotifications();
+                    // Check every 30 seconds for new notifications
+                    setInterval(checkNotifications, 30000);
                 });
             </script>
 
@@ -1218,7 +1226,7 @@
                     const generatePopup = document.getElementById('generate-popup');
                     const generatePopupClose = document.getElementById('generate-popup-close');
                     const submitComment = document.getElementById('submit-comment');
-                    
+
                     if (statusCommentBtn) {
                         statusCommentBtn.addEventListener('click', function() {
                             document.getElementById('overlay').style.display = 'block';
@@ -1226,19 +1234,19 @@
                             document.getElementById('popup-status').style.display = 'none';
                         });
                     }
-                    
+
                     if (generatePopupClose) {
                         generatePopupClose.addEventListener('click', function() {
                             generatePopup.style.display = 'none';
                             document.getElementById('popup-status').style.display = 'block';
                         });
                     }
-                    
+
                     if (submitComment) {
                         submitComment.addEventListener('click', function() {
                             const fileName = document.getElementById('status-comment').value;
                             const idDaftar = document.getElementById('id_daftar').value;
-                            
+
                             if (fileName.trim() !== '' && idDaftar) {
                                 // Show loading indicator
                                 Swal.fire({
@@ -1249,7 +1257,7 @@
                                         Swal.showLoading();
                                     }
                                 });
-                                
+
                                 // Submit the data to the backend
                                 fetch('/unit/submit-comment', {
                                     method: 'POST',
@@ -1320,27 +1328,30 @@
                     let currentIdPendaftaran = null;
 
                     if (statusCommentBtn) {
-                        statusCommentBtn.addEventListener('click', function() {
-                            // Get the current id_pendaftaran from the status popup
-                            const popupStatus = document.getElementById('popup-status');
-                            currentIdPendaftaran = popupStatus.getAttribute('data-id');
-                            
-                            if (currentIdPendaftaran) {
-                                // Set the id_daftar value in the generate popup
-                                const idDaftarInput = document.getElementById('id_daftar');
-                                if (idDaftarInput) {
-                                    idDaftarInput.value = currentIdPendaftaran;
-                                    idDaftarInput.classList.add('visible-readonly');
-                                }
-                                
+                                        statusCommentBtn.addEventListener('click', function() {
+                    // Get the current id_pendaftaran from the status popup
+                    const popupStatus = document.getElementById('popup-status');
+                    currentIdPendaftaran = popupStatus.getAttribute('data-id');
+
+                    if (currentIdPendaftaran) {
+                        // Set the id_daftar value in the generate popup
+                        const idDaftarInput = document.getElementById('id_daftar');
+                        if (idDaftarInput) {
+                            idDaftarInput.value = currentIdPendaftaran;
+                            idDaftarInput.classList.add('visible-readonly');
+                        }
+
+                        // Also set the data-id attribute on the status-comment-btn
+                        document.getElementById('status-comment-btn').setAttribute('data-id', currentIdPendaftaran);
+
                                 // Show the generate popup
                                 document.getElementById('overlay').style.display = 'block';
                                 const generatePopup = document.getElementById('generate-popup');
                                 generatePopup.style.display = 'block';
-                                
+
                                 // Hide the status popup
                                 popupStatus.style.display = 'none';
-                                
+
                                 // Focus on the status-comment input field
                                 setTimeout(() => {
                                     document.getElementById('status-comment').focus();
@@ -1348,7 +1359,7 @@
                             }
                         });
                     }
-                    
+
                     // Close button for generate popup
                     const generatePopupClose = document.getElementById('generate-popup-close');
                     if (generatePopupClose) {
@@ -1358,14 +1369,14 @@
                             document.getElementById('popup-status').style.display = 'block';
                         });
                     }
-                    
+
                     // Submit button for generate popup
                     const submitCommentBtn = document.getElementById('submit-comment');
                     if (submitCommentBtn) {
                         submitCommentBtn.addEventListener('click', function() {
                             const fileName = document.getElementById('status-comment').value;
                             const idDaftar = document.getElementById('id_daftar').value;
-                            
+
                             if (fileName.trim() !== '' && idDaftar) {
                                 // Submit the data to the backend
                                 fetch('/unit/submit-comment', {
