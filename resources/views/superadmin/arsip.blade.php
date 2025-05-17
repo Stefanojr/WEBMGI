@@ -8,6 +8,29 @@
 
 <link rel="stylesheet" href="../../css/arsipUnit.css">
 
+<style>
+    /* Additional styles for scrolling */
+    .year-archive h2 {
+        margin-bottom: 20px;
+        position: sticky;
+        top: 0;
+        background: inherit;
+        padding: 10px 0;
+        z-index: 1;
+    }
+
+    .archive-card-content {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .file-details {
+        font-size: 0.85em;
+        opacity: 0.8;
+        margin-left: 10px;
+    }
+</style>
+
 <div class="archive-content">
 
     <header class="main-header">
@@ -90,7 +113,7 @@
             const searchTerm = searchInput.value.toLowerCase();
             const selectedYear = yearFilter.value;
             const selectedPendaftaran = pendaftaranFilter.value;
-    
+
 
             let hasVisibleSection = false;
 

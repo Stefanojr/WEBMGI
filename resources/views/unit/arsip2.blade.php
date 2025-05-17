@@ -9,6 +9,7 @@
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{{ asset('css/arsipUnit.css') }}">
 
+
 <div class="archive-content">
     <header class="main-header">
         <h2>ARSIP SMIF</h2>
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderArchives(archives) {
         archiveSection.innerHTML = '';
-        
+
         if (archives.length === 0) {
             emptyState.style.display = 'flex';
             return;
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const yearSection = document.createElement('div');
                 yearSection.className = 'year-archive';
                 yearSection.dataset.year = year;
-                
+
                 const yearHeader = document.createElement('h2');
                 yearHeader.textContent = year;
                 yearSection.appendChild(yearHeader);
