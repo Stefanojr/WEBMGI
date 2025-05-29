@@ -28,17 +28,19 @@ Route::middleware('role:superadmin')->group(function () {
     Route::get('superadmin/home', [SuperadminController::class, 'home'])->name('superadmin.home');
     Route::get('superadmin/get-filtered-dashboard-data', [SuperadminController::class, 'getFilteredDashboardData'])->name('superadmin.getFilteredDashboardData');
 
-
 });
 
+Route::middleware('role:unit')->group(function () {
+    Route::get('/unit/home2', [UnitController::class, 'home2'])->name('unit.home2');
+
+});
 // Rute untuk halaman register
 Route::get('/pendaftaran/register', [RegisterController::class, 'create'])->name('register.create');
 
 // Rute untuk menyimpan data registrasi
 Route::post('/pendaftaran/register', [RegisterController::class, 'store'])->name('register.store');
 
-// API untuk mendapatkan unit berdasarkan perusahaan
-Route::get('/api/units/{id_perusahaan}', [RegisterController::class, 'getUnitsByPerusahaan']);
+
 
 // ================= UNIT =======================
 // Halaman dashboard unit (sebaiknya pakai middleware auth+role:unit)

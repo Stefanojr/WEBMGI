@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../css/background.css">
     <link rel="stylesheet" href="../../css/formDaftar.css">
     <link rel="stylesheet" href="../../css/tableUnitDaftar.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
 
     <div class="container">
         @if(session('success'))

@@ -82,10 +82,14 @@ class UnitController extends Controller
         }
     }
 
-
     public function home2()
     {
-        $userId = Auth::user()->id_user;
+        $user = Auth::user();
+        if (!$user) {
+            // Redirect ke login jika belum login
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        $userId = $user->id_user;
         $pendaftarans = Pendaftaran::where('id_user', $userId)->get();
 
         // Fetch QCDSMPE data for each pendaftaran

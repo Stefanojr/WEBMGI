@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../../css/background.css">
 <link rel="stylesheet" href="../../css/formQc.css">
 <link rel="stylesheet" href="../../css/tableUnitDaftar.css">
+<link rel="stylesheet" href="../../css/responsive.css">
 
 <div class="container">
     <h1>TABEL ANALISA QCDSMPE</h1>

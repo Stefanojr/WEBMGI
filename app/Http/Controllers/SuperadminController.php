@@ -16,30 +16,27 @@ class SuperadminController extends Controller
     {
         // Get selected year from request or use current year as default
         $selectedYear = $request->input('tahun', date('Y'));
-        
+
         // Get dashboard data based on selected year
         $dashboardData = $this->getDashboardData($selectedYear);
-        
+
         // Add selected year to the data
         $dashboardData['selectedYear'] = $selectedYear;
-        
+
         // Get all available years for the filter
         $availableYears = $this->getAvailableYears();
         $dashboardData['availableYears'] = $availableYears;
-        
+
         return view('superadmin.home', $dashboardData);
     }
     
-    /**
-     * Get filtered dashboard data for AJAX requests
-     */
     public function getFilteredDashboardData(Request $request)
     {
         $year = $request->input('tahun', date('Y'));
         $data = $this->getDashboardData($year);
         return response()->json($data);
     }
-    
+
     /**
      * Get dashboard data based on year
      */
@@ -51,7 +48,7 @@ class SuperadminController extends Controller
             ->select('id_pendaftaran')
             ->distinct()
             ->count();
-            
+
         // Menghitung total arsip dari database dengan filter tahun
         $totalArsip = DB::table('arsip')
             ->whereYear('created_at', $year)
@@ -79,7 +76,7 @@ class SuperadminController extends Controller
 
         return compact('jumlahGrup', 'sgaCount', 'scftCount', 'totalArsip');
     }
-    
+
     /**
      * Get all available years for filtering
      */
@@ -92,7 +89,7 @@ class SuperadminController extends Controller
             ->orderBy('year', 'desc')
             ->pluck('year')
             ->toArray();
-            
+
         // Get years from arsip table
         $arsipYears = DB::table('arsip')
             ->selectRaw('YEAR(created_at) as year')
@@ -100,16 +97,16 @@ class SuperadminController extends Controller
             ->orderBy('year', 'desc')
             ->pluck('year')
             ->toArray();
-            
+
         // Merge and get unique years
         $years = array_unique(array_merge($pendaftaranYears, $arsipYears));
         rsort($years);
-        
+
         // If no years found, add current year
         if (empty($years)) {
             $years[] = date('Y');
         }
-        
+
         return $years;
     }
     public function pendaftaran()

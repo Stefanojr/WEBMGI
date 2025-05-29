@@ -1,0 +1,87 @@
+/* responsive.css - Media Query Global untuk Responsif di Semua Halaman */
+
+/* Layout container */
+.container, .main-content, .content, .dashboard, .form, .table, .card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive Table */
+.table, table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Responsive Form */
+form, .form {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+input, select, textarea, button {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive Utility Classes */
+.img-responsive, img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .container, .main-content, .dashboard, .form, .table, .card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    display: none;
+  }
+  .main-content, .dashboard {
+    width: 100%;
+    padding: 10px;
+  }
+  .table th, .table td, table th, table td {
+    font-size: 15px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container, .main-content, .dashboard, .form, .table, .card {
+    padding: 8px;
+  }
+  .table th, .table td, table th, table td {
+    font-size: 13px;
+    padding: 4px;
+  }
+  .btn, .input, .form-control {
+    font-size: 15px;
+  }
+  .navbar, .header, .footer {
+    font-size: 15px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container, .main-content, .dashboard, .form, .table, .card {
+    padding: 4px;
+  }
+  .table th, .table td, table th, table td {
+    font-size: 12px;
+    padding: 2px;
+  }
+  .btn, .input, .form-control {
+    font-size: 14px;
+  }
+  .navbar, .header, .footer {
+    font-size: 13px;
+    padding: 4px;
+  }
+}

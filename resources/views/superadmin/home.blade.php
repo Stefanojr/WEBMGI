@@ -7,7 +7,7 @@
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="../../css/report.css">
-
+<link rel="stylesheet" href="../../css/responsive.css">
 <div class="container-fluid py-4">
 
     <!-- Filter Tahun -->
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Loading Indicator -->
     <div id="loading-indicator" class="text-center mb-4" style="display: none;">
         <div class="spinner-border text-primary" role="status">
@@ -190,10 +190,10 @@
     function updateLaporan() {
         var tahun = document.getElementById('tahun').value;
         var loadingIndicator = document.getElementById('loading-indicator');
-        
+
         // Show loading indicator
         loadingIndicator.style.display = 'block';
-        
+
         // Make AJAX request to get filtered data
         fetch(`/superadmin/get-filtered-dashboard-data?tahun=${tahun}`)
             .then(response => {
@@ -206,13 +206,13 @@
                 // Update statistics
                 document.getElementById('jumlah-proposal').textContent = data.totalArsip;
                 document.getElementById('tingkat-partisipasi').textContent = data.jumlahGrup;
-                
+
                 // Update chart data
                 if (window.proposalChart) {
                     window.proposalChart.data.datasets[0].data = [data.sgaCount, data.scftCount];
                     window.proposalChart.update();
                 }
-                
+
                 // Hide loading indicator
                 loadingIndicator.style.display = 'none';
             })

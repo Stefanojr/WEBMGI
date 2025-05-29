@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/dashboard.css">
+<link rel="stylesheet" href="../../css/responsive.css">
 
 <div class="dashboard-content">
         <header class="main-header">
