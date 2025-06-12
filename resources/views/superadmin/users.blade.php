@@ -4,7 +4,7 @@
 @section('content')
 
 <link rel="stylesheet" href="../../css/usersSA.css">
-<link rel="stylesheet" href="../../css/responsive.css">
+
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>DAFTAR USER</h2>

@@ -172,7 +172,7 @@
             unitDropdown.innerHTML = '<option value="">Pilih Unit</option>';
 
             if (perusahaanId) {
-                fetch(`/api/units/${perusahaanId}`)
+                fetch(`/unitByPerusahaan/${perusahaanId}`)
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(unit => {

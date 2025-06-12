@@ -4,7 +4,7 @@
 @section('content')
 
 <link rel="stylesheet" href="../../css/masterData.css">
-<link rel="stylesheet" href="../../css/responsive.css">
+
 <div class="table-container">
     <h2>DAFTAR PERUSAHAAN</h2>
     <button id="addBtn" class="popup-btn-id">+ Tambah Perusahaan</button>

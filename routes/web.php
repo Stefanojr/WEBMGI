@@ -88,19 +88,11 @@ Route::get('/unit/approval2', [SubmissionController::class, 'showApproval'])->na
 
 
 
-Route::prefix('unit')->group(function () {
-    // Menampilkan form pendaftaran
-    Route::get('/pendaftaran2', [PendaftaranController::class, 'create'])->name('pendaftaran.form');
-
-    // Menyimpan data pendaftaran
-    Route::post('/pendaftaran2', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-
-    // Rute untuk mengambil unit berdasarkan perusahaan
+Route::middleware('auth')->group(function () {
+    Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+    Route::get('/unit/pendaftaran2', [PendaftaranController::class, 'create'])->name('pendaftaran.form');
+    Route::post('/unit/pendaftaran2', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
     Route::post('/get-units', [PendaftaranController::class, 'getUnits'])->name('get-units');
-
-    Route::get('/home2', [UnitController::class, 'home2'])->name('unit.home2');
-    Route::get('/get-qcdsmpe-data', [UnitController::class, 'getQcdsmpeData'])->name('unit.getQcdsmpeData');
-    Route::post('/filter', [UnitController::class, 'filterData'])->name('unit.filter');
 });
 
 //Upload file
@@ -171,8 +163,6 @@ Route::get('/get-units/{id}', [UnitController::class, 'getUnits']);
 
 //submit pendaftaran -> daftarImprovement
 Route::get('/unit/daftarImprovement', [PendaftaranController::class, 'index'])->name('daftarImprovement');
-
-Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 
 // Route Management Perusahaan
 use App\Http\Controllers\PerusahaanController;
